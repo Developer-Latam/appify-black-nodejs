@@ -18,11 +18,11 @@ export const signUpController = async (req, res, next) => {
         res.status(400).json({ ok: false, message: err.message });
     }
 }
-export const updateSubUser = async (req, res, next) => {
+export const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const updateFields = req.body;
-        const result = await userService.updateSubusuario(id, updateFields);
+        const result = await userService.updateUserService(id, updateFields);
         res.json(result);
     } catch (error) {
         console.log(error)

@@ -75,8 +75,8 @@ class UserService {
             throw new Error('ya existe');
         }
     }
-    async updateSubusuario(id, updateFields) {
-        const existingSubusuario = await UserRepository.findSubusuarioById(id);
+    async updateUserService(id, updateFields) {
+        const existingSubusuario = await UserRepository.findUserById(id);
         if (!existingSubusuario) {
             throw new Error('Subusuario no encontrado');
         }

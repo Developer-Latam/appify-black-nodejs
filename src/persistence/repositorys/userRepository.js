@@ -20,11 +20,15 @@ class UserRepository {
         const [response] = await connectionDB.execute('SELECT * FROM usuarios WHERE email = ?', [email]);
         return response.length > 0;
     }
+    async userExistsById(id) {
+        const [response] = await connectionDB.execute('SELECT * FROM usuarios WHERE id = ?', [id]);
+        return response.length > 0;
+    }
     async createUser(id, nombre, apellido, email, celular, fecha_de_nacimiento, password) {
         await connectionDB.execute('INSERT INTO usuarios (id, nombre, apellido, email, celular, fecha_de_nacimiento, password) VALUES (?, ?, ?, ?, ?, ?, ?)', [id, nombre, apellido, email, celular, fecha_de_nacimiento, password]);
         await connectionDB.execute('INSERT INTO subusuarios (id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, ref_superusuario, checkeado, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [id, id, nombre, apellido, email, celular, fecha_de_nacimiento, null, 1, 1, password]);
     }
-    async findSubusuarioById(id) {
+    async findUserById(id) {
         const [rows] = await connectionDB.execute('SELECT * FROM subusuarios WHERE id = ?', [id]);
         return rows.length > 0 ? rows[0] : null;
     }
