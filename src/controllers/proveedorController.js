@@ -1,5 +1,6 @@
 import proveedorService from "../services/proveedorService.js"
-
+// Funciones que interactuan con la clase Service, se encargan de los parametros y las respuestas al cliente
+//Crea un proveedor
 export const createProveedorController = async (req, res) => {
     try {
         const {
@@ -17,6 +18,7 @@ export const createProveedorController = async (req, res) => {
         res.status(400).json({ ok: false, message: err.message });
     }
 }
+//Actualiza un proveedor
 export const updateProveedorController = async (req, res, next) => {
     try {
         const { id } = req.params;

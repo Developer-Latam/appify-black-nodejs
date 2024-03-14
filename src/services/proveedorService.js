@@ -1,17 +1,19 @@
 import proveedorRepository from "../persistence/repositorys/proveedorRepository.js"
 import userRepository from "../persistence/repositorys/userRepository.js";
 import { idgenerate } from "../utils/idGenerate.js";
-
+//Clase que interactua con Repository, se encarga de la logica de negocio
 class proveedorService {
+    //Crea un proveedor
     async createProveedorService(user, rut, razon_social, activo, giro, condicion_de_pago, nombre_fantasia, cuenta_contable,
         persona, direccion, email, comuna, telefono, ciudad, banco, nombre_beneficiario,
         nombre_cuenta, rut_beneficiario, nro_cta_corriente, correo_cobranzas){
-        //Verificar si existe el proveedor para la empresa
+        //Verificar si existe el proveedor y el usuario para la empresa
         const superUserExist = await userRepository.userExistsById(user)
         const proveedorExist = await proveedorRepository.proveedorExistsByRut(rut)
         if(proveedorExist && superUserExist){
             return { ok: false, message: 'Proveedor ya existente en la empresa' };
         }
+        //Si no existe, crea el proveedor
         const id = idgenerate("prov")
         await proveedorRepository.createProveedor(
         id, user, rut, razon_social, activo, giro, condicion_de_pago, nombre_fantasia, cuenta_contable,
@@ -19,6 +21,7 @@ class proveedorService {
         nombre_cuenta, rut_beneficiario, nro_cta_corriente, correo_cobranzas);
         return { ok: true, message: 'Proveedor creado exitosamente'}  
     }
+    //Actualiza el proveedor mediante su id
     async updateProveedorService(id, updateFields) {
         const existingProveedor = await proveedorRepository.getProveedorById(id);
         if (!existingProveedor) {

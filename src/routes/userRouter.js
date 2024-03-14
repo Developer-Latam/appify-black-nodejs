@@ -7,4 +7,4 @@ router.post('/login', loginUser);
 router.post('/signup', signUpController);
 router.put('/updUser/:id', updateUser);
 
-export default router
+export default router 

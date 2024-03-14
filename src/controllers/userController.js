@@ -1,5 +1,6 @@
 import userService from "../services/userService.js";
-
+//Funciones que interactuan con Service, se encargan de las respuestas al cliente
+//Realiza el login del usuario
 export const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
     try {
@@ -9,6 +10,7 @@ export const loginUser = async (req, res, next) => {
         res.status(400).json({ login: false, message: err.message });
     }
 }
+//Realiza el registro del usuario
 export const signUpController = async (req, res, next) => {
     const { nombre, apellido, email, celular, fecha_de_nacimiento, password } = req.body;
     try {
@@ -18,11 +20,12 @@ export const signUpController = async (req, res, next) => {
         res.status(400).json({ ok: false, message: err.message });
     }
 }
+//Realiza el update de un subUsuario
 export const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const updateFields = req.body;
-        const result = await userService.updateUserService(id, updateFields);
+        const result = await userService.updateSubUserService(id, updateFields);
         res.json(result);
     } catch (error) {
         console.log(error)
