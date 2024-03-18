@@ -1,3 +1,4 @@
+import userRepository from "../persistence/repositorys/userRepository.js";
 import UserRepository from "../persistence/repositorys/userRepository.js";
 import { idgenerate } from "../utils/idGenerate.js";
 //Clase que interactua con el Repository y se encarga de la logica de negocio
@@ -73,7 +74,7 @@ class UserService {
         }
     }
     //Realiza el registro de usuario
-    async signUp(nombre, apellido, email, celular, fecha_de_nacimiento, password) {
+    async signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, password) {
         //Verifica si existe, y si no, realiza la generacion de su id, y posterior lo crea
         const userExists = await UserRepository.userExists(email);
         if (!userExists) {
@@ -82,6 +83,29 @@ class UserService {
             return { ok: true, message: 'usuario creado!' };
         } else {
             throw new Error('ya existe');
+        }
+    }
+    //Realiza el registro de un subusuario
+    async signUpSubUsuario(user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, permisos) {
+        try {
+            //Verifica si existe, y si no, realiza la generacion de su id, y posterior lo crea
+            const subUserExists = await UserRepository.subUserExists(email);
+            if (!subUserExists) {
+                const id = idgenerate("sub-user");
+                try {
+                    await UserRepository.createSubUser(id,user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo);
+                    await UserRepository.createPermisos(permisos, id)
+                    return { ok: true, message: 'sub user creado y con permisos tambien jaja' };
+                } catch (error) {
+                    await UserRepository.deleteSubUserByID(id)
+                    console.log('Subusuario eliminado exitosamente tras fallo en la asignación de permisos.');
+                    throw (error)
+                }
+            } else {
+                throw ('Sub usuario ya existente');
+            }
+        } catch (error) {
+            throw (error)
         }
     }
     //Realiza el update de sub user

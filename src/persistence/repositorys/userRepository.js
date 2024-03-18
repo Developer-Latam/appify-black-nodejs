@@ -24,6 +24,11 @@ class UserRepository {
         const [response] = await connectionDB.execute('SELECT * FROM usuarios WHERE email = ?', [email]);
         return response.length > 0;
     }
+    //Verifica si el subusuario existe por su email y devuelve true o false
+    async subUserExists(email) {
+        const [response] = await connectionDB.execute('SELECT * FROM subusuarios WHERE email = ?', [email]);
+        return response.length > 0;
+    }
     //Verifica si el usuario existe por su id y devuelve true o false
     async userExistsById(id) {
         const [response] = await connectionDB.execute('SELECT * FROM usuarios WHERE id = ?', [id]);
@@ -33,6 +38,10 @@ class UserRepository {
     async createUser(id, nombre, apellido, email, celular, fecha_de_nacimiento, password) {
         await connectionDB.execute('INSERT INTO usuarios (id, nombre, apellido, email, celular, fecha_de_nacimiento, password) VALUES (?, ?, ?, ?, ?, ?, ?)', [id, nombre, apellido, email, celular, fecha_de_nacimiento, password]);
         await connectionDB.execute('INSERT INTO subusuarios (id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, ref_superusuario, checkeado, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [id, id, nombre, apellido, email, celular, fecha_de_nacimiento, null, 1, 1, password]);
+    }
+    //Realiza la creacion de usuario
+    async createSubUser(id,user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo) {
+        await connectionDB.execute('INSERT INTO subusuarios (id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, ref_superusuario, checkeado, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, 0, 0, null]);
     }
     //Busca el subusuario por su id y lo retorna
     async findsubUserById(id) {
@@ -62,6 +71,34 @@ class UserRepository {
         // Ejecutar la consulta SQL con los parámetros
         const [result] = await connectionDB.execute(query, parameters);
         return result;
+    }
+    //Actualiza los permisos de usuario
+    async updatePermiso(user, idPermiso, updates) {
+        const columnsToUpdate = Object.keys(updates).map(column => `${column} = ?`).join(', ');
+        const values = [...Object.values(updates), user, idPermiso];
+        const query = `UPDATE permisos_de_usuario SET ${columnsToUpdate} WHERE user = ? AND idPermiso = ?`;
+        const [rows] = await connectionDB.execute(query, values);
+        return rows;
+    }
+    //Crea los permisos en la tabla permisos_de_usuario
+    async createPermisos(permisos, idSubUsuario) {
+        try {
+            for (const permiso of permisos){
+                await connectionDB.execute('INSERT INTO permisos_de_usuario (idPermiso,user,inactivo,ver,administrar,todo,propietario) VALUES (?,?,?,?,?,?,?)',[permiso.id, idSubUsuario ,permiso.inactivo , permiso.ver ,permiso.administrar ,permiso.todo , permiso.propietario])
+            }
+        } catch (error) {
+            throw error(error)
+        }
+    }
+    //Elimina un sub user por su id
+    async deleteSubUserByID(id) {
+        const [rows] = await connectionDB.execute('DELETE FROM subusuarios WHERE id = ?', [id]);
+        return rows.length > 0 ? rows[0] : null;
+    }
+    //Edita los permisos de los sub usuarios
+    async editarPermisos(id) {
+        const [rows] = await connectionDB.execute('SELECT * FROM subusuarios WHERE id = ?', [id]);
+        return rows.length > 0 ? rows[0] : null;
     }
 }
 

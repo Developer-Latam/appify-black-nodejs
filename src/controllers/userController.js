@@ -14,7 +14,17 @@ export const loginUser = async (req, res, next) => {
 export const signUpController = async (req, res, next) => {
     const { nombre, apellido, email, celular, fecha_de_nacimiento, password } = req.body;
     try {
-        const result = await userService.signUp(nombre, apellido, email, celular, fecha_de_nacimiento, password);
+        const result = await userService.signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, password);
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(400).json({ ok: false, message: err.message });
+    }
+}
+//Realiza el registro del sub usuario
+export const signUpSubUsuarioController = async (req, res, next) => {
+    const { user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, permisos } = req.body;
+    try {
+        const result = await userService.signUpSubUsuario(user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, permisos);
         res.status(200).json(result);
     } catch (err) {
         res.status(400).json({ ok: false, message: err.message });
