@@ -52,7 +52,7 @@ router.get('/products/:id', async(req,res)=>{
       const id = req.params.id
       const products = await prisma.productos.findMany({
         where:{
-          user : id
+            user: id
         }
       })
       return res.status(200).json({ok:true, data: products})
@@ -61,4 +61,5 @@ router.get('/products/:id', async(req,res)=>{
     }
 });
 
-  
+
+export default router

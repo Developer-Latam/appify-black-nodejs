@@ -713,7 +713,6 @@ model permisos_de_usuario {
 model productos {
   id                String   @id @db.VarChar(100)
   user              String   @db.VarChar(100)
-  proveedor         String   @db.VarChar(100)
   nombre            String   @db.VarChar(100)
   precio            Float    @db.Float
   imagen            String?  @db.VarChar(100)
@@ -733,7 +732,6 @@ model productos {
   unidad_de_compra  Int?
   notas             String?  @db.Text
 
-  @@index([proveedor], map: "proveedores")
   @@index([user], map: "usuarios")
 }
 
@@ -825,7 +823,6 @@ model receta_servicios {
 model servicios {
   id                String   @id @db.VarChar(100)
   user              String   @db.VarChar(100)
-  proveedor         String   @db.VarChar(100)
   nombre            String   @db.VarChar(100)
   precio            Float    @db.Float
   imagen            String?  @db.VarChar(100)
@@ -845,7 +842,6 @@ model servicios {
   unidad_de_compra  Int?
   notas             String?  @db.Text
 
-  @@index([proveedor], map: "proveedores")
   @@index([user], map: "usuarios")
 }
 
@@ -910,4 +906,13 @@ model voucher_venta {
   @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([idDoc], map: "documento_venta")
   @@index([idVendedor], map: "subusuarios")
+}
+
+model proveedor_productos {
+  id         Int    @id @default(autoincrement())
+  proveedor  String @db.VarChar(100)
+  idProducto String @db.VarChar(100)
+
+  @@index([idProducto], map: "productos")
+  @@index([proveedor], map: "proveedores")
 }
