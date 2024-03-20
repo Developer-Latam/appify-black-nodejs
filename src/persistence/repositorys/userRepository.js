@@ -27,7 +27,7 @@ class UserRepository {
             const permisos = await prisma.$queryRaw`SELECT permisos.categoria, permisos.subcategoria, permisos_de_usuario.inactivo, permisos_de_usuario.ver, permisos_de_usuario.administrar, permisos_de_usuario.todo, permisos_de_usuario.propietario FROM permisos INNER JOIN permisos_de_usuario ON permisos_de_usuario.idPermiso = permisos.id WHERE permisos_de_usuario.user = ${userId}`
             return permisos;
         } catch (error) {
-            throw error(error)
+            throw error(error) 
         }
     }
     //Verifica si el usuario existe por su email y devuelve true o false
@@ -143,7 +143,6 @@ class UserRepository {
     async createPermisos(permisos, idSubUsuario) {
         try {
             for (const permiso of permisos){
-                //await connectionDB.execute('INSERT INTO permisos_de_usuario (idPermiso,user,inactivo,ver,administrar,todo,propietario) VALUES (?,?,?,?,?,?,?)',[permiso.id, idSubUsuario ,permiso.inactivo , permiso.ver ,permiso.administrar ,permiso.todo , permiso.propietario])
                 await prisma.permisos_de_usuario.create({
                     data:{
                         idPermiso: permiso.id,

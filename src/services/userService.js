@@ -88,7 +88,7 @@ class UserService {
     //Realiza el registro de un subusuario
     async signUpSubUsuario(user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, permisos) {
         try {
-            //Verifica si existe, y si no, realiza la generacion de su id, y posterior lo crea
+            //Verifica si existe, y si no, realiza la generacion de su id, y posterior lo crea 
             const subUserExists = await UserRepository.subUserExists(email);
             if (!subUserExists) {
                 const id = idgenerate("sub-user");
