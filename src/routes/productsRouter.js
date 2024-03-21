@@ -1,5 +1,11 @@
 import { Router } from 'express';
-
+import { 
+    createProduct,
+    getProductById,
+    getProductsByUserId,
+    updateProduct,
+    deleteProduct
+} from '../controllers/productController.js';
 const router = Router();
 
 router.post('/product', createProduct);
