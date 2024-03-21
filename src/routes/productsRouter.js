@@ -10,37 +10,24 @@ const prisma = new PrismaClient()
 //Ruta para crear un producto
 router.post('/product', async(req,res)=>{
     try{
-        const { user,nombre,precio,imagen,iva,activo,codigo,codigo_barra, unidad,costo, extension_impuesto,extension_valor, disponibilidad, manejo_stock, minimo_stock, maximo_stock, unidad_medida, unidad_de_compra, nota } = req.body;
+        const data = req.body;
         
         const id = idgenerate("product")
-
+        console.log({
+            ...data,id:id
+        })
+        
         await prisma.productos.create({
         data:{
-            id:id,
-            user,
-            nombre,
-            precio,
-            imagen: imagen,
-            iva,
-            activo,
-            codigo,
-            codigo_barra,
-            costo,
-            extension_impuesto,
-            extension_valor,
-            disponibilidad,
-            manejo_stock,
-            minimo_stock,
-            maximo_stock, //string
-            unidad_medida,
-            unidad_de_compra, //int
-            notas: nota
+            ...data,id:id
         }
         })
+        
         console.log('creado')
         
         return res.status(200).json({message:'producto creado!'})
     }catch(err){
+        console.log(err)
         return res.status(400).json({message:err})
     }
 })
@@ -87,7 +74,7 @@ router.put('/product/:idProducto',async(req,res)=>{
             },
             data: updateObjt
         })
-        
+
         return res.status(200).json({ok:true})
     }catch(err){
         return res.status(400).json({message:err})
@@ -97,7 +84,7 @@ router.put('/product/:idProducto',async(req,res)=>{
 router.delete('/product/:idProducto',async(req,res)=>{
     try{
         //Esta parte es para eliminar un producto
-
+        
         const id = req.params.idProducto;
         await prisma.productos.delete({
             where:{

@@ -9,6 +9,7 @@ class UserRepository {
     async findUserByEmailAndPassword(email, password) {
         try {
             //const [response] = await connectionDB.execute('SELECT * FROM subusuarios WHERE email = ? AND password = ?', [email, password]);
+        
             const response = await prisma.subusuarios.findFirst({
                 where: {
                   email: email,
@@ -44,6 +45,7 @@ class UserRepository {
     //Verifica si el subusuario existe por su email y devuelve true o false
     async subUserExists(email) {
         //const [response] = await connectionDB.execute('SELECT * FROM subusuarios WHERE email = ?', [email]);
+        //
         const response = await prisma.subusuarios.findFirst({  
             where:{
                 email : email
@@ -64,6 +66,7 @@ class UserRepository {
     //Realiza la creacion de usuario
     async createUser(id, nombre, apellido, email, celular, fecha_de_nacimiento, password) {
         //await connectionDB.execute('INSERT INTO usuarios (id, nombre, apellido, email, celular, fecha_de_nacimiento, password) VALUES (?, ?, ?, ?, ?, ?, ?)', [id, nombre, apellido, email, celular, fecha_de_nacimiento, password]);
+        
         await prisma.usuarios.create({
             data: {
               id: id,

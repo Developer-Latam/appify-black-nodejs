@@ -79,23 +79,13 @@ model cobros {
   @@index([user], map: "usuarios")
 }
 
-model condicion_pago {
-  id           Int     @id @default(autoincrement())
-  user         String  @db.VarChar(100)
-  nombre       String  @db.VarChar(100)
-  interes      Float?  @db.Float
-  cuenta_cobro String? @db.VarChar(100)
-
-  @@index([user], map: "usuarios")
-}
-
 model condiciones_condicion_pago {
   id          Int   @id @default(autoincrement())
   idCondicion Int
   porcentaje  Float @db.Float
   numero_dias Int
 
-  @@index([idCondicion], map: "condicion_pago")
+  @@index([idCondicion], map: "condicion_de_pago")
 }
 
 model consultas {
@@ -106,6 +96,7 @@ model consultas {
   celular        String  @db.VarChar(30)
   nombre_empresa String  @db.VarChar(50)
   consulta       String? @db.Text
+  archivo        String? @db.VarChar(200)
 
   @@index([idVendedor], map: "subusuarios")
 }
@@ -714,6 +705,7 @@ model productos {
   id                String   @id @db.VarChar(100)
   user              String   @db.VarChar(100)
   nombre            String   @db.VarChar(100)
+  moneda            Int
   precio            Float    @db.Float
   imagen            String?  @db.VarChar(100)
   iva               Boolean
@@ -733,6 +725,7 @@ model productos {
   notas             String?  @db.Text
 
   @@index([user], map: "usuarios")
+  @@index([moneda], map: "monedas")
 }
 
 model productos_lista_de_precios {
@@ -824,6 +817,7 @@ model servicios {
   id                String   @id @db.VarChar(100)
   user              String   @db.VarChar(100)
   nombre            String   @db.VarChar(100)
+  moneda            Int
   precio            Float    @db.Float
   imagen            String?  @db.VarChar(100)
   iva               Boolean
@@ -843,6 +837,7 @@ model servicios {
   notas             String?  @db.Text
 
   @@index([user], map: "usuarios")
+  @@index([moneda], map: "monedas")
 }
 
 model subusuarios {
@@ -867,7 +862,7 @@ model transportista {
   nombre   String? @db.VarChar(50)
   apellido String  @db.VarChar(50)
 
-  @@index([iduser], map: "user")
+  @@index([iduser], map: "usuarios")
 }
 
 model usuarios {
@@ -915,4 +910,215 @@ model proveedor_productos {
 
   @@index([idProducto], map: "productos")
   @@index([proveedor], map: "proveedores")
+}
+
+model administracion_anticipo {
+  id                          Int     @id @default(autoincrement())
+  empresa                     Int
+  cuenta_anticipo_clientes    String? @db.VarChar(100)
+  cuenta_anticipo_proveedores String? @db.VarChar(100)
+  cuenta_balance_apertura     String? @db.VarChar(100)
+  cuenta_ajuste_cambario      String? @db.VarChar(100)
+  cuenta_boton_pago           String? @db.VarChar(100)
+  cuenta_beneficios_defecto   String? @db.VarChar(100)
+
+  @@index([empresa], map: "empresa")
+}
+
+model administracion_impuesto {
+  id                             Int     @id @default(autoincrement())
+  empresa                        Int
+  cuenta_impuesto_debito         String? @db.VarChar(100)
+  cuenta_impuesto_credito        String? @db.VarChar(100)
+  valor_impuesto_retenido        Float   @default(0) @db.Float
+  cuenta_impuesto_no_recuperable String? @db.VarChar(100)
+  plazo_no_recuperable           Int     @default(0)
+  cuenta_retencion_impuesto      String? @db.VarChar(100)
+  cuenta_impuesto_especifico     String? @db.VarChar(100)
+
+  @@index([empresa], map: "empresa")
+}
+
+model administracion_por_clasificar {
+  id                                      Int     @id @default(autoincrement())
+  empresa                                 Int
+  cuenta_documentos_pendientes_clasificar String? @db.VarChar(100)
+
+  @@index([empresa], map: "empresa")
+}
+
+model administracion_por_cobrar {
+  id                                      Int     @id @default(autoincrement())
+  empresa                                 Int
+  cuenta_facturas_por_cobrar              String? @db.VarChar(100)
+  cuenta_documentos_en_cartera_por_cobrar String? @db.VarChar(100)
+
+  @@index([empresa], map: "empresa")
+}
+
+model administracion_por_pagar {
+  id                          Int     @id @default(autoincrement())
+  empresa                     Int
+  cuenta_honorarios_por_pagar String? @db.VarChar(100)
+  cuenta_facturas_por_pagar   String? @db.VarChar(100)
+  cuenta_vouchers_por_pagar   String? @db.VarChar(100)
+  cuenta_documentos_por_pagar String? @db.VarChar(100)
+
+  @@index([empresa], map: "empresa")
+}
+
+model cobranzas {
+  id              Int     @id @default(autoincrement())
+  empresa         Int
+  asunto          String? @db.VarChar(100)
+  mensaje_nivel_1 String? @db.Text
+  mensaje_nivel_2 String? @db.Text
+  mensaje_nivel_3 String? @db.Text
+
+  @@index([empresa], map: "empresa")
+}
+
+model condicion_de_pago {
+  id           Int     @id @default(autoincrement())
+  user         String  @db.VarChar(100)
+  nombre       String  @db.VarChar(100)
+  interes      Float?  @db.Float
+  cuenta_cobro String? @db.VarChar(100)
+
+  @@index([user], map: "usuarios")
+}
+
+model e_commerce {
+  id                  Int     @id @default(autoincrement())
+  user                String  @db.VarChar(100)
+  logo                String? @db.VarChar(200)
+  nombre              String? @db.VarChar(75)
+  categoria           String? @db.VarChar(100)
+  mostrar_comentarios Boolean @default(false)
+  descripcion         String? @db.Text
+
+  @@index([user], map: "usuarios")
+}
+
+model empresa {
+  id               Int     @id @default(autoincrement())
+  user             String  @db.VarChar(100)
+  logo             String? @db.VarChar(150)
+  nombre           String  @db.VarChar(100)
+  direccion_matriz String? @db.VarChar(120)
+  direccion_bodega String? @db.VarChar(100)
+  prefijo_tel      Int?
+  RUT              String  @db.VarChar(100)
+  giro             String? @db.VarChar(100)
+  pagina_web       String? @db.VarChar(100)
+  prefijo_cel      Int?
+
+  @@index([user], map: "usuarios")
+}
+
+model empresa_proyecto {
+  id                            Int     @id @default(autoincrement())
+  empresa                       Int
+  valor_impuesto                Int     @default(0)
+  logo                          String? @db.VarChar(150)
+  porcentaje_de_ot              Float   @default(0) @db.Float
+  texto_para_compartir_proyecto String? @db.VarChar(100)
+  cotizacion_descuento_visible  Boolean
+
+  @@index([empresa], map: "empresa")
+}
+
+model facturacion_electronica {
+  id                               Int     @id @default(autoincrement())
+  empresa                          Int
+  recibir_doc_libre_DTE_automatico Boolean @default(false)
+  contrasena_sii                   String? @db.VarChar(50)
+  folio_factura_excenta            Int     @default(0)
+  folio_facura                     Int     @default(0)
+  folio_factura_compra             Int     @default(0)
+  folio_nota_debito                Int     @default(0)
+  folio_nota_credito               Int     @default(0)
+  folio_guia_despacho              Int     @default(0)
+  folio_boleta_excenta             Int     @default(0)
+  folio_boleta_fisica              Int     @default(0)
+  folio_boleta_electronica         Int     @default(0)
+  set_factura_basica               Boolean @default(false)
+  set_boletas                      Boolean @default(false)
+  set_facturas_exportacion         Boolean @default(false)
+  set_facturas_compra              Boolean @default(false)
+
+  @@index([empresa], map: "empresa")
+}
+
+model modulos_configuracion {
+  id                          Int     @id @default(autoincrement())
+  empresa                     Int
+  modulo_administracion       String? @db.VarChar(100)
+  modulo_satisfaccion_cliente Boolean @default(false)
+  modulo_workflow             Boolean @default(false)
+  modulo_multi_rut            Boolean @default(false)
+  modulo_operaciones          Boolean @default(false)
+  modulo_google_drive         Boolean @default(false)
+
+  @@index([empresa], map: "empresa")
+}
+
+model monedas {
+  id     Int     @id @default(autoincrement())
+  user   String  @db.VarChar(100)
+  nombre String? @db.VarChar(50)
+
+  @@index([user], map: "usuarios")
+}
+
+model para_clientes_documentos_venta {
+  id                      Int     @id @default(autoincrement())
+  empresa                 Int
+  mensaje_envio_documento String? @db.Text
+
+  @@index([empresa], map: "empresa")
+}
+
+model para_clientes_orden_compra {
+  id                         Int     @id @default(autoincrement())
+  empresa                    Int
+  mensaje_envio_orden_compra String? @db.Text
+
+  @@index([empresa], map: "empresa")
+}
+
+model para_clientes_proyectos {
+  id                        Int     @id @default(autoincrement())
+  empresa                   Int
+  texto_inferior_firma      String? @db.Text
+  mensaje_envio_proyecto    String? @db.Text
+  texto_confirmacion_compra String? @db.Text
+
+  @@index([empresa], map: "empresa")
+}
+
+model sistema {
+  id                              Int      @id @default(autoincrement())
+  empresa                         Int
+  pais                            String   @db.VarChar(50)
+  idioma                          String?  @db.VarChar(120)
+  correo_cobranza                 String?  @db.VarChar(100)
+  moneda                          Int
+  moneda_secundaria               String?  @db.VarChar(3)
+  con_decimales                   Boolean?
+  tasa_venta                      Int?
+  tasa_compra                     Int?
+  tasa_cambio                     Int?
+  tolerancia                      Float?   @db.Float
+  registro_entregas_autocompletar Boolean?
+
+  @@index([empresa], map: "empresa")
+}
+
+model anticipos {
+  id               Int    @id @default(autoincrement())
+  idProyecto       String @db.VarChar(100)
+  monto_anticipado Float  @db.Float
+
+  @@index([idProyecto], map: "proyectos")
 }
