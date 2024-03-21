@@ -33,17 +33,6 @@ class PriceListService {
         await PriceListRepository.deletePriceList(id);
         return { success: true, message: 'Lista de precios eliminada correctamente' };
     }
-
-    async createPriceListWithProducts(user, nombre, iva, productos) {
-        const id = idgenerate("price-list");
-        await PriceListRepository.createPriceList({ id, user, nombre, iva });
-        
-        if (productos && productos.length) {
-            await PriceListRepository.addProductsToList(id, productos);
-        }
-        
-        return { ok: true, message: 'Lista de precios y productos creada exitosamente.' };
-    }
 }
 
 export default new PriceListService();

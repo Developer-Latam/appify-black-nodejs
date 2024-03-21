@@ -6,7 +6,6 @@ import {
   updatePriceList,
   deletePriceList
 } from '../controllers/PriceListController.js';
-import { createPriceListWithProducts } from '../controllers/PriceListController.js';
 
 const router = Router();
 
@@ -25,6 +24,4 @@ router.put('/update/:id', updatePriceList);
 // Eliminar una lista de precios por su ID
 router.delete('/delete/:id', deletePriceList);
 
-// Nueva ruta para crear listas de precios con productos
-router.post('/create-with-products', createPriceListWithProducts);
 export default router;

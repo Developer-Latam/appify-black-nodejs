@@ -11,8 +11,8 @@ class UserRepository {
             //const [response] = await connectionDB.execute('SELECT * FROM subusuarios WHERE email = ? AND password = ?', [email, password]);
             const response = await prisma.subusuarios.findFirst({
                 where: {
-                  email: email,
-                  password: password
+                    email: email,
+                    password: password
                 }
             });
             return response;
@@ -66,48 +66,50 @@ class UserRepository {
         //await connectionDB.execute('INSERT INTO usuarios (id, nombre, apellido, email, celular, fecha_de_nacimiento, password) VALUES (?, ?, ?, ?, ?, ?, ?)', [id, nombre, apellido, email, celular, fecha_de_nacimiento, password]);
         await prisma.usuarios.create({
             data: {
-              id: id,
-              nombre: nombre,
-              apellido: apellido,
-              email: email,
-              celular: celular,
-              fecha_de_nacimiento: fecha_de_nacimiento,
-              password: password
+                id: id,
+                nombre: nombre,
+                apellido: apellido,
+                email: email,
+                celular: celular,
+                fecha_de_nacimiento: fecha_de_nacimiento,
+                password: password
             }
         });
         //await connectionDB.execute('INSERT INTO subusuarios (id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, ref_superusuario, checkeado, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [id, id, nombre, apellido, email, celular, fecha_de_nacimiento, null, 1, 1, password]);
         await prisma.subusuarios.create({
             data: {
-              id: id,
-              user:id,
-              nombre: nombre,
-              apellido: apellido,
-              email: email,
-              celular: celular,
-              fecha_de_nacimiento: fecha_de_nacimiento,
-              cargo:null,
-              ref_superusuario:1,
-              checkeado:1,
-              password: password
+                id: id,
+                user:id,
+                nombre: nombre,
+                apellido: apellido,
+                email: email,
+                celular: celular,
+                fecha_de_nacimiento: fecha_de_nacimiento,
+                cargo:null,
+                ref_superusuario:1,
+                checkeado:1,
+                password: password
             }
         });
     }
-    //Realiza la creacion de usuario
-    async createSubUser(id,user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo) {
+    //Realiza la creacion de sub usuario
+    createSubUser(id,user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo) {
+        let fecha = new Date(fecha_de_nacimiento)
+        let fecha_ISO = fecha.toISOString()
         //await connectionDB.execute('INSERT INTO subusuarios (id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, ref_superusuario, checkeado, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, 0, 0, null]);
-        await prisma.subusuarios.create({
+        return prisma.subusuarios.create({
             data: {
-              id: id,
-              user:user,
-              nombre: nombre,
-              apellido: apellido,
-              email: email,
-              celular: celular,
-              fecha_de_nacimiento: fecha_de_nacimiento,
-              cargo: cargo,
-              ref_superusuario:0,
-              checkeado:0,
-              password: null
+                id: id,
+                user:user,
+                nombre: nombre,
+                apellido: apellido,
+                email: email,
+                celular: celular,
+                fecha_de_nacimiento: fecha_ISO,
+                cargo: cargo,
+                ref_superusuario:0,
+                checkeado:0,
+                password: null
             }
         });
     }
@@ -120,6 +122,17 @@ class UserRepository {
             }
         })
         return rows;
+    }
+    //Realiza un update a la password del subUser
+    async resetPasswordSubUser(id, password) {
+        const result = await prisma.subusuarios.update({
+            where: { id: id },
+            data: {
+                password: password,
+                checkeado: 1,
+            }
+        });
+        return "Contraseña de sub user actualizado";
     }
     //Actualiza un sub usuario
     //Se hace una query custom para tomar los campos a actualizar y colocarlos en la query
@@ -140,22 +153,20 @@ class UserRepository {
         return rows;
     }
     //Crea los permisos en la tabla permisos_de_usuario
-    async createPermisos(permisos, idSubUsuario) {
+    createPermisos(permisos, idSubUsuario) {
         try {
-            for (const permiso of permisos){
-                //await connectionDB.execute('INSERT INTO permisos_de_usuario (idPermiso,user,inactivo,ver,administrar,todo,propietario) VALUES (?,?,?,?,?,?,?)',[permiso.id, idSubUsuario ,permiso.inactivo , permiso.ver ,permiso.administrar ,permiso.todo , permiso.propietario])
-                await prisma.permisos_de_usuario.create({
-                    data:{
-                        idPermiso: permiso.id,
-                        user: idSubUsuario,
-                        inactivo: permiso.inactivo,
-                        ver: permiso.ver,
-                        administrar: permiso.administrar ,
-                        todo: permiso.todo,
-                        propietario: permiso.propietario
-                    }
-                })
-            }
+            // Devuelve un array de operaciones sin ejecutarlas
+            return permisos.map(permiso => prisma.permisos_de_usuario.create({
+                data: {
+                    idPermiso: permiso.id,
+                    user: idSubUsuario,
+                    inactivo: permiso.inactivo,
+                    ver: permiso.ver,
+                    administrar: permiso.administrar,
+                    todo: permiso.todo,
+                    propietario: permiso.propietario
+                }
+            }));
         } catch (error) {
             throw error(error)
         }
@@ -163,12 +174,19 @@ class UserRepository {
     //Elimina un sub user por su id
     async deleteSubUserByID(id) {
         //const [rows] = await connectionDB.execute('DELETE FROM subusuarios WHERE id = ?', [id]);
-        const rows = await prisma.subusuarios.deleteMany({
+        const rows = await prisma.subusuarios.delete({
             where: {
-              id: id
+                id: id
             }
-          });
+        });
         return rows;
+    }
+    async updatePermisosdeUsuario(userId, idPermiso, updates) {
+        const response = await prisma.permisos_de_usuario.update({
+            where: { user: userId, idPermiso: idPermiso },
+            data: updates
+        });
+        return response;
     }
     //Edita los permisos de los sub usuarios
     async editarPermisos(id) {

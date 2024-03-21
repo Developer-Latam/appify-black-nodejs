@@ -60,12 +60,3 @@ export const deletePriceList = async (req, res, next) => {
     
     
 }
-export const createPriceListWithProducts = async (req, res, next) => {
-    const { user, nombre, iva, productos } = req.body;
-    try {
-        const result = await priceListService.createPriceListWithProducts(user, nombre, iva, productos);
-        res.status(201).json(result);
-    } catch (err) {
-        res.status(400).json({ ok: false, message: err.message });
-    }
-}

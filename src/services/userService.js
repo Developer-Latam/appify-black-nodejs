@@ -1,8 +1,26 @@
 import userRepository from "../persistence/repositorys/userRepository.js";
 import UserRepository from "../persistence/repositorys/userRepository.js";
 import { idgenerate } from "../utils/idGenerate.js";
+import { sendEmail } from "../utils/email/emailService.js";
+import executeTransactions from "../persistence/transactions/executeTransaction.js";
+import { createHash } from "../utils/hashPass.js";
 //Clase que interactua con el Repository y se encarga de la logica de negocio
 class UserService {
+    //Me trae un sub usuario por su id
+    async getSubUserById(subUserId) {
+        const subUser = await UserRepository.findsubUserById(subUserId);
+        if (!subUser) {
+            return "El usuario no existe"
+        } else {
+            return subUser
+        }
+    }
+    //Realiza la creacion de contraseña para un nuevo sub usuario
+    async createPasswordForSubUser(subUserId, password) {
+        const passwordHashed = createHash(password)
+        await UserRepository.resetPasswordSubUser(subUserId, passwordHashed)
+        return (`usuario con id: ${subUserId} creacion de contraseña correctamente`)
+    }
     //Esta funcion recibe los permisos y los setea en un formato mas legible para la respuesta
     async formatPermissions(permisos) {
         let estructuraDiccionarios = [];
@@ -92,25 +110,23 @@ class UserService {
             const subUserExists = await UserRepository.subUserExists(email);
             if (!subUserExists) {
                 const id = idgenerate("sub-user");
-                try {
-                    await UserRepository.createSubUser(id,user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo);
-                    await UserRepository.createPermisos(permisos, id)
-                    return { ok: true, message: 'sub user creado y con permisos tambien jaja' };
-                } catch (error) {
-                    await UserRepository.deleteSubUserByID(id)
-                    console.log('Subusuario eliminado exitosamente tras fallo en la asignación de permisos.');
-                    throw (error)
-                }
+                 // Preparar las operaciones para la transacción
+                const createUserOperation = UserRepository.createSubUser(id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo);
+                const createPermisosOperations = UserRepository.createPermisos(permisos, id);
+                await executeTransactions([createUserOperation, ...createPermisosOperations])
+                await sendEmail(email, id)
+                return { ok: true, message: 'Subusuario creado y con permisos. Email enviado.'};
             } else {
-                throw ('Sub usuario ya existente');
+                throw('Sub usuario ya existente');
             }
         } catch (error) {
+            console.log(error)
             throw (error)
         }
     }
     //Realiza el update de sub user
-    async updateSubUserService(id, updateFields) {
-        const existingSubusuario = await UserRepository.findsubUserById(id);
+    async updateSubUserService(userId, updateFields) {
+        const existingSubusuario = await UserRepository.findsubUserById(userId);
         if (!existingSubusuario) {
             throw new Error('Subusuario no encontrado');
         }
@@ -124,8 +140,27 @@ class UserService {
         if (Object.keys(fieldsToUpdate).length === 0) {
             throw new Error('No hay cambios para actualizar');
         }
-        await UserRepository.updateSubusuario({ id, ...fieldsToUpdate });
+        await UserRepository.updateSubusuario({ userId, ...fieldsToUpdate });
+
         return { success: true, message: 'Subusuario actualizado correctamente' };
+    }
+    async updatesSubUserPermisos(userId, permisos) {
+        for (const permiso of permisos) {
+            const { idPermiso, columnas } = permiso;
+            const updates = { ver: false, administrar: false, inactivo: false, todo: false, propietario: false };
+            for (const columna of columnas) {
+                if (columna === 'todo') {
+                    updates.todo = true;
+                    updates.propietario = false;
+                } else if (columna === 'propietario') {
+                    updates.todo = false;
+                    updates.propietario = true;
+                } else {
+                    updates[columna] = true;
+                }
+            }
+        await userRepository.updatePermisosdeUsuario(userId, idPermiso, updates)
+        }
     }
 }
 
