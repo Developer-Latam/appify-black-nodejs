@@ -13,7 +13,7 @@ export const loginUser = async (req, res, next) => {
         res.status(400).json({ login: false, message: err.message });
     }
 }
-//Realiza el registro del usuario
+//Realiza el registro del usuario 
 export const signUpController = async (req, res, next) => {
     const { nombre, apellido, email, celular, fecha_de_nacimiento, password } = req.body;
     try {
