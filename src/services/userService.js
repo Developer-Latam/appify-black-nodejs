@@ -3,7 +3,9 @@ import UserRepository from "../persistence/repositorys/userRepository.js";
 import { idgenerate } from "../utils/idGenerate.js";
 import { sendEmail } from "../utils/email/emailService.js";
 import executeTransactions from "../persistence/transactions/executeTransaction.js";
-import { createHash } from "../utils/hashPass.js";
+import { createHash } from "../utils/password/hashPass.js";
+import { CustomError } from "../utils/httpRes/handlerResponse.js";
+
 //Clase que interactua con el Repository y se encarga de la logica de negocio
 class UserService {
     //Me trae un sub usuario por su id
@@ -72,9 +74,12 @@ class UserService {
     async login(email, password) {
         try {
             //Busco el usuario y lo retorno
-            const users = await UserRepository.findUserByEmailAndPassword(email, password);
-            if (users.length === 1) {
-                const user = users[0];
+            const user = await UserRepository.findUserByEmailAndPassword(email, password);
+            if(!user){
+                throw new CustomError(401, "Error de credenciales", {detail: "Credenciales inválidas"})
+            }
+            if (user.length === 1) {
+                const user = user[0];
                 //Si lo encuentro, verifico que la propíedad ref_superusuario que verificar si es superusuario o subuser y setea sus permisos de acuerdo a eso
                 // 0 = subusuario
                 // 1 = superusuario
@@ -84,23 +89,20 @@ class UserService {
                 } else {
                     return { login: true, userType: "superusuario", permisos: "all" };
                 }
-        } else {
-            throw error("Error de credenciales");
-        }
+            }
         } catch (error) {
-            throw error(error)
+            throw error;
         }
     }
     //Realiza el registro de usuario
-    async signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, password) {
+    async signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash) {
         //Verifica si existe, y si no, realiza la generacion de su id, y posterior lo crea
         const userExists = await UserRepository.userExists(email);
         if (!userExists) {
-            const id = idgenerate("super-user");
-            await UserRepository.createUser(id, nombre, apellido, email, celular, fecha_de_nacimiento, password);
-            return { ok: true, message: 'usuario creado!' };
+            await UserRepository.createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash);
+            return { ok: true, message: 'Usuario y subusuario creados exitosamente' };
         } else {
-            throw new Error('ya existe');
+            throw new CustomError(409, 'El usuario ya existe', { email });
         }
     }
     //Realiza el registro de un subusuario
@@ -126,11 +128,15 @@ class UserService {
     }
     //Realiza el update de sub user
     async updateSubUserService(userId, updateFields) {
-        const existingSubusuario = await UserRepository.findsubUserById(userId);
-        if (!existingSubusuario) {
-            throw new Error('Subusuario no encontrado');
+        let existingSubusuario;
+        try {
+            existingSubusuario = await UserRepository.findsubUserById(userId);
+        } catch (error) {
+            throw new CustomError(500, 'Error al buscar el subusuario', { detail: error.message });
         }
-        // Comparar y construir el objeto de actualización solo con campos modificados
+        if (!existingSubusuario) {
+            throw new CustomError(404, 'Subusuario no encontrado');
+        }
         const fieldsToUpdate = {};
         Object.keys(updateFields).forEach(field => {
             if (updateFields[field] !== existingSubusuario[field]) {
@@ -138,11 +144,14 @@ class UserService {
             }
         });
         if (Object.keys(fieldsToUpdate).length === 0) {
-            throw new Error('No hay cambios para actualizar');
+            throw new CustomError(400, 'No hay cambios para actualizar');
         }
-        await UserRepository.updateSubusuario({ userId, ...fieldsToUpdate });
-
-        return { success: true, message: 'Subusuario actualizado correctamente' };
+        try {
+            await UserRepository.updateSubusuario({ id: userId, ...fieldsToUpdate });
+            return { success: true, message: 'Subusuario actualizado correctamente' };
+        } catch (error) {
+            throw error; 
+        }
     }
     async updatesSubUserPermisos(userId, permisos) {
         for (const permiso of permisos) {
@@ -159,7 +168,11 @@ class UserService {
                     updates[columna] = true;
                 }
             }
-        await userRepository.updatePermisosdeUsuario(userId, idPermiso, updates)
+            try {
+                await UserRepository.updatePermiso(userId, idPermiso, updates);
+            } catch (error) {
+                throw new CustomError(500, `Error al actualizar permisos para el usuario ${userId}`, { detail: error.message });
+            }
         }
     }
 }

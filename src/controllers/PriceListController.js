@@ -56,7 +56,4 @@ export const deletePriceList = async (req, res, next) => {
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });
     }
-
-    
-    
 }

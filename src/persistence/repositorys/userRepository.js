@@ -1,5 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { connectionDB } from "../db/connection.js";
+import { CustomError } from "../../utils/httpRes/handlerResponse.js";
+import { idgenerate } from "../../utils/idGenerate.js";
+import executeTransactions from "../transactions/executeTransaction.js";
+import { createHash } from "../../utils/password/hashPass.js";
+
 
 const prisma = new PrismaClient();
 
@@ -8,17 +13,23 @@ class UserRepository {
     //Encuentra un usuario mediante su email y password
     async findUserByEmailAndPassword(email, password) {
         try {
-            //const [response] = await connectionDB.execute('SELECT * FROM subusuarios WHERE email = ? AND password = ?', [email, password]);
-        
             const response = await prisma.subusuarios.findFirst({
                 where: {
                     email: email,
                     password: password
                 }
             });
+            if(!response){
+                throw new CustomError(404, "User not found", {email, message: "No user found with provided email and password."})
+            }
             return response;
         } catch (error) {
-            throw error(error)
+            // Propagando errores de la base de datos o errores personalizados
+            if (!(error instanceof CustomError)) {
+                // Transformando errores no capturados a errores personalizados
+                throw new CustomError(500, "Internal server error", { error: error.message });
+            }
+            throw error;
         }
     }
     //Me trae los diferentes permisos segun el id de usuario
@@ -40,7 +51,7 @@ class UserRepository {
             }
         })
         
-        return response;
+        return response !== null;
     }
     //Verifica si el subusuario existe por su email y devuelve true o false
     async subUserExists(email) {
@@ -64,36 +75,45 @@ class UserRepository {
         return response;
     }
     //Realiza la creacion de usuario
-    async createUser(id, nombre, apellido, email, celular, fecha_de_nacimiento, password) {
-        //await connectionDB.execute('INSERT INTO usuarios (id, nombre, apellido, email, celular, fecha_de_nacimiento, password) VALUES (?, ?, ?, ?, ?, ?, ?)', [id, nombre, apellido, email, celular, fecha_de_nacimiento, password]);
-        
-        await prisma.usuarios.create({
-            data: {
-                id: id,
-                nombre: nombre,
-                apellido: apellido,
-                email: email,
-                celular: celular,
-                fecha_de_nacimiento: fecha_de_nacimiento,
-                password: password
-            }
-        });
-        //await connectionDB.execute('INSERT INTO subusuarios (id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, ref_superusuario, checkeado, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [id, id, nombre, apellido, email, celular, fecha_de_nacimiento, null, 1, 1, password]);
-        await prisma.subusuarios.create({
-            data: {
-                id: id,
-                user:id,
-                nombre: nombre,
-                apellido: apellido,
-                email: email,
-                celular: celular,
-                fecha_de_nacimiento: fecha_de_nacimiento,
-                cargo:null,
-                ref_superusuario:1,
-                checkeado:1,
-                password: password
-            }
-        });
+    async createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash) {
+        // Datos para el usuario principal
+        let userIDsuperUser = idgenerate("super-user")
+        let fecha = new Date(fecha_de_nacimiento)
+        let fecha_ISO = fecha.toISOString()
+        let userData = {
+            id: userIDsuperUser,
+            nombre,
+            apellido,
+            email,
+            celular,
+            fecha_de_nacimiento: fecha_ISO,
+            password: passwordHash,
+        };
+         // Datos para el subusuario
+        let subUserData = {
+            id: idgenerate("sub-user"), // Prefijo para distinguir el ID del subusuario
+            user: userIDsuperUser,
+            nombre,
+            apellido,
+            email,
+            celular,
+            fecha_de_nacimiento: fecha_ISO,
+            cargo: null,
+            ref_superusuario: 1,
+            checkeado: 1,
+            password: passwordHash,
+        };
+        // Preparando las operaciones para la transacción
+        const operations = [
+            prisma.usuarios.create({ data: userData }),
+            prisma.subusuarios.create({ data: subUserData })
+        ];
+        try {
+            await executeTransactions(operations)
+            return { ok: true, message: 'Usuario y subusuario creados exitosamente' };
+        } catch (error) {
+            throw new CustomError(500, 'Error en el ingreso de propiedades a la db', { error: error.message });
+        }
     }
     //Realiza la creacion de sub usuario
     createSubUser(id,user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo) {
@@ -119,12 +139,16 @@ class UserRepository {
     //Busca el subusuario por su id y lo retorna
     async findsubUserById(id) {
         //const [rows] = await connectionDB.execute('SELECT * FROM subusuarios WHERE id = ?', [id]);
-        const rows = await prisma.subusuarios.findUnique({
-            where:{
-                id : id
-            }
-        })
-        return rows;
+        try {
+            const rows = await prisma.subusuarios.findUnique({
+                where:{
+                    id : id
+                }
+            })
+            return rows;
+        } catch (error) {
+            throw new CustomError(500, 'Error interno del servidor al buscar subusuario', { detail: error.message, id });
+        }
     }
     //Realiza un update a la password del subUser
     async resetPasswordSubUser(id, password) {
@@ -140,20 +164,33 @@ class UserRepository {
     //Actualiza un sub usuario
     //Se hace una query custom para tomar los campos a actualizar y colocarlos en la query
     async updateSubusuario({ id, ...fieldsToUpdate }) {
-        const result = await prisma.subusuarios.update({
-            where: { id: id },
-            data: fieldsToUpdate
-        });
-        return result;
+        try {
+            const result = await prisma.subusuarios.update({
+                where: { id: id },
+                data: fieldsToUpdate
+            });
+            return result;
+        } catch (error) {
+            if (error.code === "P2025") { // Código de error específico de Prisma para "Registro no encontrado"
+                throw new CustomError(404, `Subusuario con ID ${id} no encontrado.`);
+            } else {
+                // Para cualquier otro error de Prisma, conviértelo en un error de servidor
+                throw new CustomError(500, 'Error al actualizar el subusuario', { error: error.message });
+            }
+        }
     }
 
     //Actualiza los permisos de usuario
     async updatePermiso(user, idPermiso, updates) {
-        const columnsToUpdate = Object.keys(updates).map(column => `${column} = ?`).join(', ');
-        const values = [...Object.values(updates), user, idPermiso];
-        const query = `UPDATE permisos_de_usuario SET ${columnsToUpdate} WHERE user = ? AND idPermiso = ?`;
-        const [rows] = await connectionDB.execute(query, values);
-        return rows;
+        try {
+            const columnsToUpdate = Object.keys(updates).map(column => `${column} = ?`).join(', ');
+            const values = [...Object.values(updates), user, idPermiso];
+            const query = `UPDATE permisos_de_usuario SET ${columnsToUpdate} WHERE user = ? AND idPermiso = ?`;
+            const [rows] = await connectionDB.execute(query, values);
+            return rows;
+        } catch (error) {
+            throw new CustomError(500, 'Error al actualizar permisos de usuario', { error: error.message });
+        }
     }
     //Crea los permisos en la tabla permisos_de_usuario
     createPermisos(permisos, idSubUsuario) {

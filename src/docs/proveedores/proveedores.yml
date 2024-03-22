@@ -1,0 +1,151 @@
+paths:
+  /createProv:
+    post:
+      tags:
+          - Proveedores
+      summary: Crea un nuevo proveedor
+      description: Añade un nuevo proveedor al sistema.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Objeto proveedor para crear
+          required: true
+          schema:
+            type: object
+            properties:
+              user:
+                type: string
+                example: "sub-user-60ee9e82-04fe-4fb2-9aec-8fe08a3d974c"
+              rut:
+                type: string
+                example: "1234568-9"
+              razon_social:
+                type: string
+                example: "hermanosSA"
+              activo:
+                type: boolean
+              giro:
+                type: string
+              condicion_de_pago:
+                type: integer
+                example: 10
+              nombre_fantasia:
+                type: string
+              cuenta_contable:
+                type: string
+              persona:
+                type: string
+              direccion:
+                type: string
+              email:
+                type: string
+              comuna:
+                type: string
+              telefono:
+                type: string
+              ciudad:
+                type: string
+              banco:
+                type: string
+              nombre_beneficiario:
+                type: string
+              nombre_cuenta:
+                type: string
+              rut_beneficiario:
+                type: string
+              nro_cta_corriente:
+                type: string
+              correo_cobranzas:
+                type: string
+      responses:
+        '200':
+          description: Proveedor creado exitosamente
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: "Proveedor creado exitosamente."
+        '400':
+          description: Error en la solicitud
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "Error al crear el proveedor."
+
+  /updProv/{id}:
+    put:
+      tags:
+            - Proveedores
+      summary: Actualiza un proveedor existente
+      description: Actualiza los datos de un proveedor basado en el ID proporcionado.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          type: string
+          required: true
+          description: ID del proveedor a actualizar
+        - in: body
+          name: body
+          description: Campos del proveedor a actualizar
+          required: true
+          schema:
+            type: object
+            properties:
+              rut:
+                type: string
+                example: "111111-9"
+              razon_social:
+                type: string
+                example: "jodeteSA"
+              comuna:
+                type: string
+                example: "maitensillo"
+              telefono:
+                type: string
+                example: "9954996969"
+              ciudad:
+                type: string
+                example: "Santiago"
+              banco:
+                type: string
+                example: "bbva"
+      responses:
+        '200':
+          description: Proveedor actualizado exitosamente
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: "Proveedor actualizado exitosamente."
+        '400':
+          description: Error en la solicitud
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "Error al actualizar el proveedor."

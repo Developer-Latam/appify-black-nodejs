@@ -21,7 +21,5 @@ router.post('/create', createPriceList);
 // Actualizar una lista de precios existente por su ID
 router.put('/update/:id', updatePriceList);
 
-// Eliminar una lista de precios por su ID
-router.delete('/delete/:id', deletePriceList);
 
 export default router;
