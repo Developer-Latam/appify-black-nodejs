@@ -1,6 +1,6 @@
 import userRepository from "../persistence/repositorys/userRepository.js";
 import UserRepository from "../persistence/repositorys/userRepository.js";
-import { idgenerate } from "../utils/idGenerate.js";
+import { idgenerate } from "../utils/id/idGenerate.js";
 import { sendEmail } from "../utils/email/emailService.js";
 import executeTransactions from "../persistence/transactions/executeTransaction.js";
 import { createHash } from "../utils/password/hashPass.js";
@@ -10,18 +10,24 @@ import { CustomError } from "../utils/httpRes/handlerResponse.js";
 class UserService {
     //Me trae un sub usuario por su id
     async getSubUserById(subUserId) {
-        const subUser = await UserRepository.findsubUserById(subUserId);
-        if (!subUser) {
-            return "El usuario no existe"
-        } else {
-            return subUser
+        try {
+            const subUser = await UserRepository.findsubUserById(subUserId);
+            if (!subUser) {
+                throw new CustomError(404, "El usuario no existe", { id: subUserId });
+            }
+            return subUser;
+        } catch (error) {
+            throw error;
         }
     }
     //Realiza la creacion de contraseña para un nuevo sub usuario
-    async createPasswordForSubUser(subUserId, password) {
-        const passwordHashed = createHash(password)
-        await UserRepository.resetPasswordSubUser(subUserId, passwordHashed)
-        return (`usuario con id: ${subUserId} creacion de contraseña correctamente`)
+    async createPasswordForSubUser(subUserId, passwordHashed) {
+        try {
+            await UserRepository.resetPasswordSubUser(subUserId, passwordHashed);
+            return (`Contraseña del usuario con id: ${subUserId} creada correctamente`);
+        } catch (error) {
+            throw error;
+        }
     }
     //Esta funcion recibe los permisos y los setea en un formato mas legible para la respuesta
     async formatPermissions(permisos) {
@@ -110,20 +116,57 @@ class UserService {
         try {
             //Verifica si existe, y si no, realiza la generacion de su id, y posterior lo crea 
             const subUserExists = await UserRepository.subUserExists(email);
-            if (!subUserExists) {
-                const id = idgenerate("sub-user");
-                 // Preparar las operaciones para la transacción
-                const createUserOperation = UserRepository.createSubUser(id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo);
-                const createPermisosOperations = UserRepository.createPermisos(permisos, id);
-                await executeTransactions([createUserOperation, ...createPermisosOperations])
-                await sendEmail(email, id)
-                return { ok: true, message: 'Subusuario creado y con permisos. Email enviado.'};
-            } else {
-                throw('Sub usuario ya existente');
-            }
+            if (subUserExists) {
+                throw new CustomError(409, 'Subusuario ya existente');
+            }    
+            const id = idgenerate("sub-user");
+            const createUserOperation = UserRepository.createSubUser(id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo);
+            const createPermisosOperations = UserRepository.createPermisos(permisos, id);
+            await executeTransactions([createUserOperation, ...createPermisosOperations]);
+            await sendEmail(email, id);
+            return { ok: true, message: 'Subusuario creado y con permisos. Email enviado.' };
+        } catch (error) {
+            throw (error)
+        }
+    }
+    async preparePermissionsUpdate(userId, newPermissions) {
+        try {
+            const currentPermissions = await UserRepository.getUserPermissions(userId);
+            const updates = [];
+            newPermissions.forEach(newPermiso => {
+                const currentPermiso = currentPermissions.find(cp => cp.id === newPermiso.id);
+                if (currentPermiso && this.hasDifferences(currentPermiso, newPermiso)) {
+                    updates.push({
+                        userId: userId,
+                        permissionId: currentPermiso.id,
+                        data: {
+                            inactivo: newPermiso.inactivo,
+                            ver: newPermiso.ver,
+                            administrar: newPermiso.administrar,
+                            todo: newPermiso.todo,
+                            propietario: newPermiso.propietario,
+                        },
+                    });
+                }
+            });
+            return updates;
         } catch (error) {
             console.log(error)
-            throw (error)
+        }
+        
+    }
+    hasDifferences(currentPermiso, newPermiso) {
+         // Convierte los valores numéricos a booleanos para la comparación
+        const toBoolean = (value) => !!value;
+        return toBoolean(currentPermiso.inactivo) !== toBoolean(newPermiso.inactivo) ||
+            toBoolean(currentPermiso.ver) !== toBoolean(newPermiso.ver) ||
+            toBoolean(currentPermiso.administrar) !== toBoolean(newPermiso.administrar) ||
+            toBoolean(currentPermiso.todo) !== toBoolean(newPermiso.todo) ||
+            toBoolean(currentPermiso.propietario) !== toBoolean(newPermiso.propietario);
+    }
+    async updatePermissions(updates) {
+        for (const update of updates) {
+            await UserRepository.updatePermission(update.userId,update.permissionId, update.data);
         }
     }
     //Realiza el update de sub user

@@ -1,5 +1,5 @@
 import ProductRepository from "../persistence/repositorys/productRepository.js";
-import { idgenerate } from "../utils/idGenerate.js";
+import { idgenerate } from "../utils/id/idGenerate.js";
 class ProductService {
     async createProduct(data) {
         const id = idgenerate("product");

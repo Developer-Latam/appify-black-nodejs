@@ -1,9 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { connectionDB } from "../db/connection.js";
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
-import { idgenerate } from "../../utils/idGenerate.js";
+import { idgenerate } from "../../utils/id/idGenerate.js";
 import executeTransactions from "../transactions/executeTransaction.js";
-import { createHash } from "../../utils/password/hashPass.js";
 
 
 const prisma = new PrismaClient();
@@ -36,10 +35,41 @@ class UserRepository {
     async getUserPermissions(userId) {
         try {
             //const [permisos] = await connectionDB.execute('SELECT permisos.categoria, permisos.subcategoria, permisos_de_usuario.inactivo, permisos_de_usuario.ver, permisos_de_usuario.administrar, permisos_de_usuario.todo, permisos_de_usuario.propietario FROM permisos INNER JOIN permisos_de_usuario ON permisos_de_usuario.idPermiso = permisos.id WHERE permisos_de_usuario.user = ?', [userId]);
-            const permisos = await prisma.$queryRaw`SELECT permisos.categoria, permisos.subcategoria, permisos_de_usuario.inactivo, permisos_de_usuario.ver, permisos_de_usuario.administrar, permisos_de_usuario.todo, permisos_de_usuario.propietario FROM permisos INNER JOIN permisos_de_usuario ON permisos_de_usuario.idPermiso = permisos.id WHERE permisos_de_usuario.user = ${userId}`
+            const permisos = await prisma.$queryRaw`SELECT permisos.categoria, permisos.subcategoria, permisos.id, permisos_de_usuario.inactivo, permisos_de_usuario.ver, permisos_de_usuario.administrar, permisos_de_usuario.todo, permisos_de_usuario.propietario FROM permisos INNER JOIN permisos_de_usuario ON permisos_de_usuario.idPermiso = permisos.id WHERE permisos_de_usuario.user = ${userId}`
             return permisos;
         } catch (error) {
-            throw error(error) 
+            throw new CustomError(500, 'Error al obtener permisos del subusuario', { detail: error.message, userId });
+        }
+    }
+    async updatePermission(userId, permissionId, data) {
+        try {
+            await prisma.permisos_de_usuario.updateMany({
+                where: {
+                    // Asegúrate de que ambos, idPermiso y user, coincidan
+                    idPermiso: parseInt(permissionId),
+                    user: userId.toString(), // Asume que user es un VARCHAR en la base de datos
+                },
+                data,
+            });
+        } catch (error) {
+            throw new CustomError(500, 'Error al actualizar permiso', { detail: error.message, userId, permissionId });
+        }
+    }
+    //Actualiza un sub usuario
+    async updateSubusuario({ id, ...fieldsToUpdate }) {
+        try {
+            const result = await prisma.subusuarios.update({
+                where: { id: id },
+                data: fieldsToUpdate
+            });
+            return result;
+        } catch (error) {
+            if (error.code === "P2025") { // Código de error específico de Prisma para "Registro no encontrado"
+                throw new CustomError(404, `Subusuario con ID ${id} no encontrado.`);
+            } else {
+                // Para cualquier otro error de Prisma, conviértelo en un error de servidor
+                throw new CustomError(500, 'Error al actualizar el subusuario', { error: error.message });
+            }
         }
     }
     //Verifica si el usuario existe por su email y devuelve true o false
@@ -116,6 +146,7 @@ class UserRepository {
         }
     }
     //Realiza la creacion de sub usuario
+    // No se captura el error aquí porque se manejará en la transacción
     createSubUser(id,user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo) {
         let fecha = new Date(fecha_de_nacimiento)
         let fecha_ISO = fecha.toISOString()
@@ -151,35 +182,20 @@ class UserRepository {
         }
     }
     //Realiza un update a la password del subUser
-    async resetPasswordSubUser(id, password) {
-        const result = await prisma.subusuarios.update({
-            where: { id: id },
-            data: {
-                password: password,
-                checkeado: 1,
-            }
-        });
-        return "Contraseña de sub user actualizado";
-    }
-    //Actualiza un sub usuario
-    //Se hace una query custom para tomar los campos a actualizar y colocarlos en la query
-    async updateSubusuario({ id, ...fieldsToUpdate }) {
+    async resetPasswordSubUser(id, passwordHashed) {
         try {
-            const result = await prisma.subusuarios.update({
+            await prisma.subusuarios.update({
                 where: { id: id },
-                data: fieldsToUpdate
+                data: {
+                    password: passwordHashed,
+                    checkeado: 1,
+                }
             });
-            return result;
+            return "Contraseña de sub user actualizada";
         } catch (error) {
-            if (error.code === "P2025") { // Código de error específico de Prisma para "Registro no encontrado"
-                throw new CustomError(404, `Subusuario con ID ${id} no encontrado.`);
-            } else {
-                // Para cualquier otro error de Prisma, conviértelo en un error de servidor
-                throw new CustomError(500, 'Error al actualizar el subusuario', { error: error.message });
-            }
+            throw new CustomError(500, 'Error al actualizar la contraseña del subusuario', { detail: error.message, id });
         }
     }
-
     //Actualiza los permisos de usuario
     async updatePermiso(user, idPermiso, updates) {
         try {
@@ -193,6 +209,7 @@ class UserRepository {
         }
     }
     //Crea los permisos en la tabla permisos_de_usuario
+    // No se captura el error aquí porque se manejará en la transacción
     createPermisos(permisos, idSubUsuario) {
         try {
             // Devuelve un array de operaciones sin ejecutarlas

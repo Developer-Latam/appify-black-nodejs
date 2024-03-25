@@ -5,7 +5,8 @@ import {
     signUpSubUsuarioController, 
     updateSubUser,
     configPasswordSubUser,
-    setpassForSubUser
+    setpassForSubUser,
+    testController
 } from '../controllers/userController.js';
 
 const router = Router()
@@ -13,12 +14,14 @@ const router = Router()
 
 router.post('/login', loginUser);
 router.post('/signup', signUpController);
-router.put('/updUser/:id', updateSubUser);
 router.post('/create-subuser', signUpSubUsuarioController)
-// router.post('/sendgmail', sendGmail)
 router.get('/config-password', configPasswordSubUser)
 router.post('/set-password', setpassForSubUser)
-
+router.put('/updUser/:userId', updateSubUser);
+//ruta para test
+router.put('/t', testController)
 
 
 export default router 
+
+

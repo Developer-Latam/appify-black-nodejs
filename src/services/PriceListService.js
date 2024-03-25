@@ -1,5 +1,5 @@
 import PriceListRepository from "../persistence/repositorys/PriceListRepository.js";
-import { idgenerate } from "../utils/idGenerate.js";
+import { idgenerate } from "../utils/id/idGenerate.js";
 
 class PriceListService {
     async getPriceListsByUserId(userId) {

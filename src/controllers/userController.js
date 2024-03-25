@@ -4,6 +4,7 @@ import "dotenv/config"
 import { validatePassword } from "../utils/password/validatesPassword.js"
 import { ResponseHandler } from "../utils/dependencys/injection.js";
 import { createHash } from "../utils/password/hashPass.js";
+import userRepository from "../persistence/repositorys/userRepository.js";
 //Funciones que interactuan con Service, se encargan de las respuestas al cliente
 //Realiza el login del usuario
 export const loginUser = async (req, res, next) => {
@@ -35,39 +36,45 @@ export const signUpSubUsuarioController = async (req, res, next) => {
     const { user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, permisos } = req.body;
     try {
         const result = await userService.signUpSubUsuario(user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, permisos);
-        res.status(200).json(result);
-    } catch (err) {
-        res.status(400).json({ ok: false, message: err });
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res, error)
     }
 }
 //Realiza el update de un subUsuario
 export const updateSubUser = async (req, res, next) => {
+    const { userId } = req.params;
+    const {updateFields, permisos: newPermisos } = req.body;
     try {
-        const { userId } = req.params;
-        const {updateFields, permisos} = req.body;
-        const result = await userService.updateSubUserService(userId, updateFields);
-        const result2 = await userService.updatesSubUserPermisos(userId,permisos)
-        res.json(result, result2);
+        // Preparar las actualizaciones de permisos basadas en la comparación de los actuales con los nuevos
+        const updates = await userService.preparePermissionsUpdate(userId, newPermisos);
+        // Si hay actualizaciones que realizar, llamar al método para actualizar los permisos
+        if (updates.length > 0) {
+            await userService.updatePermissions(updates);
+            await userService.updateSubUserService(userId, updateFields);
+            ResponseHandler.Ok(res, { message: "Permisos y Usuario actualizados correctamente."});
+        } else {
+            // Si no hay diferencias, es decir, no hay actualizaciones que realizar
+            await userService.updateSubUserService(userId, updateFields);
+            ResponseHandler.Ok(res, { message: "No se encontraron cambios en los permisos, se actualizaron solo los datos del sub user" });
+        }
     } catch (error) {
-        console.log(error)
-        res.status(400).json({ success: false, message: error.message });
+        ResponseHandler.HandleError(res, error);
     }
 }
 //Realiza la validacion del token, y si existe, continua con la restauracion de la contraseña
 export const configPasswordSubUser = async (req, res, next) => {
     const { token } = req.query;
     if (!token) {
-        return res.status(400).send("Falta el token.");
+        ResponseHandler.Unauthorized(res, "Falta el token.");
     }
     try {
         const decodedToken = jwt.verify(token, process.env.JWT_TOKEN_SECRET)
         const userId = decodedToken.userId
-        console.log(userId)
         const user = await userService.getSubUserById(userId)
-        res.json(user)    
+        ResponseHandler.Ok(res, user);  
     } catch (error) {
-        console.log(error)
-        res.status(400).json({ success: false, message: error.message });
+        ResponseHandler.HandleError(res, error);
     }
 }
 //Realiza el seteo de contraseña del nuevo sub usuario
@@ -75,13 +82,19 @@ export const setpassForSubUser = async (req, res, next) => {
     const { userId, password, passwordConfirm } = req.body;
     const validationResult = validatePassword(password, passwordConfirm)
     if (!validationResult.isValid){
-        return res.status(400).json({success: false, message: validationResult.message})
+        ResponseHandler.HandleError(res, validationResult.message)
     }
     try {
-        await userService.createPasswordForSubUser(userId, password);
-        res.json({ success: true, message: "Contraseña configurada correctamente."});
+        const passwordHashed = createHash(password)
+        await userService.createPasswordForSubUser(userId, passwordHashed);
+        ResponseHandler.Ok(res, { message: result });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Error al configurar la contraseña." });
+        ResponseHandler.HandleError(res, error);
     }
+}
+
+// ENDPOINT PARA REALIZAR TEST DE FUNCION:
+//Realiza el registro del usuario 
+export const testController = async (req, res, next) => {
+    
 }
