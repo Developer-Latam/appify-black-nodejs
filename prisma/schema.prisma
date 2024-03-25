@@ -24,7 +24,7 @@ model bancos {
   nombre String @db.VarChar(100)
   codigo String @db.VarChar(100)
 
-  @@index([user], map: "usuario")
+  @@index([user], map: "usuarios")
 }
 
 model categoria_cuenta {
@@ -97,6 +97,7 @@ model consultas {
   nombre_empresa String  @db.VarChar(50)
   consulta       String? @db.Text
   archivo        String? @db.VarChar(200)
+  estado         Boolean
 
   @@index([idVendedor], map: "subusuarios")
 }
@@ -132,7 +133,7 @@ model cuenta_tipo_documento {
   credito Boolean
   contado Boolean
 
-  @@index([user], map: "usuario")
+  @@index([user], map: "usuarios")
 }
 
 model cuentas_banco {
@@ -184,16 +185,16 @@ model documento_despacho_traslado {
   idDoc             String    @db.VarChar(100)
   fecha             DateTime? @db.Date
   idCliente         String    @db.VarChar(100)
-  idTransportista   String    @db.VarChar(100)
+  idTransportista   Int
   punto             String    @db.VarChar(50)
   direccion_destino String    @db.VarChar(259)
   comuna            String    @db.VarChar(100)
   ciudad            String    @db.VarChar(100)
   observacion       String?   @db.Text
 
-  @@index([idCliente], map: "cliente")
   @@index([idDoc], map: "documento_despacho")
   @@index([idTransportista], map: "transportista")
+  @@index([idCliente], map: "clientes")
 }
 
 model documento_despacho_venta {
@@ -201,7 +202,7 @@ model documento_despacho_venta {
   idDoc             String    @db.VarChar(100)
   fecha             DateTime? @db.Date
   idCliente         String    @db.VarChar(100)
-  idTransportista   String    @db.VarChar(100)
+  idTransportista   Int
   ot                Boolean
   fact_libre        Boolean
   punto             String    @db.VarChar(50)
@@ -210,9 +211,9 @@ model documento_despacho_venta {
   ciudad            String    @db.VarChar(100)
   observacion       String?   @db.Text
 
-  @@index([idCliente], map: "cliente")
   @@index([idDoc], map: "documento_despacho")
   @@index([idTransportista], map: "transportista")
+  @@index([idCliente], map: "clientes")
 }
 
 model documento_venta {
@@ -240,7 +241,7 @@ model factura_compra {
 
   @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([idDocCompra], map: "documento_compra")
-  @@index([idProvedoor], map: "proveedor")
+  @@index([idProvedoor], map: "proveedores")
 }
 
 model factura_venta {
@@ -315,7 +316,7 @@ model item_producto {
 model item_producto_documento_despacho_traslado {
   id               String @id @db.VarChar(100)
   idProducto       String @db.VarChar(100)
-  idDocumentoVenta String @db.VarChar(100)
+  idDocumentoVenta Int
   cantidad         Int
   unitario         Int
 
@@ -326,7 +327,7 @@ model item_producto_documento_despacho_traslado {
 model item_producto_documento_despacho_venta {
   id               String @id @db.VarChar(100)
   idProducto       String @db.VarChar(100)
-  idDocumentoVenta String @db.VarChar(100)
+  idDocumentoVenta Int
   cantidad         Int
   unitario         Int
   costo_unitario   Float  @db.Float
@@ -357,7 +358,7 @@ model item_producto_documento_venta {
 model item_producto_factura_compra {
   id              String @id @db.VarChar(100)
   idProducto      String @db.VarChar(100)
-  idFacturaCompra String @db.VarChar(100)
+  idFacturaCompra Int
   cantidad        Int
   unitario        Int
   cuenta          String @db.VarChar(100)
@@ -479,7 +480,7 @@ model item_servicio_documento_venta {
 model item_servicio_factura_compra {
   id              String @id @db.VarChar(100)
   idServicio      String @db.VarChar(100)
-  idFacturaCompra String @db.VarChar(100)
+  idFacturaCompra Int
   cantidad        Int
   unitario        Int
   cuenta          String @db.VarChar(100)
@@ -1115,10 +1116,26 @@ model sistema {
   @@index([empresa], map: "empresa")
 }
 
-model anticipos {
-  id               Int    @id @default(autoincrement())
-  idProyecto       String @db.VarChar(100)
-  monto_anticipado Float  @db.Float
+model anticipos_cliente {
+  id               Int     @id @default(autoincrement())
+  idProyecto       String  @db.VarChar(100)
+  idCliente        String  @db.VarChar(100)
+  monto_anticipado Float   @db.Float
+  banco            String  @db.VarChar(100)
+  glosa            String? @db.Text
 
+  @@index([idCliente], map: "clientes")
+  @@index([idProyecto], map: "proyectos")
+}
+
+model anticipos_proveedor {
+  id               Int     @id @default(autoincrement())
+  idProyecto       String  @db.VarChar(100)
+  idProveedor      String  @db.VarChar(100)
+  monto_anticipado Float   @db.Float
+  banco            String  @db.VarChar(100)
+  glosa            String? @db.Text
+
+  @@index([idProveedor], map: "proveedores")
   @@index([idProyecto], map: "proyectos")
 }
