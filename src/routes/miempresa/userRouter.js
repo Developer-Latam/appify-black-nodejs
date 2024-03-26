@@ -1,5 +1,12 @@
 import { Router } from 'express';
-import {  
+import { loginUser, 
+    signUpController, 
+    signUpSubUsuarioController, 
+    updateSubUser,
+    configPasswordSubUser,
+    setpassForSubUser,
+    testController } from '../../controllers/miempresa/userController.js';
+/*import {  
     loginUser, 
     signUpController, 
     signUpSubUsuarioController, 
@@ -7,7 +14,7 @@ import {
     configPasswordSubUser,
     setpassForSubUser,
     testController
-} from '../controllers/userController.js';
+} from '../userController.js';*/
 
 const router = Router()
 

@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import {
+import { createPriceList, getAllPriceLists, getPriceList, updatePriceList } from '../../controllers/miempresa/PriceListController.js';
+/*import {
   getAllPriceLists,
   getPriceList,
   createPriceList,
-  updatePriceList,
-  deletePriceList
-} from '../controllers/PriceListController.js';
+  updatePriceList
+  
+} from '../controllers/PriceListController.js';*/
 
 const router = Router();
 

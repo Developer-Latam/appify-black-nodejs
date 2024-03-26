@@ -1,4 +1,4 @@
-import ProjectRepository from "../persistence/repositorys/ProjectRepository.js";
+import ProjectRepository from "../../persistence/repositorys/comercial/ProjectRepository.js";
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 

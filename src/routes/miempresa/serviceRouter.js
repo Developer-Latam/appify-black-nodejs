@@ -1,11 +1,6 @@
 import { Router } from 'express';
-import { 
-    createService,
-    getServiceById,
-    getServiceByUserId,
-    updateService,
-    deleteService
-} from '../controllers/serviceControler.js';
+import { createService, deleteService, getServiceById, getServiceByUserId, updateService } from '../../controllers/miempresa/serviceControler.js';
+
 const router = Router();
 
 // Ruta para crear un servicio

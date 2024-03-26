@@ -1,4 +1,4 @@
-import ConsultasRepository from "../persistence/repositorys/consultasRepository.js";
+import ConsultasRepository from "../persistence/repositorys/comercial/consultasRepository.js";
 
 
 class ConsultaService {
