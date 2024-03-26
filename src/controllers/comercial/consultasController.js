@@ -1,4 +1,4 @@
-import ConsultaService from "../services/ConsultaService.js";
+import ConsultaService from "../../services/comercial/ConsultaService.js";
 
 export const createConsulta = async (req, res) => {
     try {

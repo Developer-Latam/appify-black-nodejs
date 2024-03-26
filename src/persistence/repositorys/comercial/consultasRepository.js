@@ -1,4 +1,4 @@
-import { prisma } from "../../utils/dependencys/injection.js";
+import { prisma } from "../../../utils/dependencys/injection.js";
 
 class ConsultasRepository{
     async createConsulta(data) {

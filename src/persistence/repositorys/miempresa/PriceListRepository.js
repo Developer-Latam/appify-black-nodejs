@@ -1,6 +1,6 @@
 
-import { connectionDB } from "../db/connection.js";
-import { prisma } from "../../utils/dependencys/injection.js"
+import { connectionDB } from "../../db/connection.js";
+import { prisma } from "../../../utils/dependencys/injection.js"
 class PriceListRepository {
     async findAllByUserId(userId) {
         try {

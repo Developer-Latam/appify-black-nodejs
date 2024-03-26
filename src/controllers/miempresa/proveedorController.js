@@ -1,4 +1,4 @@
-import proveedorService from "../services/proveedorService.js"
+import proveedorService from "../../services/miempresa/proveedorService.js"
 // Funciones que interactuan con la clase Service, se encargan de los parametros y las respuestas al cliente
 //Crea un proveedor
 export const createProveedorController = async (req, res) => {

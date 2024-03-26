@@ -1,6 +1,6 @@
 import clientesRepository from "../persistence/repositorys/clientesRepository.js";
-import userRepository from "../persistence/repositorys/userRepository.js";
-import { idgenerate } from "../utils/id/idGenerate.js";
+import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
+import { idgenerate } from "../../utils/id/idGenerate.js";
 class ClientesService {
     async createCliente(data) {
         const id = idgenerate("cliente");

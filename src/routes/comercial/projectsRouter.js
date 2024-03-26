@@ -5,7 +5,7 @@ import {
     getProjectsByUserId,
     updateProject,
     deleteProject
-} from '../controllers/ProjectsController.js';
+} from '../../controllers/comercial/ProjectsController.js';
 const router = Router();
 
 // Crear un proyecto

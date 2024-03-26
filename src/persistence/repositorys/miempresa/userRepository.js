@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { connectionDB } from "../db/connection.js";
-import { CustomError } from "../../utils/httpRes/handlerResponse.js";
-import { idgenerate } from "../../utils/id/idGenerate.js";
-import executeTransactions from "../transactions/executeTransaction.js";
+import { connectionDB } from "../../db/connection.js";
+import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
+import { idgenerate } from "../../../utils/id/idGenerate.js";
+import executeTransactions from "../../transactions/executeTransaction.js";
 
 
 const prisma = new PrismaClient();

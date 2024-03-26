@@ -1,6 +1,6 @@
 // PriceListController.js
 
-import priceListService from "../services/PriceListService.js";
+import priceListService from "../../services/miempresa/PriceListService.js";
 
 export const getAllPriceLists = async (req, res, next) => {
     const { userId } = req.params; // Asumiendo que se obtiene el userId de algún middleware de autenticación o similar

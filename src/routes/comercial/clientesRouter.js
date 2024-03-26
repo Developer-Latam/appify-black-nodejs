@@ -5,7 +5,7 @@ import {
     getClienteByUserId,
     updateCliente,
     deleteCliente
-} from '../controllers/clientesController.js';
+} from '../../controllers/comercial/clientesController.js';
 const router = Router();
 
 // Ruta para crear un cliente

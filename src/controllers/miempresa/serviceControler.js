@@ -1,4 +1,4 @@
-import ServiceService from "../services/ServiceService.js";
+import ServiceService from "../../services/miempresa/ServiceService.js";
 export const createService = async (req, res) => {
     try {
         const data = req.body;

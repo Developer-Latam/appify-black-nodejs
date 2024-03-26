@@ -1,6 +1,6 @@
-import proveedorRepository from "../persistence/repositorys/proveedorRepository.js"
-import userRepository from "../persistence/repositorys/userRepository.js";
-import { idgenerate } from "../utils/id/idGenerate.js";
+import proveedorRepository from "../../persistence/repositorys/miempresa/proveedorRepository.js"
+import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
+import { idgenerate } from "../../utils/id/idGenerate.js";
 //Clase que interactua con Repository, se encarga de la logica de negocio
 class proveedorService {
     //Crea un proveedor

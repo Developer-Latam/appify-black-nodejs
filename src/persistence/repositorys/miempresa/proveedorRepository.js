@@ -1,4 +1,4 @@
-import { connectionDB } from "../db/connection.js";
+import { connectionDB } from "../../db/connection.js";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 //Clase que interactua con la db, se encarga de las querys sql
