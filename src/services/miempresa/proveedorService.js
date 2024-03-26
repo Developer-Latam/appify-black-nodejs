@@ -1,7 +1,13 @@
+<<<<<<< HEAD:src/services/proveedorService.js
 import proveedorRepository from "../persistence/repositorys/proveedorRepository.js"
 import userRepository from "../persistence/repositorys/userRepository.js";
 import { idgenerate } from "../utils/id/idGenerate.js";
 import { CustomError } from "../utils/httpRes/handlerResponse.js";
+=======
+import proveedorRepository from "../../persistence/repositorys/miempresa/proveedorRepository.js"
+import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
+import { idgenerate } from "../../utils/id/idGenerate.js";
+>>>>>>> 077621c63f49679a2c8a8adfff5f1e02857ad118:src/services/miempresa/proveedorService.js
 //Clase que interactua con Repository, se encarga de la logica de negocio
 class proveedorService {
     //Crea un proveedor

@@ -3,6 +3,8 @@ import userRouter from './routes/userRouter.js'
 import proveedorRouter from './routes/proovRouter.js'
 import listrouter from './routes/priceListRouter.js'
 import productsrouter from './routes/productsRouter.js'
+import servicerouter from './routes/serviceRouter.js'
+import clientesrouter from './routes/clientesRouter.js'
 import projectsrouter from './routes/projectsRouter.js'
 import consultasrouter from './routes/consultasRouter.js'
 import cors from 'cors';
@@ -22,6 +24,8 @@ app.use('/user',userRouter)
 app.use('/proveedor', proveedorRouter)
 app.use('/listproducts', listrouter)
 app.use('/products', productsrouter)
+app.use('/services', servicerouter)
+app.use('/clientes', clientesrouter)
 app.use('/projects', projectsrouter)
 app.use('/consultas', consultasrouter)
 const specs = swaggerJSDoc(swaggerOpts)

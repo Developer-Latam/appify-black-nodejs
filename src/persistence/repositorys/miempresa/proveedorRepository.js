@@ -1,5 +1,11 @@
+<<<<<<< HEAD:src/persistence/repositorys/proveedorRepository.js
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 import { prisma } from "../../utils/dependencys/injection.js";
+=======
+import { connectionDB } from "../../db/connection.js";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+>>>>>>> 077621c63f49679a2c8a8adfff5f1e02857ad118:src/persistence/repositorys/miempresa/proveedorRepository.js
 //Clase que interactua con la db, se encarga de las querys sql
 class proveedorRepository {
     //Creacion de un proveedor

@@ -1,4 +1,4 @@
-import { prisma } from "../../utils/dependencys/injection.js";
+import { prisma } from "../../../utils/dependencys/injection.js";
 class ProductRepository {
     async createProduct(data) {
         return prisma.productos.create({
@@ -10,6 +10,15 @@ class ProductRepository {
         return prisma.productos.findUnique({
             where: { id: id }
         });
+    }
+    async productExistsByName(nameProduct) {
+        // const [response] = await connectionDB.execute('SELECT * FROM proveedores WHERE rut = ?', [rutProveedor]);
+        const nombre = await prisma.productos.findFirst({
+            where: {
+                nombre : nameProduct,
+            },
+        })
+        return nombre !== null;
     }
 
     async findAllProductsByUserId(userId) {

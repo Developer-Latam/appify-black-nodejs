@@ -1,8 +1,19 @@
+<<<<<<< HEAD:src/persistence/repositorys/userRepository.js
 import { connectionDB } from "../db/connection.js";
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import executeTransactions from "../transactions/executeTransaction.js";
 import { prisma } from "../../utils/dependencys/injection.js";
+=======
+import { PrismaClient } from "@prisma/client";
+import { connectionDB } from "../../db/connection.js";
+import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
+import { idgenerate } from "../../../utils/id/idGenerate.js";
+import executeTransactions from "../../transactions/executeTransaction.js";
+
+
+const prisma = new PrismaClient();
+>>>>>>> 077621c63f49679a2c8a8adfff5f1e02857ad118:src/persistence/repositorys/miempresa/userRepository.js
 
 //Clase que interactua con la db mediante las querys a las diferentes tablas
 class UserRepository {

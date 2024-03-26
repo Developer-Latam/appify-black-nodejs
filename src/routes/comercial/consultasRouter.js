@@ -4,7 +4,7 @@ import {
     getConsultasByUserId,
     updateConsulta,
     deleteConsulta
-} from '../controllers/consultasController.js';
+} from '../../controllers/comercial/consultasController.js';
 const router = Router();
 
 // Crear un proyecto
