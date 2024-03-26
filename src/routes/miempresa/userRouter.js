@@ -26,7 +26,7 @@ router.get('/config-password', configPasswordSubUser)
 router.post('/set-password', setpassForSubUser)
 router.put('/updUser/:userId', updateSubUser);
 //ruta para test
-router.put('/t', testController)
+router.put('/test', testController)
 
 
 export default router 

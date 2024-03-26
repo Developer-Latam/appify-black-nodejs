@@ -1,10 +1,16 @@
 import userService from "../../services/miempresa/userService.js";
 import jwt from "jsonwebtoken"
 import "dotenv/config"
+<<<<<<< HEAD:src/controllers/userController.js
+import { validatePassword } from "../utils/password/validatesPassword.js"
+import { ResponseHandler } from "../utils/dependencys/injection.js";
+import { createHash } from "../utils/password/hashPass.js";
+=======
 import { validatePassword } from "../../utils/password/validatesPassword.js"
 import { ResponseHandler } from "../../utils/dependencys/injection.js";
 import { createHash } from "../../utils/password/hashPass.js";
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
+>>>>>>> 077621c63f49679a2c8a8adfff5f1e02857ad118:src/controllers/miempresa/userController.js
 //Funciones que interactuan con Service, se encargan de las respuestas al cliente
 //Realiza el login del usuario
 export const loginUser = async (req, res, next) => {
