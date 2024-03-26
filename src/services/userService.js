@@ -1,10 +1,9 @@
-import userRepository from "../persistence/repositorys/userRepository.js";
 import UserRepository from "../persistence/repositorys/userRepository.js";
 import { idgenerate } from "../utils/id/idGenerate.js";
 import { sendEmail } from "../utils/email/emailService.js";
 import executeTransactions from "../persistence/transactions/executeTransaction.js";
-import { createHash } from "../utils/password/hashPass.js";
 import { CustomError } from "../utils/httpRes/handlerResponse.js";
+import { isValidPassword } from "../utils/password/hashPass.js";
 
 //Clase que interactua con el Repository y se encarga de la logica de negocio
 class UserService {
@@ -76,17 +75,23 @@ class UserService {
         });
         return estructuraDiccionarios
     }
-    //Realiza el logging
+    //Realiza el log in del usuario
     async login(email, password) {
         try {
-            //Busco el usuario y lo retorno
-            const user = await UserRepository.findUserByEmailAndPassword(email, password);
+            // Busco el usuario por email
+            const user = await UserRepository.findUserByEmail(email);
             if(!user){
-                throw new CustomError(401, "Error de credenciales", {detail: "Credenciales inválidas"})
+                throw new CustomError(401, "Authentication error", {detail: "Invalid credentials"})
             }
+            // Comparo la contraseña proporcionada con la hasheada en la DB
+            const validPassword = isValidPassword(user, password)
+            if(!validPassword){
+                //Si la contraseña es incorrecta se lanza un error
+                throw new CustomError(401, "Authentication error", {detail: "Invalid credentials"})
+            }
+            // Si la contraseña es correcta, continúas con la lógica para determinar si es superusuario o subusuario y setear permisos
             if (user.length === 1) {
                 const user = user[0];
-                //Si lo encuentro, verifico que la propíedad ref_superusuario que verificar si es superusuario o subuser y setea sus permisos de acuerdo a eso
                 // 0 = subusuario
                 // 1 = superusuario
                 if (user.ref_superusuario === 0) {
@@ -102,7 +107,7 @@ class UserService {
     }
     //Realiza el registro de usuario
     async signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash) {
-        //Verifica si existe, y si no, realiza la generacion de su id, y posterior lo crea
+        //Verifica si existe, y si no, lo crea
         const userExists = await UserRepository.userExists(email);
         if (!userExists) {
             await UserRepository.createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash);
@@ -111,7 +116,7 @@ class UserService {
             throw new CustomError(409, 'El usuario ya existe', { email });
         }
     }
-    //Realiza el registro de un subusuario
+    //Realiza el registro de un subusuario, la creacion de los permisos y posterior envia el email de bienvenida
     async signUpSubUsuario(user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, permisos) {
         try {
             //Verifica si existe, y si no, realiza la generacion de su id, y posterior lo crea 
@@ -122,6 +127,7 @@ class UserService {
             const id = idgenerate("sub-user");
             const createUserOperation = UserRepository.createSubUser(id, user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo);
             const createPermisosOperations = UserRepository.createPermisos(permisos, id);
+            //Se juntan las operaciones como transaction, si una falla, se revierten todos los cambios hechos a la db
             await executeTransactions([createUserOperation, ...createPermisosOperations]);
             await sendEmail(email, id);
             return { ok: true, message: 'Subusuario creado y con permisos. Email enviado.' };
@@ -129,6 +135,8 @@ class UserService {
             throw (error)
         }
     }
+    //Prepara los permisos para hacer update
+    //Trae los permisos ya existentes de la db y compara cambios, y solo retorna las diferencias
     async preparePermissionsUpdate(userId, newPermissions) {
         try {
             const currentPermissions = await UserRepository.getUserPermissions(userId);
@@ -151,10 +159,11 @@ class UserService {
             });
             return updates;
         } catch (error) {
-            console.log(error)
+            throw(error)
         }
-        
     }
+    //Verifica si hay diferencias entre los permisos actuales y los nuevos
+    //Realiza el cambio a booleanos los permisos que vienen de la db
     hasDifferences(currentPermiso, newPermiso) {
          // Convierte los valores numéricos a booleanos para la comparación
         const toBoolean = (value) => !!value;
@@ -164,12 +173,13 @@ class UserService {
             toBoolean(currentPermiso.todo) !== toBoolean(newPermiso.todo) ||
             toBoolean(currentPermiso.propietario) !== toBoolean(newPermiso.propietario);
     }
+    //Realiza un ciclo for para los diferentes permisos
     async updatePermissions(updates) {
         for (const update of updates) {
             await UserRepository.updatePermission(update.userId,update.permissionId, update.data);
         }
     }
-    //Realiza el update de sub user
+    //Realiza el update de sub user, cualquier campo que se quiera actualizar
     async updateSubUserService(userId, updateFields) {
         let existingSubusuario;
         try {

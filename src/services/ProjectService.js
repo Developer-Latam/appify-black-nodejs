@@ -1,6 +1,6 @@
 import ProjectRepository from "../persistence/repositorys/ProjectRepository.js";
 import userRepository from "../persistence/repositorys/userRepository.js";
-import { idgenerate } from "../utils/idGenerate.js";
+import { idgenerate } from "../utils/id/idGenerate.js";
 
 class ProjectService {
     async createProject(data) {

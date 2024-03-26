@@ -1,5 +1,5 @@
 paths:
-  /login:
+  /user/login:
     post:
       summary: Inicia sesión con un usuario
       description: Este endpoint permite a un usuario iniciar sesión con su correo electrónico y contraseña.
@@ -13,10 +13,10 @@ paths:
                 email:
                   type: string
                   format: email
-                  example: pato@example.com
+                  example: magesan123@example.com
                 password:
                   type: string
-                  example: hola1234
+                  example: Hola1234.
               required:
                 - email
                 - password
@@ -34,25 +34,70 @@ paths:
                   message:
                     type: string
                     example: "Login exitoso"
-        '400':
-          description: Error de login
+        "401":
+          description: Error de autenticación debido a credenciales inválidas.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  login:
-                    type: boolean
-                    example: false
+                  status:
+                    type: integer
+                    example: 401
                   message:
                     type: string
-                    example: "Credenciales inválidas"
+                    example: Authentication error
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: Invalid credentials
+        "404":
+          description: Error de Not Found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: User not found
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: No user found with provided email and password.
+        "500":
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: Error en el ingreso de propiedades a la db
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: error message
       tags:
           - Autenticación
-  /signup:
+  /user/signup:
     post:
-      summary: Registra un nuevo usuario
-      description: Este endpoint permite registrar un nuevo usuario en el sistema.
+      tags:
+        - Registo usuario
+      summary: Registra un nuevo usuario en el sistema y la creacion de su subusuario
       requestBody:
         required: true
         content:
@@ -62,24 +107,20 @@ paths:
               properties:
                 nombre:
                   type: string
-                  example: magesillo
                 apellido:
                   type: string
-                  example: banyuls
                 email:
                   type: string
                   format: email
-                  example: magesillo@example.com
                 celular:
                   type: string
-                  example: "261696969"
                 fecha_de_nacimiento:
                   type: string
                   format: date
-                  example: "1996-10-31"
                 password:
                   type: string
-                  example: hola123
+                passwordConfirm:
+                  type: string
               required:
                 - nombre
                 - apellido
@@ -87,46 +128,121 @@ paths:
                 - celular
                 - fecha_de_nacimiento
                 - password
+                - passwordConfirm
+              example:
+                nombre: "MAGELLAN"
+                apellido: "BAN"
+                email: "magesan123@example.com"
+                celular: "9999999"
+                fecha_de_nacimiento: "1992-02-20"
+                password: "Hola1234."
+                passwordConfirm: "Hola1234."
       responses:
-        '200':
-          description: Registro exitoso
+        "200":
+          description: Usuario y subusuario creados exitosamente.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  ok:
-                    type: boolean
-                    example: true
+                  status:
+                    type: integer
+                    example: 200
                   message:
                     type: string
-                    example: "Usuario registrado exitosamente."
-        '400':
-          description: Error en el registro
+                    example: Success
+        "400":
+          description: Solicitud incorrecta debido a datos de entrada inválidos.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  ok:
-                    type: boolean
-                    example: false
+                  status:
+                    type: integer
+                    example: 400
                   message:
                     type: string
-                    example: "Error en el registro del usuario."
-      tags:
-        - Registro
-  /updUser/{id}:
+                    example: Datos de entrada inválidos.
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: Las contraseñas no pueden estar vacías.
+        "401":
+          description: Error de autenticación debido a credenciales inválidas.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: Authentication error
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: Invalid credentials
+        "409":
+          description: Conflicto debido a que el usuario ya existe.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 409
+                  message:
+                    type: string
+                    example: El usuario ya existe
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: email
+        "500":
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: Error en el ingreso de propiedades a la db
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: error message
+  /user/updUser/{id}:
     put:
-      summary: Actualiza un subUsuario
-      description: Este endpoint permite actualizar los datos de un subusuario específico y sus permisos.
+      tags:
+        - Actualización de Subusuario
+      summary: Actualiza la información y permisos de un subusuario.
+      description: >
+        Este endpoint permite actualizar la información y los permisos de un subusuario
+        especificado por su ID único.
       parameters:
         - in: path
-          name: id
+          name: userId
           required: true
           schema:
             type: string
-          description: El ID del subusuario a actualizar.
+          description: El identificador único del subusuario a actualizar.
+          example: subusuario-19db3af3-94d3-4224-a348-14e0b087b6e7
       requestBody:
         required: true
         content:
@@ -134,89 +250,14 @@ paths:
             schema:
               type: object
               properties:
-                nombre:
-                  type: string
-                  example: juanito
-                apellido:
-                  type: string
-                  example: arcoiris
-                celular:
-                  type: string
-                  example: "261243333"
-                permisos:
-                  type: array
-                  items:
-                    type: string
-                  description: Lista de permisos para el subusuario.
-                  example: ["permiso1", "permiso2"]
-              required:
-                - nombre
-                - apellido
-                - celular
-      responses:
-        '200':
-          description: Subusuario actualizado exitosamente.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: "Subusuario actualizado exitosamente."
-        '400':
-          description: Error al actualizar el subusuario.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Error al actualizar."
-      tags:
-        - SubUsuario
-  /create-subuser:
-    post:
-      summary: Registro de un subusuario
-      description: Este endpoint permite registrar un nuevo subusuario en el sistema, incluyendo asignación detallada de permisos.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user:
-                  type: string
-                  description: ID del usuario principal
-                  example: super-user-427bd9f6-f209-482c-8d24-c72f1fdf15c3
-                nombre:
-                  type: string
-                  example: SAMUELO
-                apellido:
-                  type: string
-                  example: JOHNSON
-                email:
-                  type: string
-                  format: email
-                  example: samuelgauna7@gmail.com
-                celular:
-                  type: string
-                  example: 2612436795
-                fecha_de_nacimiento:
-                  type: string
-                  format: date
-                  example: "1996-10-31"
-                cargo:
-                  type: string
-                  example: Administrativo
+                updateFields:
+                  type: object
+                  properties:
+                    nombre:
+                      type: string
+                    email:
+                      type: string
+                  description: Los campos del subusuario a actualizar.
                 permisos:
                   type: array
                   items:
@@ -236,8 +277,241 @@ paths:
                         type: boolean
                       todo:
                         type: boolean
+                        nullable: true
                       propietario:
                         type: boolean
+                        nullable: true
+              required:
+                - updateFields
+                - permisos
+              example: 
+                updateFields:
+                  nombre: "JOSE JOSE"
+                  email: "JOSEMA@example.com"
+                permisos:
+                  - categoria: Comercial
+                    subcategoria: Proyecto
+                    id: 1
+                    inactivo: false
+                    ver: false
+                    administrar: true
+                    todo: true
+                    propietario: false
+                  - categoria: Comercial
+                    subcategoria: Clientes
+                    id: 2
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: true
+                    propietario: false
+                  - categoria: Comercial
+                    subcategoria: Satisfaccion del Cliente
+                    id: 3
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Operaciones
+                    subcategoria: Ordenes de Trabajo
+                    id: 4
+                    inactivo: false
+                    ver: true
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Operaciones
+                    subcategoria: Tablero de Produccion
+                    id: 5
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Operaciones
+                    subcategoria: Ordenes de Compra
+                    id: 6
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Operaciones
+                    subcategoria: Inventario
+                    id: 7
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Calendario
+                    subcategoria: Agendamiento
+                    id: 8
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Administracion
+                    subcategoria: Ventas
+                    id: 9
+                    inactivo: false
+                    ver: true
+                    administrar: false
+                    todo: true
+                    propietario: false
+                  - categoria: Administracion
+                    subcategoria: Compras
+                    id: 10
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Administracion
+                    subcategoria: Registro de Cobros o Pagos
+                    id: 11
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Administracion
+                    subcategoria: Cuentas
+                    id: 12
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Administracion
+                    subcategoria: Resultados y Balance
+                    id: 13
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Otros
+                    subcategoria: Usuarios
+                    id: 14
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Otros
+                    subcategoria: Productos
+                    id: 15
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Otros
+                    subcategoria: Servicios
+                    id: 16
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Otros
+                    subcategoria: Proveedores
+                    id: 17
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+                  - categoria: Otros
+                    subcategoria: Configuraciones
+                    id: 18
+                    inactivo: true
+                    ver: false
+                    administrar: false
+                    todo: null
+                    propietario: null
+      responses:
+        '200':
+          description: Información y permisos del subusuario actualizados correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Permisos y Usuario actualizados correctamente."
+        '400':
+          description: Solicitud incorrecta debido a datos de entrada inválidos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "Datos de entrada inválidos."
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "Error en el servidor."
+  /user/create-subuser:
+    post:
+      tags:
+        - Registro subusuario
+      summary: Registra un nuevo subusuario en el sistema y asigna permisos, posterior envia el mail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: Identificador único del superusuario que crea el subusuario.
+                  example: "super-user-427bd9f6-f209-482c-8d24-c72f1fdf15c3"
+                nombre:
+                  type: string
+                  example: "SAMUELO"
+                apellido:
+                  type: string
+                  example: "JOHNSON"
+                email:
+                  type: string
+                  format: email
+                  example: "samuelgauna7@gmail.com"
+                celular:
+                  type: string
+                  example: "121545121"
+                fecha_de_nacimiento:
+                  type: string
+                  format: date
+                  example: "1996/10/31"
+                cargo:
+                  type: string
+                  description: Cargo del subusuario dentro de la empresa.
+                  example: "Administrativo"
+                permisos:
+                  type: array
                   example:
                     - categoria: Comercial
                       subcategoria: Proyecto
@@ -383,48 +657,121 @@ paths:
                       administrar: false
                       todo: null
                       propietario: null
-              required:
-                - user
-                - nombre
-                - apellido
-                - email
-                - celular
-                - fecha_de_nacimiento
-                - cargo
-                - permisos
+                  items:
+                    type: object
+                    properties:
+                      categoria:
+                        type: string
+                      subcategoria:
+                        type: string
+                      id:
+                        type: integer
+                      inactivo:
+                        type: boolean
+                      ver:
+                        type: boolean
+                      administrar:
+                        type: boolean
+                      todo:
+                        type: boolean
+                        nullable: true
+                      propietario:
+                        type: boolean
+                        nullable: true
+                    required:
+                      - user
+                      - nombre
+                      - apellido
+                      - email
+                      - celular
+                      - fecha_de_nacimiento
+                      - cargo
+                      - permisos
       responses:
-        '200':
-          description: Subusuario registrado exitosamente.
+        "200":
+          description: Subusuario creado y con permisos. Email enviado.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  ok:
-                    type: boolean
-                    example: true
+                  status:
+                    type: integer
+                    example: 200
                   message:
                     type: string
-                    example: "Subusuario registrado exitosamente."
-        '400':
-          description: Error al registrar el subusuario.
+                    example: "Subusuario creado y con permisos. Email enviado."
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: "Detalles adicionales pueden ir aquí."
+        "400":
+          description: Solicitud incorrecta debido a datos de entrada inválidos.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  ok:
-                    type: boolean
-                    example: false
+                  status:
+                    type: integer
+                    example: 400
                   message:
                     type: string
-                    example: "Error en el registro."
-      tags:
-        - SubUsuario
-  /config-password:
+                    example: "Datos de entrada inválidos."
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: "Las contraseñas no pueden estar vacías o cualquier otro mensaje de validación."
+        "409":
+          description: Conflicto debido a que el subusuario ya existe.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 409
+                  message:
+                    type: string
+                    example: "Subusuario ya existente"
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: "{}"
+        "500":
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "Error interno del servidor."
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: "Error en el ingreso de propiedades a la db o cualquier mensaje de error del servidor."
+  /user/config-password:
     get:
-      summary: Validación de token para restauración de contraseña
-      description: Realiza la validación del token proporcionado en la consulta. Si el token es válido, continúa con el proceso de restauración de la contraseña.
+      tags:
+        - Configuración de Contraseña
+      summary: Valida el token y procede con la restauración de la contraseña de un subusuario.
+      description: >
+        Este endpoint valida el token proporcionado en la query para verificar su validez.
+        Si el token es válido, continua con el proceso de restauración de la contraseña del subusuario.
       parameters:
         - in: query
           name: token
@@ -434,44 +781,67 @@ paths:
           description: Token de verificación para la restauración de la contraseña.
       responses:
         '200':
-          description: Token válido. Proceso de restauración de contraseña puede continuar.
+          description: Usuario encontrado y validación de token exitosa.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success:
-                    type: boolean
-                    example: true
-                  userId:
-                    type: string
-                    description: ID del subusuario cuyo token ha sido verificado.
-                    example: "sub-user-12345"
+                  status:
+                    type: integer
+                    example: 200
                   message:
                     type: string
-                    example: "Token válido. Usuario autorizado para cambiar contraseña."
-        '400':
+                    example: Success
+                  payload:
+                    type: object
+                    properties:
+                      USER-PROPERTIES:
+                        type: string
+                        example: "ACA SE RETORNAN LAS PROPS DEL USER"
+        '401':
           description: Token no proporcionado o inválido.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success:
-                    type: boolean
-                    example: false
+                  status:
+                    type: integer
+                    example: 401
                   message:
                     type: string
-                    example: "Falta el token o token inválido."
+                    example: Unauthorized
+                  error:
+                    type: string
+                    example: Falta el token.
+        '500':
+          description: Error interno del servidor o el token no pudo ser verificado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: Error en el servidor
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: Mensaje del error específico
+  /user/set-password:
+    post:
       tags:
         - Configuración de Contraseña
-  /set-password:
-    post:
-      summary: Establecimiento de contraseña para un subusuario
+      summary: Establece la contraseña del nuevo subusuario.
       description: >
-        Permite establecer o actualizar la contraseña de un subusuario.
-        La contraseña debe tener al menos 8 caracteres, incluir al menos un número,
-        una mayúscula y un carácter especial. Las contraseñas proporcionadas deben coincidir.
+        Este endpoint recibe el ID del usuario, la nueva contraseña y la confirmación de la contraseña.
+        Valida las contraseñas y, si son válidas, establece la nueva contraseña para el subusuario.
       requestBody:
         required: true
         content:
@@ -481,34 +851,40 @@ paths:
               properties:
                 userId:
                   type: string
-                  description: El ID único del subusuario.
-                  example: sub-user-3cb9cba0-b356-4b13-955c-80c94fa5e3fb
+                  description: El identificador único del subusuario para quien se establecerá la contraseña.
+                  example: "EXAMPLE USER TO UPDATE"
                 password:
                   type: string
-                  description: La nueva contraseña del subusuario.
-                  example: Liliana1025.
+                  description: La nueva contraseña para el subusuario.
+                  example: "example password"
                 passwordConfirm:
                   type: string
-                  description: Confirmación de la nueva contraseña para asegurar que no haya errores de tipeo.
-                  example: Liliana1025.
+                  description: Confirmación de la nueva contraseña para el subusuario.
+                  example: "example password"
               required:
                 - userId
                 - password
                 - passwordConfirm
       responses:
         '200':
-          description: Contraseña configurada correctamente.
+          description: Contraseña establecida correctamente para el subusuario.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success:
-                    type: boolean
-                    example: true
+                  status:
+                    type: integer
+                    example: 200
                   message:
                     type: string
-                    example: "Contraseña configurada correctamente."
+                    example: Success
+                  payload:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Contraseña actualizada exitosamente."
         '400':
           description: Validación de la contraseña fallida.
           content:
@@ -564,17 +940,21 @@ paths:
                         type: string
                         example: "Las contraseñas no coinciden."
         '500':
-          description: Error interno al configurar la contraseña.
+          description: Error interno del servidor.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success:
-                    type: boolean
-                    example: false
+                  status:
+                    type: integer
+                    example: 500
                   message:
                     type: string
-                    example: "Error al configurar la contraseña."
-      tags:
-        - Configuración de Contraseña
+                    example: "Error en el servidor"
+                  payload:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: "Mensaje del error específico"

@@ -4,7 +4,6 @@ import "dotenv/config"
 import { validatePassword } from "../utils/password/validatesPassword.js"
 import { ResponseHandler } from "../utils/dependencys/injection.js";
 import { createHash } from "../utils/password/hashPass.js";
-import userRepository from "../persistence/repositorys/userRepository.js";
 //Funciones que interactuan con Service, se encargan de las respuestas al cliente
 //Realiza el login del usuario
 export const loginUser = async (req, res, next) => {
