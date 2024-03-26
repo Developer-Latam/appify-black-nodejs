@@ -1,13 +1,14 @@
 import ProjectRepository from "../persistence/repositorys/ProjectRepository.js";
 import userRepository from "../persistence/repositorys/userRepository.js";
-import { idgenerate } from "../utils/idGenerate.js";
+import { idgenerate } from "../utils/id/idGenerate.js";
+
 
 class ProjectService {
     async createProject(data) {
         const id = idgenerate("project");
         //Verificar si existe el proyecto y el usuario para la empresa
-        const superUserExist = await userRepository.userExistsById(data.user)
-        const proyectoExist = await ProjectRepository.projectExistsByName(data.nombre_etiqueta)
+        const superUserExist = await userRepository.userExistsById(data.user);
+        const proyectoExist = await ProjectRepository.projectExistsByName(data.nombre_etiqueta);
         if(proyectoExist && superUserExist){
             return { ok: false, message: 'Proyecto ya existente en la empresa' };
         }
