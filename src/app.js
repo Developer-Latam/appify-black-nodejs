@@ -8,6 +8,8 @@ import clientesrouter from './routes/comercial/clientesRouter.js'
 import projectsrouter from './routes/comercial/projectsRouter.js'
 import consultasrouter from './routes/comercial/consultasRouter.js'
 import ecommercerouter from './routes/comercial/ecommerceRouter.js'
+import sistemRouter from './routes/miempresa/configs/sistemaRouter.js'
+import configRouter from './routes/miempresa/configs/configsEmpresaRouter.js'
 import cors from 'cors';
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
@@ -28,6 +30,8 @@ app.use('/proveedor', proveedorRouter)
 app.use('/listproducts', listrouter)
 app.use('/products', productsrouter)
 app.use('/services', servicerouter)
+app.use('/config', configRouter)
+app.use('/sistema', sistemRouter)
 
 // Routers a comercial
 
