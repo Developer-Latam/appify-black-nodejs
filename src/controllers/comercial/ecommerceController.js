@@ -61,7 +61,7 @@ export const deleteEcommerce = async (req, res) => {
         const idString = req.params.idEcommerce;  // Acceder id.Ecommerce del objeto y llevarlo a int 
         const idEcommerce = parseInt(idString, 10);
         await EcommerceService.deleteEcommerce(idEcommerce);
-        res.status(200).json({ message: 'Cliente eliminado' });
+        res.status(200).json({ message: 'E-commerce eliminado' });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }

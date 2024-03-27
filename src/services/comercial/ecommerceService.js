@@ -1,14 +1,14 @@
-import EcommerceRepository from "../persistence/repositorys/comercial/ecommerceRepository.js";
+import EcommerceRepository from "../../persistence/repositorys/comercial/ecommerceRepository.js";
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 class EcommerceService {
     async createEcommerce(data) {
         const superUserExist = await userRepository.userExistsById(data.user);
-        const ecommerceExist = await EcommerceRepository.createEcommerce(data.nombre);
+        const ecommerceExist = await EcommerceRepository.ecommerceExistsByName(data.nombre);
         if(ecommerceExist && superUserExist){
             return { ok: false, message: 'El nombre del E-commerce ya existe!' };
         }
         
-        return  EcommerceRepository.createEcommerce({ ...data, id: id });
+        return  EcommerceRepository.createEcommerce({ ...data });
     }
 
     async getEcommerceById(id) {
