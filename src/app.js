@@ -8,7 +8,7 @@ import clientesrouter from './routes/comercial/clientesRouter.js'
 import projectsrouter from './routes/comercial/projectsRouter.js'
 import consultasrouter from './routes/comercial/consultasRouter.js'
 import ecommercerouter from './routes/comercial/ecommerceRouter.js'
-import cors from 'cors';
+import cors from 'cors'; 
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import { swaggerOpts } from './docs/swaggerOpts.js'
