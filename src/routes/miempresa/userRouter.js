@@ -6,15 +6,7 @@ import { loginUser,
     configPasswordSubUser,
     setpassForSubUser,
     testController } from '../../controllers/miempresa/userController.js';
-/*import {  
-    loginUser, 
-    signUpController, 
-    signUpSubUsuarioController, 
-    updateSubUser,
-    configPasswordSubUser,
-    setpassForSubUser,
-    testController
-} from '../../controllers/miempresa/userController.js';
+
 
 const router = Router()
 
