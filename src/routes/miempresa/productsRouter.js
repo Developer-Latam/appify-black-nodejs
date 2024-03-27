@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { 
+import { createProduct, deleteProduct, getProductById, getProductsByUserId, updateProduct } from '../../controllers/miempresa/productController.js';
+/*import { 
     createProduct,
     getProductById,
     getProductsByUserId,
