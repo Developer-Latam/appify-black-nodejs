@@ -5,7 +5,7 @@ import {
   createPriceList,
   updatePriceList,
   deletePriceList
-} from '../controllers/PriceListController.js';
+} from '../../controllers/miempresa/PriceListController.js';
 
 const router = Router();
 

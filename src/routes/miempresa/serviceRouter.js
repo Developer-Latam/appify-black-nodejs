@@ -5,7 +5,7 @@ import {
     getServiceByUserId,
     updateService,
     deleteService
-} from '../controllers/serviceControler.js';
+} from '../../controllers/miempresa/serviceControler.js';
 const router = Router();
 
 // Ruta para crear un servicio

@@ -1,9 +1,8 @@
-<<<<<<< HEAD:src/controllers/proveedorController.js
-import proveedorService from "../services/proveedorService.js"
-import { ResponseHandler } from "../utils/dependencys/injection.js";
-=======
+
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
+
 import proveedorService from "../../services/miempresa/proveedorService.js"
->>>>>>> 077621c63f49679a2c8a8adfff5f1e02857ad118:src/controllers/miempresa/proveedorController.js
+
 // Funciones que interactuan con la clase Service, se encargan de los parametros y las respuestas al cliente
 //Crea un proveedor
 export const createProveedorController = async (req, res) => {

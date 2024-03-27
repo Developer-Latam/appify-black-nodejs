@@ -1,4 +1,4 @@
-import clientesRepository from "../persistence/repositorys/clientesRepository.js";
+import clientesRepository from "../../persistence/repositorys/comercial/clientesRepository.js";
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 class ClientesService {

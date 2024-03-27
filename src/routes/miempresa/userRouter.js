@@ -7,7 +7,7 @@ import {
     configPasswordSubUser,
     setpassForSubUser,
     testController
-} from '../controllers/userController.js';
+} from '../../controllers/miempresa/userController.js';
 
 const router = Router()
 

@@ -5,7 +5,7 @@ import {
     getProductsByUserId,
     updateProduct,
     deleteProduct
-} from '../controllers/productController.js';
+} from '../../controllers/miempresa/productController.js';
 const router = Router();
 
 // Crear producto 

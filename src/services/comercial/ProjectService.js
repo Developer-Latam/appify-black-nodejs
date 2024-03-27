@@ -1,12 +1,6 @@
-import ProjectRepository from "../persistence/repositorys/ProjectRepository.js";
-<<<<<<< HEAD:src/services/ProjectService.js
-import userRepository from "../persistence/repositorys/userRepository.js";
-import { idgenerate } from "../utils/id/idGenerate.js";
-=======
+import ProjectRepository from "../../persistence/repositorys/comercial/ProjectRepository.js";
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
-
->>>>>>> 077621c63f49679a2c8a8adfff5f1e02857ad118:src/services/comercial/ProjectService.js
 
 class ProjectService {
     async createProject(data) {
