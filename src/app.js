@@ -6,6 +6,7 @@ import productsrouter from './routes/miempresa/productsRouter.js'
 import servicerouter from './routes/miempresa/serviceRouter.js'
 import clientesrouter from './routes/comercial/clientesRouter.js'
 import projectsrouter from './routes/comercial/projectsRouter.js'
+import itemprojectsrouter from './routes/comercial/itemsProdServProyectoRouter.js'
 import consultasrouter from './routes/comercial/consultasRouter.js'
 import ecommercerouter from './routes/comercial/ecommerceRouter.js'
 import sistemRouter from './routes/miempresa/configs/sistemaRouter.js'
@@ -41,6 +42,7 @@ app.use('/clientes', clientesrouter)
 app.use('/projects', projectsrouter)
 app.use('/consultas', consultasrouter)
 app.use('/ecommerces', ecommercerouter)
+app.use('/projectsitem', itemprojectsrouter)
 
 // Routers a Operaciones
 

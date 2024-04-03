@@ -1026,6 +1026,7 @@ model empresa_proyecto {
   texto_para_compartir_proyecto String? @db.VarChar(100)
   cotizacion_descuento_visible  Boolean
   nombre_impuesto               String  @db.VarChar(50)
+
   @@index([empresa], map: "empresa")
 }
 
