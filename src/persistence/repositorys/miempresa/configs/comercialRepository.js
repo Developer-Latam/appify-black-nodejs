@@ -1,23 +1,17 @@
 import { CustomError } from "../../../../utils/httpRes/handlerResponse.js";
 import { prisma, prismaError } from "../../../../utils/dependencys/injection.js";
-
-class ItemSistemaRepository {
-    async createSistema(empresa	, pais, idioma, correo_cobranza, moneda, moneda_secundaria, con_decimales, tasa_venta, tasa_compra, tasa_cambio, tolerancia, registro_entregas_autocompletar) {
+class ComercialRepositoy {
+    async createProyecto(valor_impuesto, porcentaje_de_ot, texto_para_compartir_proyecto, cotizacion_descuento_visible, nombre_impuesto) {
         try {
-            return await prisma.sistema.create({
+            return await prisma.empresa_proyecto.create({
                 data: {
-                    empresa,
-                    pais,
-                    idioma, 
-                    correo_cobranza, 
-                    moneda, 
-                    moneda_secundaria, 
-                    con_decimales, 
-                    tasa_venta, 
-                    tasa_compra, 
-                    tasa_cambio,
-                    tolerancia,
-                    registro_entregas_autocompletar,
+                    empresa: 1,
+                    valor_impuesto,
+                    logo: "URL SACADA DE FIREBASE", 
+                    porcentaje_de_ot, 
+                    texto_para_compartir_proyecto, 
+                    cotizacion_descuento_visible, 
+                    nombre_impuesto
                 }
             });
         } catch (error) {
@@ -29,9 +23,9 @@ class ItemSistemaRepository {
             }
         }
     }
-    async updateSistema(id, data) {
+    async updateProyecto(id, data) {
         try {
-            return await prisma.sistema.update({
+            return await prisma.empresa_proyecto.update({
                 where: { id },
                 data,
             });
@@ -44,27 +38,21 @@ class ItemSistemaRepository {
             }
         }
     }
-    async deleteSistema(id) {
+    async deleteProyecto(id) {
         try {
-            return await prisma.sistema.delete({ where: { id } });
+            return await prisma.empresa_proyecto.delete({ where: { id } });
         } catch (error) {
             throw new CustomError(500, "Error process db", {error: error.message})
         }
     }
-    async createEmpresa(user, nombre, direccion_matriz, direccion_bodega, prefijo_tel, RUT, giro, pagina_web, prefijo_cel) {
+    async createParaClientes(texto_inferior_firma, mensaje_envio_proyecto, texto_confirmacion_compra) {
         try {
-            return await prisma.empresa.create({
+            return await prisma.para_clientes_proyectos.create({
                 data: {
-                    user,
-                    logo: "URL SACADA DE FIREBASE",
-                    nombre, 
-                    direccion_matriz, 
-                    direccion_bodega, 
-                    prefijo_tel, 
-                    RUT, 
-                    giro, 
-                    pagina_web, 
-                    prefijo_cel
+                    empresa: 1,
+                    texto_inferior_firma,
+                    mensaje_envio_proyecto,
+                    texto_confirmacion_compra
                 }
             });
         } catch (error) {
@@ -75,20 +63,9 @@ class ItemSistemaRepository {
             }
         }
     }
-    async getEmpresaByRUT(rut) {
+    async updateParaClientes(id, data) {
         try {
-            return await prisma.empresa.findFirst({ 
-                where: { 
-                    RUT: rut 
-                } 
-            });
-        } catch (error) {
-            throw new CustomError(500, "Internal server error", {error: error.message})
-        }
-    }
-    async updateEmpresa(id, data) {
-        try {
-            return await prisma.empresa.update({
+            return await prisma.para_clientes_proyectos.update({
                 where: { id },
                 data,
             });
@@ -101,14 +78,7 @@ class ItemSistemaRepository {
             }
         }
     }
-    async deleteEmpresa(id) {
-        try {
-            return await prisma.empresa.delete({ where: { id } });
-        } catch (error) {
-            throw new CustomError(500, "Error process db", {error: error.message})
-        }
-    }
-    
 }
 
-export default new ItemSistemaRepository()
+
+export default new ComercialRepositoy()
