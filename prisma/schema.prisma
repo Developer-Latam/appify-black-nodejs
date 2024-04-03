@@ -1025,6 +1025,7 @@ model empresa_proyecto {
   porcentaje_de_ot              Float   @default(0) @db.Float
   texto_para_compartir_proyecto String? @db.VarChar(100)
   cotizacion_descuento_visible  Boolean
+  nombre_impuesto               String  @db.VarChar(50)
 
   @@index([empresa], map: "empresa")
 }
@@ -1146,13 +1147,12 @@ model item_producto_proyecto {
   idProducto           String @db.VarChar(100)
   cantidad             Int
   porcentaje_descuento Float  @db.Float
-  idVendedor           String @db.VarChar(100)
-  comision_vendedor    Float  @db.Float
+  nombre_impuesto      String @db.VarChar(50)
+  impuesto             Float  @db.Float
   precio               Int
   total                Int
 
   @@index([idProducto], map: "productos")
-  @@index([idVendedor], map: "subusuarios")
   @@index([idProyecto], map: "proyectos")
 }
 
@@ -1162,12 +1162,11 @@ model item_servicio_proyecto {
   idServicio           String @db.VarChar(100)
   cantidad             Int
   porcentaje_descuento Float  @db.Float
-  idVendedor           String @db.VarChar(100)
-  comision_vendedor    Float  @db.Float
+  nombre_impuesto      String @db.VarChar(50)
+  impuesto             Float  @db.Float
   precio               Int
   total                Int
 
-  @@index([idServicio], map: "servicios")
-  @@index([idVendedor], map: "subusuarios")
   @@index([idProyecto], map: "proyectos")
+  @@index([idServicio], map: "servicios")
 }
