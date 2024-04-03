@@ -1139,3 +1139,31 @@ model anticipos_proveedor {
   @@index([idProveedor], map: "proveedores")
   @@index([idProyecto], map: "proyectos")
 }
+
+model item_producto_proyecto {
+  id                   String @id @db.VarChar(100)
+  idProducto           String @db.VarChar(100)
+  cantidad             Int
+  porcentaje_descuento Float  @db.Float
+  idVendedor           String @db.VarChar(100)
+  comision_vendedor    Float  @db.Float
+  precio               Int
+  total                Int
+
+  @@index([idProducto], map: "productos")
+  @@index([idVendedor], map: "subusuarios")
+}
+
+model item_servicio_proyecto {
+  id                   String @id @db.VarChar(100)
+  idServicio           String @db.VarChar(100)
+  cantidad             Int
+  porcentaje_descuento Float  @db.Float
+  idVendedor           String @db.VarChar(100)
+  comision_vendedor    Float  @db.Float
+  precio               Int
+  total                Int
+
+  @@index([idServicio], map: "servicios")
+  @@index([idVendedor], map: "subusuarios")
+}
