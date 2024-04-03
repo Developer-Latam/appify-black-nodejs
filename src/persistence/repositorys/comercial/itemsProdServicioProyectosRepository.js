@@ -13,9 +13,9 @@ class itemsProdServProyectosRepository{
         });
     }
 
-    async findAllProductosByProyectId(proyectId) {
+    async findAllProductosByProyectId(id) {
         return prisma.item_producto_proyecto.findMany({
-            where: { idProyecto: proyectId }
+            where: { idProyecto: id }
         });
     }
 
@@ -37,7 +37,7 @@ class itemsProdServProyectosRepository{
         });
     }
 
-    async findProductById(id) {
+    async findServiceById(id) {
         return prisma.item_servicio_proyecto.findUnique({
             where: { id: id }
         });
@@ -51,7 +51,7 @@ class itemsProdServProyectosRepository{
 
     async updateServiceItem(id, updateData) {
         return prisma.item_servicio_proyecto.update({
-            where: { id: id },
+            where: { id : id },
             data: updateData
         });
     }
