@@ -8,6 +8,7 @@ import clientesrouter from './routes/comercial/clientesRouter.js'
 import projectsrouter from './routes/comercial/projectsRouter.js'
 import itemprojectsrouter from './routes/comercial/itemsProdServProyectoRouter.js'
 import contactorouter from './routes/comercial/contactosClienteRouter.js'
+import puntodespachorouter from './routes/comercial/puntoDespachoClienteRouter.js'
 import consultasrouter from './routes/comercial/consultasRouter.js'
 import ecommercerouter from './routes/comercial/ecommerceRouter.js'
 import sistemRouter from './routes/miempresa/configs/sistemaRouter.js'
@@ -45,6 +46,8 @@ app.use('/contacto', contactorouter)
 app.use('/consultas', consultasrouter)
 app.use('/ecommerces', ecommercerouter)
 app.use('/projectsitem', itemprojectsrouter)
+app.use('/puntoDes', puntodespachorouter)
+
 
 // Routers a Operaciones
 
