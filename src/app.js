@@ -34,10 +34,13 @@ app.use('/proveedor', proveedorRouter)
 app.use('/listproducts', listrouter)
 app.use('/products', productsrouter)
 app.use('/services', servicerouter)
+
 //dentro de mi empresa configs
+
 app.use('/sistema', sistemRouter)
 app.use('/comercial', comercialRouter)
 app.use('/contabilidad', contabilidadRouter)
+
 // Routers a comercial
 
 app.use('/clientes', clientesrouter)

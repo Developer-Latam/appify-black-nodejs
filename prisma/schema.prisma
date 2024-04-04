@@ -1002,7 +1002,7 @@ model e_commerce {
 }
 
 model empresa {
-  id               Int     @id @default(autoincrement())
+  id               String  @id @db.VarChar(100)
   user             String  @db.VarChar(100)
   logo             String? @db.VarChar(150)
   nombre           String  @db.VarChar(100)
