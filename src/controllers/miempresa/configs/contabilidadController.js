@@ -40,20 +40,31 @@ export const updateCobranzasController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
-export const createModuloAdmController = async (req, res) => {
+export const createAdmModulos = async (req, res) => {
     try {
-        const { cuenta_impuesto_debito, cuenta_impuesto_credito, valor_impuesto_retenido, cuenta_impuesto_no_recuperable, plazo_no_recuperable, cuenta_retencion_impuesto, cuenta_impuesto_especifico } = req.body;
-        const result = await contabilidadService.createModuloAdm(cuenta_impuesto_debito, cuenta_impuesto_credito, valor_impuesto_retenido, cuenta_impuesto_no_recuperable, plazo_no_recuperable, cuenta_retencion_impuesto, cuenta_impuesto_especifico);
+        const data = {
+            administracion_impuesto: req.body.administracion_impuesto,
+            administracion_anticipo: req.body.administracion_anticipo,
+            administracion_por_clasificar: req.body.administracion_por_clasificar,
+            administracion_por_cobrar: req.body.administracion_por_cobrar,
+            administracion_por_pagar: req.body.administracion_por_pagar
+        };
+        const result = await contabilidadService.executeOperationsModuloAdministracion(data);
         ResponseHandler.Ok(res, result)
     } catch (error) {
         ResponseHandler.HandleError(res,error)
     }
 }
-export const updateModuloAdmController = async (req, res) => {
+export const updateAdmModulos = async (req, res) => {
     try {
-        const { id } = req.params;
-        const inputData = req.body
-        const result = await contabilidadService.updateModuloAdm(parseInt(id), inputData);
+        const data = {
+            administracion_impuesto: req.body.administracion_impuesto,
+            administracion_anticipo: req.body.administracion_anticipo,
+            administracion_por_clasificar: req.body.administracion_por_clasificar,
+            administracion_por_cobrar: req.body.administracion_por_cobrar,
+            administracion_por_pagar: req.body.administracion_por_pagar
+        };
+        const result = await contabilidadService.UpdateExecuteOperationsModuloAdministracion(data);
         ResponseHandler.Ok(res, result)
     } catch (error) {
         ResponseHandler.HandleError(res,error)
