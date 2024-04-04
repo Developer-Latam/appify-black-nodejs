@@ -1118,7 +1118,7 @@ model sistema {
 }
 
 model anticipos_cliente {
-  id               Int     @id @default(autoincrement())
+  id               String  @id @db.VarChar(100)
   idProyecto       String  @db.VarChar(100)
   idCliente        String  @db.VarChar(100)
   monto_anticipado Float   @db.Float
@@ -1130,7 +1130,7 @@ model anticipos_cliente {
 }
 
 model anticipos_proveedor {
-  id               Int     @id @default(autoincrement())
+  id               String  @id @db.VarChar(100)
   idProyecto       String  @db.VarChar(100)
   idProveedor      String  @db.VarChar(100)
   monto_anticipado Float   @db.Float
