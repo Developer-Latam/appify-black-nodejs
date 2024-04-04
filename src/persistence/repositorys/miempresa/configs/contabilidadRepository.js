@@ -89,113 +89,193 @@ class ContabilidadRepository {
             }
         }
     }
-    async createModuloAdm(cuenta_impuesto_debito, cuenta_impuesto_credito, valor_impuesto_retenido, cuenta_impuesto_no_recuperable, plazo_no_recuperable, cuenta_retencion_impuesto, cuenta_impuesto_especifico) {
-        try {
-            return await prisma.administracion_impuesto.create({
-                data: {
-                    empresa: 1,
-                    cuenta_impuesto_debito,
-                    cuenta_impuesto_credito,
-                    valor_impuesto_retenido,
-                    cuenta_impuesto_no_recuperable,
-                    plazo_no_recuperable,
-                    cuenta_retencion_impuesto,
-                    cuenta_impuesto_especifico
+    createModuloAdm({cuenta_impuesto_debito, cuenta_impuesto_credito, valor_impuesto_retenido, cuenta_impuesto_no_recuperable, plazo_no_recuperable, cuenta_retencion_impuesto, cuenta_impuesto_especifico}) {
+        return ()=>{
+            try {
+                return prisma.administracion_impuesto.create({
+                    data: {
+                        empresa: 1,
+                        cuenta_impuesto_debito,
+                        cuenta_impuesto_credito,
+                        valor_impuesto_retenido,
+                        cuenta_impuesto_no_recuperable,
+                        plazo_no_recuperable,
+                        cuenta_retencion_impuesto,
+                        cuenta_impuesto_especifico
+                    }
+                });
+            } catch (error) {
+                if (error instanceof prismaError.PrismaClientKnownRequestError) {
+                    throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
+                } else {
+                    throw new CustomError(500, "Internal server error", {error: error.message})
                 }
-            });
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientKnownRequestError) {
-                throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
             }
         }
     }
-    async updateModuloAdm(id, data) {
-        try {
-            return await prisma.administracion_impuesto.update({
-                where: { id },
-                data,
-            });
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
+    updateModuloAdm(id, data) {
+        return () =>{
+            try {
+                return prisma.administracion_impuesto.update({
+                    where: { id },
+                    data,
+                });
+            } catch (error) {
+                if (error instanceof prismaError.PrismaClientValidationError) {
+                    // Error específico de Prisma por tipo de dato incorrecto
+                    throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+                } else {
+                    throw new CustomError(500, "Internal server error", {error: error.message})
+                }
             }
         }
     }
-    async createAdmAnticipo(cuenta_anticipo_clientes, cuenta_anticipo_proveedores, cuenta_balance_apertura, cuenta_ajuste_cambario, cuenta_boton_pago, cuenta_beneficios_defecto) {
-        try {
-            return await prisma.administracion_anticipo.create({
-                data: {
-                    empresa: 1,
-                    cuenta_anticipo_clientes,
-                    cuenta_anticipo_proveedores,
-                    cuenta_balance_apertura,
-                    cuenta_ajuste_cambario,
-                    cuenta_boton_pago,
-                    cuenta_beneficios_defecto
+    createAdmAnticipo({cuenta_anticipo_clientes, cuenta_anticipo_proveedores, cuenta_balance_apertura, cuenta_ajuste_cambario, cuenta_boton_pago, cuenta_beneficios_defecto}) {
+        return ()=>{
+            try {
+                return prisma.administracion_anticipo.create({
+                    data: {
+                        empresa: 1,
+                        cuenta_anticipo_clientes,
+                        cuenta_anticipo_proveedores,
+                        cuenta_balance_apertura,
+                        cuenta_ajuste_cambario,
+                        cuenta_boton_pago,
+                        cuenta_beneficios_defecto
+                    }
+                });
+            } catch (error) {
+                if (error instanceof prismaError.PrismaClientKnownRequestError) {
+                    throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
+                } else {
+                    throw new CustomError(500, "Internal server error", {error: error.message})
                 }
-            });
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientKnownRequestError) {
-                throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
             }
         }
     }
-    async createAdmPorClasificar(cuenta_documentos_pendientes_clasificar) {
-        try {
-            return await prisma.administracion_por_clasificar.create({
-                data: {
-                    empresa: 1,
-                    cuenta_documentos_pendientes_clasificar
+    updateAdmAnticipo(id, data) {
+        return () =>{
+            try {
+                return prisma.administracion_anticipo.update({
+                    where: { id },
+                    data,
+                });
+            } catch (error) {
+                if (error instanceof prismaError.PrismaClientValidationError) {
+                    // Error específico de Prisma por tipo de dato incorrecto
+                    throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+                } else {
+                    throw new CustomError(500, "Internal server error", {error: error.message})
                 }
-            });
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientKnownRequestError) {
-                throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
             }
         }
     }
-    async createAdmPorCobrar(cuenta_facturas_por_cobrar, cuenta_documentos_en_cartera_por_cobrar) {
-        try {
-            return await prisma.administracion_por_cobrar.create({
-                data: {
-                    empresa: 1,
-                    cuenta_facturas_por_cobrar,
-                    cuenta_documentos_en_cartera_por_cobrar
+    createAdmPorClasificar({cuenta_documentos_pendientes_clasificar}) {
+        return ()=> {
+            try {
+                return prisma.administracion_por_clasificar.create({
+                    data: {
+                        empresa: 1,
+                        cuenta_documentos_pendientes_clasificar
+                    }
+                });
+            } catch (error) {
+                if (error instanceof prismaError.PrismaClientKnownRequestError) {
+                    throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
+                } else {
+                    throw new CustomError(500, "Internal server error", {error: error.message})
                 }
-            });
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientKnownRequestError) {
-                throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
             }
         }
     }
-    async createAdmPorPagar(cuenta_honorarios_por_pagar, cuenta_facturas_por_pagar, cuenta_vouchers_por_pagar, cuenta_documentos_por_pagar) {
-        try {
-            return await prisma.administracion_por_pagar.create({
-                data: {
-                    empresa: 1,
-                    cuenta_honorarios_por_pagar,
-                    cuenta_facturas_por_pagar,
-                    cuenta_vouchers_por_pagar,
-                    cuenta_documentos_por_pagar
+    updateAdmPorClasificar(id, data) {
+        return ()=>{
+            try {
+                return prisma.administracion_por_clasificar.update({
+                    where: { id },
+                    data,
+                });
+            } catch (error) {
+                if (error instanceof prismaError.PrismaClientValidationError) {
+                    // Error específico de Prisma por tipo de dato incorrecto
+                    throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+                } else {
+                    throw new CustomError(500, "Internal server error", {error: error.message})
                 }
-            });
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientKnownRequestError) {
-                throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    createAdmPorCobrar({cuenta_facturas_por_cobrar, cuenta_documentos_en_cartera_por_cobrar}) {
+        return ()=>{
+            try {
+                return prisma.administracion_por_cobrar.create({
+                    data: {
+                        empresa: 1,
+                        cuenta_facturas_por_cobrar,
+                        cuenta_documentos_en_cartera_por_cobrar
+                    }
+                });
+            } catch (error) {
+                if (error instanceof prismaError.PrismaClientKnownRequestError) {
+                    throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
+                } else {
+                    throw new CustomError(500, "Internal server error", {error: error.message})
+                }
+            }
+        }
+    }
+    updateAdmPorCobrar(id, data) {
+        return ()=>{
+            try {
+                return prisma.administracion_por_cobrar.update({
+                    where: { id },
+                    data,
+                });
+            } catch (error) {
+                if (error instanceof prismaError.PrismaClientValidationError) {
+                    // Error específico de Prisma por tipo de dato incorrecto
+                    throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+                } else {
+                    throw new CustomError(500, "Internal server error", {error: error.message})
+                }
+            }
+        }
+    }
+    createAdmPorPagar({cuenta_honorarios_por_pagar, cuenta_facturas_por_pagar, cuenta_vouchers_por_pagar, cuenta_documentos_por_pagar}) {
+        return ()=>{
+            try {
+                return prisma.administracion_por_pagar.create({
+                    data: {
+                        empresa: 1,
+                        cuenta_honorarios_por_pagar,
+                        cuenta_facturas_por_pagar,
+                        cuenta_vouchers_por_pagar,
+                        cuenta_documentos_por_pagar
+                    }
+                });
+            } catch (error) {
+                if (error instanceof prismaError.PrismaClientKnownRequestError) {
+                    throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
+                } else {
+                    throw new CustomError(500, "Internal server error", {error: error.message})
+                }
+            }
+        }
+    }
+    updateAdmPorPagar(id, data) {
+        return ()=>{
+            try {
+                return prisma.administracion_por_pagar.update({
+                    where: { id },
+                    data,
+                });
+            } catch (error) {
+                if (error instanceof prismaError.PrismaClientValidationError) {
+                    // Error específico de Prisma por tipo de dato incorrecto
+                    throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+                } else {
+                    throw new CustomError(500, "Internal server error", {error: error.message})
+                }
             }
         }
     }

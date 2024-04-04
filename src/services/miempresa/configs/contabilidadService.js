@@ -1,4 +1,5 @@
 import contabilidadRepository from "../../../persistence/repositorys/miempresa/configs/contabilidadRepository.js";
+import executeTransactions from "../../../persistence/transactions/executeTransaction.js";
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 
 class ContabilidadService {
@@ -57,29 +58,54 @@ class ContabilidadService {
             throw(error)
         }
     }
-    async createModuloAdm(cuenta_impuesto_debito, cuenta_impuesto_credito, valor_impuesto_retenido, cuenta_impuesto_no_recuperable, plazo_no_recuperable, cuenta_retencion_impuesto, cuenta_impuesto_especifico) {
+    async executeOperationsModuloAdministracion(data) {
+        //Preparar los datos para cada operacion
+        // Desestructurar "data" para obtener los datos específicos para cada operación.
+        const {
+            administracion_impuesto,
+            administracion_anticipo,
+            administracion_por_clasificar,
+            administracion_por_cobrar,
+            administracion_por_pagar
+        } = data;
+        //Agrupar las operaciones, pasando los datos a cada funcion
+        const operations = [
+            contabilidadRepository.createModuloAdm(administracion_impuesto),
+            contabilidadRepository.createAdmAnticipo(administracion_anticipo),
+            contabilidadRepository.createAdmPorClasificar(administracion_por_clasificar),
+            contabilidadRepository.createAdmPorCobrar(administracion_por_cobrar),
+            contabilidadRepository.createAdmPorPagar(administracion_por_pagar)
+        ]
         try {
-            return contabilidadRepository.createModuloAdm(cuenta_impuesto_debito, cuenta_impuesto_credito, valor_impuesto_retenido, cuenta_impuesto_no_recuperable, plazo_no_recuperable, cuenta_retencion_impuesto, cuenta_impuesto_especifico)
+            //Ejecutar las operaciones en una transaction
+            const result = await executeTransactions(operations.map( op => op() ))
+            return ("transacciones completas con exito", result)
         } catch (error) {
             throw(error)
         }
     }
-    async updateModuloAdm(id, inputData) {
+    async UpdateExecuteOperationsModuloAdministracion(data) {
+        //Preparar los datos para cada operacion
+        // Desestructurar "data" para obtener los datos específicos para cada operación.
+        const {
+            administracion_impuesto,
+            administracion_anticipo,
+            administracion_por_clasificar,
+            administracion_por_cobrar,
+            administracion_por_pagar
+        } = data;
+        //Agrupar las operaciones, pasando los datos a cada funcion
+        const operations = [
+            contabilidadRepository.updateModuloAdm(administracion_impuesto.id, administracion_impuesto),
+            contabilidadRepository.updateAdmAnticipo(administracion_anticipo.id, administracion_anticipo),
+            contabilidadRepository.updateAdmPorClasificar(administracion_por_clasificar.id, administracion_por_clasificar),
+            contabilidadRepository.updateAdmPorCobrar(administracion_por_cobrar.id, administracion_por_cobrar),
+            contabilidadRepository.updateAdmPorPagar(administracion_por_pagar.id, administracion_por_pagar)
+        ]
         try {
-            const camposPermitidos = [
-                'cuenta_impuesto_debito', 'cuenta_impuesto_credito', 'valor_impuesto_retenido', 'cuenta_impuesto_no_recuperable','plazo_no_recuperable','cuenta_retencion_impuesto','cuenta_impuesto_especifico'
-            ]
-            //Contruyo un objeto de datos solo con los campos permitidos que tambien esten presentes en input data
-            let dataToUpdate = {}
-            camposPermitidos.forEach(campo =>{
-                if (inputData.hasOwnProperty(campo)){
-                    dataToUpdate[campo] = inputData[campo]
-                }
-            })
-            if(Object.keys(dataToUpdate).length === 0){
-                throw new CustomError(400, "No valid fields provided for update")
-            }
-            return await contabilidadRepository.updateModuloAdm(id, dataToUpdate)
+            //Ejecutar las operaciones en una transaction
+            const result = await executeTransactions(operations.map( op => op() ))
+            return ("transacciones completas con exito", result)
         } catch (error) {
             throw(error)
         }
