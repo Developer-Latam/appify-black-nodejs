@@ -217,9 +217,9 @@ model documento_despacho_venta {
 }
 
 model documento_venta {
-  id         String  @id @db.VarChar(100)
-  user       String  @db.VarChar(100)
-  recurrente Boolean
+  id               String @id @db.VarChar(100)
+  user             String @db.VarChar(100)
+  numero_documento String @db.VarChar(150)
 
   @@index([user], map: "usuarios")
 }
