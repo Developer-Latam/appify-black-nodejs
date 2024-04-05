@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js",
-    "build": "prisma generate --output public",
+    "build": "prisma generate",
     "postinstall": "prisma generate"
   },
   "keywords": [],
