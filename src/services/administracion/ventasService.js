@@ -18,7 +18,7 @@ class VentasService {
             const idFV = idgenerate("FV")
             const idDV = idgenerate("DV")
             const operations = [
-                ventasRepository.createDocVentas(idDV, documento_venta),
+                ventasRepository.createDocVentas(idDV),
                 ventasRepository.createFacturaVenta(idFV,factura_venta),
             ]
             if(item_servicio_factura_venta){

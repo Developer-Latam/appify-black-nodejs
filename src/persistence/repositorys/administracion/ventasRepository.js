@@ -2,15 +2,14 @@ import { prisma, prismaError } from "../../../utils/dependencys/injection.js";
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../../utils/id/idGenerate.js";
 class VentasRepository {
-    createDocVentas ({idGenerate,recurrente}){
+    createDocVentas (idDV){
         return ()=>{
             try {
                 prisma.documento_venta.create({
                     data: {
-                        id: idGenerate,
-                        idSII,
+                        id: idDV,
                         user: "sub-user-9a84cf81-d493-4320-be9d-99e45da9fe6e",
-                        recurrente
+                        documento_venta: "numero que viene de SII"
                     }
                 })
             } catch (error) {
@@ -23,7 +22,7 @@ class VentasRepository {
             }
         }
     }
-    createFacturaVenta ({idFV,idDV,idCliente, tipo_documento, numero_documento, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
+    createFacturaVenta (idFV,idDV,{idFV,,idCliente, tipo_documento, numero_documento, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
         return ()=>{
             try {
                 prisma.factura_venta.create({
@@ -33,7 +32,7 @@ class VentasRepository {
                         idCliente: "cliente-26a583c8-5130-48a6-82eb-4796430bb354",
                         tipo_documento,
                         numero_documento: "numero que viene de SII",
-                        fecha: new Date(),
+                        fecha,
                         idVendedor: "sub-user-b6034146-e508-4da5-bad9-eb7ec18fa5d7",
                         condicion_de_pago,
                         centro_beneficio,
