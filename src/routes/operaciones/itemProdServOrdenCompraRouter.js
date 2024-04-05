@@ -19,7 +19,7 @@ router.post('/ordenCompraP', createitemProducto);
 router.get('/ordenCompraP/:id', getProductoById);
 
 // Ruta para obtener todas los item productos y servicios con el Id de la orden de compra
-router.get('/ordenComprasAll/:idOrden', getProdServByOrdenCompraId);
+router.get('/h2/:idOrden', getProdServByOrdenCompraId);
 
 // Ruta para actualizar un item producto
 router.put('/ordenCompraP/:id', updateItemProducto);
