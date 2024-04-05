@@ -22,7 +22,7 @@ class VentasRepository {
             }
         }
     }
-    createFacturaVenta (idFV,idDV,{idFV,,idCliente, tipo_documento, numero_documento, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
+    createFacturaVenta (idFV,idDV,{idCliente, tipo_documento, numero_documento, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
         return ()=>{
             try {
                 prisma.factura_venta.create({
