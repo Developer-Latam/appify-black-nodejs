@@ -23,9 +23,9 @@ import cors from 'cors';
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import { swaggerOpts } from './docs/swaggerOpts.js'
-
+import 'dotenv/config'
 const app = express()
-const PORT = 8080
+const PORT = 8080 || process.env.PORT 
 
 app.use(cors())
 app.use(express.urlencoded({extended:true}))
