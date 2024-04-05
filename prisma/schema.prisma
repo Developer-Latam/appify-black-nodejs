@@ -217,9 +217,9 @@ model documento_despacho_venta {
 }
 
 model documento_venta {
-  id         String  @id @db.VarChar(100)
-  user       String  @db.VarChar(100)
-  recurrente Boolean
+  id               String @id @db.VarChar(100)
+  user             String @db.VarChar(100)
+  numero_documento String @db.VarChar(150)
 
   @@index([user], map: "usuarios")
 }
@@ -650,9 +650,9 @@ model orden_compra {
   fecha             DateTime? @db.Date
   condicion_de_pago Int
   notas             String?   @db.Text
-  subtotal          String    @db.VarChar(50)
-  IVA               String    @db.VarChar(50)
-  total             String    @db.VarChar(50)
+  subtotal          Float     @db.Float
+  IVA               Float     @db.Float
+  total             Float     @db.Float
 
   @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([idProvedor], map: "proveedores")

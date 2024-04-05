@@ -7,6 +7,7 @@ import servicerouter from './routes/miempresa/serviceRouter.js'
 import clientesrouter from './routes/comercial/clientesRouter.js'
 import projectsrouter from './routes/comercial/projectsRouter.js'
 import ordentrabajorouter from './routes/operaciones/ordentrabajoRouter.js'
+import ordencomprarouter from './routes/operaciones/ordenCompraRouter.js'
 import itemprojectsrouter from './routes/comercial/itemsProdServProyectoRouter.js'
 import contactorouter from './routes/comercial/contactosClienteRouter.js'
 import puntodespachorouter from './routes/comercial/puntoDespachoClienteRouter.js'
@@ -60,6 +61,7 @@ app.use('/anticipos', anticiposrouter)
 // Routers a Operaciones
 
 app.use('/ordenTrabajo', ordentrabajorouter)
+app.use('/ordenCompra', ordencomprarouter)
 
 
 // Routers a Administracion
