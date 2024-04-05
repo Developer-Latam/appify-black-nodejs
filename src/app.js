@@ -17,6 +17,7 @@ import ecommercerouter from './routes/comercial/ecommerceRouter.js'
 import sistemRouter from './routes/miempresa/configs/sistemaRouter.js'
 import comercialRouter from './routes/miempresa/configs/comercialRouter.js'
 import contabilidadRouter from './routes/miempresa/configs/contabilidadRouter.js'
+import ventasRouter from './routes/administracion/ventasRouter.js'
 import cors from 'cors';
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
@@ -62,7 +63,7 @@ app.use('/ordenTrabajo', ordentrabajorouter)
 
 
 // Routers a Administracion
-
+app.use('/administracion', ventasRouter)
 
 
 // Routers a Calendario??

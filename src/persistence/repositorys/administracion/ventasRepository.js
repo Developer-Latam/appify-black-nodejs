@@ -8,6 +8,7 @@ class VentasRepository {
                 prisma.documento_venta.create({
                     data: {
                         id: idGenerate,
+                        idSII,
                         user: "sub-user-9a84cf81-d493-4320-be9d-99e45da9fe6e",
                         recurrente
                     }
