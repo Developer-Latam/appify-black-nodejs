@@ -305,8 +305,11 @@ model item_producto {
   idProducto    String  @db.VarChar(100)
   idOrdenCompra String  @db.VarChar(100)
   cantidad      Int
-  unitario      Int
-  neto          Int
+  unitario      Float   @db.Float
+  neto          Float   @db.Float
+  subtotal      Float   @db.Float
+  IVA           Float   @db.Float
+  total         Float   @db.Float
   cuenta        String? @db.VarChar(100)
 
   @@index([idOrdenCompra], map: "orden_compra")
@@ -561,8 +564,11 @@ model item_servicios {
   idServicio    String  @db.VarChar(100)
   idOrdenCompra String  @db.VarChar(100)
   cantidad      Int
-  unitario      Int
-  neto          Int
+  unitario      Float   @db.Float
+  neto          Float   @db.Float
+  subtotal      Float   @db.Float
+  IVA           Float   @db.Float
+  total         Float   @db.Float
   cuenta        String? @db.VarChar(100)
 
   @@index([idOrdenCompra], map: "orden_compra")
