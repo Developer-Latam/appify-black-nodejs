@@ -25,7 +25,7 @@ import swaggerJSDoc from "swagger-jsdoc";
 import { swaggerOpts } from './docs/swaggerOpts.js'
 import 'dotenv/config'
 const app = express()
-const PORT = 8080 || process.env.PORT 
+const PORT = process.env.PORT || 8080;
 
 app.use(cors())
 app.use(express.urlencoded({extended:true}))
@@ -66,6 +66,9 @@ app.use('/ordenCompra', ordencomprarouter)
 
 // Routers a Administracion
 app.use('/administracion', ventasRouter)
+app.get('/', (req, res) => {
+    res.json('Estoy desplegado hijo de tu puta madre, pruebame');
+});
 
 
 // Routers a Calendario??
