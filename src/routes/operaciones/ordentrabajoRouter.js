@@ -11,7 +11,7 @@ const router = Router();
 router.post('/ordenTrabajo', createOrdenTrabajo);
 
 // Ruta para obtener una orden de trabajo con su ID
-router.get('/ordenTrabajo/:id', createOrdenTrabajo);
+router.get('/ordenTrabajo/:id', getOrdenTrabajoById);
 
 // Ruta para obtener todas las ordenes de trabajo por ID de usuario
 router.get('/ordenTrabajos/:idUser', getOrdenTrabajoByUserId);
