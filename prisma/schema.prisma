@@ -859,6 +859,7 @@ model subusuarios {
   ref_superusuario    Int?      @db.TinyInt
   checkeado           Int       @default(0)
   password            String?   @default("hola1234") @db.VarChar(255)
+  estado              String    @db.VarChar(30)
 
   @@index([user], map: "usuarios")
 }
@@ -1175,4 +1176,56 @@ model item_servicio_proyecto {
 
   @@index([idProyecto], map: "proyectos")
   @@index([idServicio], map: "servicios")
+}
+
+model CuentasBancarias {
+  cuenta_id        String  @id @db.VarChar(100)
+  conciliacion_id  Int?
+  account_id       String? @db.VarChar(255)
+  tipo             String? @db.VarChar(255)
+  numero           String? @db.VarChar(255)
+  nombre           String? @db.VarChar(255)
+  saldo_disponible Int?
+  saldo_actual     Int?
+  moneda           String? @db.VarChar(5)
+
+  @@index([conciliacion_id], map: "link_fintoc_bancos")
+}
+
+model link_fintoc_bancos {
+  conciliacion_id String @id @db.VarChar(100)
+  link_id_banco   String @db.VarChar(150)
+  link_token      String @db.VarChar(150)
+  holder_id       Int
+  user            String @db.VarChar(100)
+
+  @@index([user], map: "usuarios")
+}
+
+model movimientos_cuenta {
+  id                                    String    @id @db.VarChar(100)
+  cuenta_id                             Int
+  description                           String?   @db.VarChar(255)
+  amount                                Decimal?  @db.Decimal(30, 2)
+  currency                              String?   @db.VarChar(3)
+  post_date                             DateTime? @db.Timestamp(0)
+  transaction_date                      DateTime? @db.Timestamp(0)
+  type                                  String?   @db.VarChar(50)
+  sender_account_holder_id              String?   @db.VarChar(255)
+  sender_account_number                 String?   @db.VarChar(255)
+  sender_account_institution_id         String?   @db.VarChar(255)
+  sender_account_institution_name       String?   @db.VarChar(255)
+  sender_account_institution_country    String?   @db.VarChar(2)
+  sender_account_name                   String?   @db.VarChar(255)
+  recipient_account_holder_id           String?   @db.VarChar(255)
+  recipient_account_number              String?   @db.VarChar(255)
+  recipient_account_institution_id      String?   @db.VarChar(255)
+  recipient_account_institution_name    String?   @db.VarChar(255)
+  recipient_account_institution_country String?   @db.VarChar(2)
+  recipient_account_name                String?   @db.VarChar(255)
+  comment                               String?   @db.VarChar(255)
+  reference_id                          String?   @db.VarChar(255)
+  pending                               Boolean?
+
+  @@index([cuenta_id], map: "CuentasBancarias")
 }
