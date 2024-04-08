@@ -68,6 +68,8 @@ app.use('/h', itemprodservrouter)
 
 // Routers a Administracion
 app.use('/administracion', ventasRouter)
+
+
 app.get('/', (req, res) => {
     res.json('Estoy desplegado hijo de tu puta madre, pruebame');
 });

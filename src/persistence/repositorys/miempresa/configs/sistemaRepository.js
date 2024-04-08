@@ -55,6 +55,7 @@ class ItemSistemaRepository {
         try {
             return await prisma.empresa.create({
                 data: {
+                    id: "empresa-id",
                     user,
                     logo: "URL SACADA DE FIREBASE",
                     nombre, 
