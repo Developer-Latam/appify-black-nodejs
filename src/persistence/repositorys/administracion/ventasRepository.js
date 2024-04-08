@@ -2,13 +2,13 @@ import { prisma, prismaError } from "../../../utils/dependencys/injection.js";
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../../utils/id/idGenerate.js";
 class VentasRepository {
-    createDocVentas (idDV){
+    createDocVentas (idDV, {user}){
         
             try {
                 return prisma.documento_venta.create({
                     data: {
                         id: idDV,
-                        user: "sub-user-9a84cf81-d493-4320-be9d-99e45da9fe6e",
+                        user,
                         numero_documento: "numero que viene de SII"
                     }
                 })

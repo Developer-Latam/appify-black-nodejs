@@ -5,7 +5,6 @@ import executeTransactions from "../../persistence/transactions/executeTransacti
 class VentasService {
     async createFV(data) {
         try {
-            
             const {
                 documento_venta,
                 factura_venta,
@@ -19,10 +18,9 @@ class VentasService {
             const idFV = idgenerate("FV")
             const idDV = idgenerate("DV")
             let operations = []
-             // Aquí asumimos que ambos métodos devuelven una única promesa directamente
-            operations.push(ventasRepository.createDocVentas(idDV));
-            operations.push(ventasRepository.createFacturaVenta(idFV, idDV, { factura_venta }));
-            // Agregar operaciones para ítems de servicio si existen
+            operations.push(ventasRepository.createDocVentas(idDV, documento_venta));
+            operations.push(ventasRepository.createFacturaVenta(idFV, idDV, factura_venta ));
+            // Agregar a operaciones para ítems de servicio si existen
             if (item_servicio_factura_venta && item_servicio_factura_venta.length > 0) {
                  // Invocar la función y obtener la promesa Prisma
                 const itemServicioPromises = ventasRepository.createItemServicioFacturaVenta(idFV, item_servicio_factura_venta);
@@ -38,7 +36,6 @@ class VentasService {
             const result = await executeTransactions(operations)
             return { message: "Transacciones completas con éxito", result };
         } catch (error) {
-            console.log("error en la capa service:", error)
             throw error;
         }
     }
