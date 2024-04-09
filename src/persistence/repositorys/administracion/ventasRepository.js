@@ -99,7 +99,7 @@ class VentasRepository {
             }
         }
     }
-    async createFVE (idFVE,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
+    createFVE (idFVE,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
         try {
             return prisma.factura_venta_excenta.create({
                 data: {
@@ -135,7 +135,6 @@ class VentasRepository {
                     codigo: item.codigo,
                     cantidad: item.cantidad,
                     unitario: item.unitario,
-                    bruto: item.bruto,
                     neto: item.neto,
                     cuenta: item.cuenta,
                     bonificacion: item.bonificacion,
@@ -161,7 +160,6 @@ class VentasRepository {
                     codigo: item.codigo,
                     cantidad: item.cantidad,
                     unitario: item.unitario,
-                    bruto: item.bruto,
                     neto: item.neto,
                     cuenta: item.cuenta,
                     bonificacion: item.bonificacion,
@@ -169,6 +167,33 @@ class VentasRepository {
                 }
             }));
             return operations
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    createNC (idFVE,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
+        try {
+            return prisma.factura_venta_excenta.create({
+                data: {
+                    id: idFVE,
+                    idDoc: idDV,
+                    idCliente,
+                    tipo_documento,
+                    //numero que viene de SII
+                    numero_documento,
+                    fecha,
+                    idVendedor,
+                    condicion_de_pago,
+                    centro_beneficio,
+                    observacion,
+                    nota_interna
+                }
+            })
         } catch (error) {
             if (error instanceof prismaError.PrismaClientValidationError) {
                 // Error específico de Prisma por tipo de dato incorrecto
