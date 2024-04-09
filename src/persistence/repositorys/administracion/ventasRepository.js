@@ -223,11 +223,12 @@ class VentasRepository {
             }
         }
     }
-    createNotaFVE(idFV, idNCoD) {
+    createNotaFVE(idFVE, idNCoD) {
         try {
             return prisma.nota_factura_venta_excenta.create({
                 data: {
-                    idFacturaVenta: idFV,
+                    //NUMERO DE LA FACTURA DE VENTA EXCENTA
+                    idFacturaVentaExcenta: idFVE,
                     idNotadeCD: idNCoD,
                 }
             })
