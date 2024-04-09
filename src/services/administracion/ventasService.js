@@ -75,6 +75,32 @@ class VentasService {
             throw error;
         }
     }
+    async createNCoD(data) {
+        try {
+            const {
+                notas_de_credito_debito,
+                nota_factura_venta,
+                nota_factura_venta_excenta,
+                nota_voucher_venta,
+            } = data;
+            const idNCoD = idgenerate("NC")
+            let operations = []
+            operations.push(ventasRepository.createNCoD(idNCoD, notas_de_credito_debito ));
+            // Determina qué tipo de nota adicional crear y prepara la operación correspondiente
+            if (nota_factura_venta) {
+                operations.push(ventasRepository.createNotaFV(nota_factura_venta.idFacturaVenta, idNCoD));
+            } else if (nota_factura_venta_excenta) {
+                operations.push(ventasRepository.createNotaFVE(nota_factura_venta_excenta.idFacturaVenta, idNCoD));
+            } else if (nota_voucher_venta) {
+                operations.push(ventasRepository.createNotaVV(nota_voucher_venta.idVoucherVenta, idNCoD));
+            }
+            //Ejecutar las operaciones en una transaction
+            const result = await executeTransactions(operations)
+            return { message: "Transacciones (NOTA DE CREDITO/DEBITO) completas con éxito", result };
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 

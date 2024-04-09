@@ -176,22 +176,76 @@ class VentasRepository {
             }
         }
     }
-    createNC (idFVE,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
+    createNCoD (idNCoD,{idDoc,idCliente,idVendedor,tipo_credito, tipo_debito, numero_documento,tipo_nota,fecha,motivo_referencia,centro_de_beneficio, observacion, nota_interna}){
         try {
-            return prisma.factura_venta_excenta.create({
+            return prisma.notas_de_credito_debito.create({
                 data: {
-                    id: idFVE,
-                    idDoc: idDV,
+                    id: idNCoD,
+                    //numero del documento de venta que proviene del sii, del detalle de la factura del sii
+                    idDoc,
                     idCliente,
-                    tipo_documento,
+                    idVendedor,
+                    tipo_credito,
+                    tipo_debito,
                     //numero que viene de SII
                     numero_documento,
+                    tipo_nota,
                     fecha,
-                    idVendedor,
-                    condicion_de_pago,
-                    centro_beneficio,
+                    motivo_referencia,
+                    centro_de_beneficio,
                     observacion,
                     nota_interna
+                }
+            })
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    createNotaFV(idFV, idNCoD) {
+        try {
+            return prisma.nota_factura_venta.create({
+                data: {
+                    idFacturaVenta: idFV,
+                    idNotadeCD: idNCoD,
+                }
+            })
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    createNotaFVE(idFV, idNCoD) {
+        try {
+            return prisma.nota_factura_venta_excenta.create({
+                data: {
+                    idFacturaVenta: idFV,
+                    idNotadeCD: idNCoD,
+                }
+            })
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    createNotaVV(idVV, idNCoD) {
+        try {
+            return prisma.nota_voucher_venta.create({
+                data: {
+                    idVoucherVenta: idVV,
+                    idNotadeCD: idNCoD,
                 }
             })
         } catch (error) {
