@@ -594,11 +594,11 @@ model nota_factura_venta {
 }
 
 model nota_factura_venta_excenta {
-  id             Int    @id @default(autoincrement())
-  idFacturaVenta String @db.VarChar(100)
-  idNotadeCD     String @db.VarChar(100)
+  id                    Int    @id @default(autoincrement())
+  idFacturaVentaExcenta String @db.VarChar(100)
+  idNotadeCD            String @db.VarChar(100)
 
-  @@index([idFacturaVenta], map: "factura_venta_excenta")
+  @@index([idFacturaVentaExcenta], map: "factura_venta_excenta")
   @@index([idNotadeCD], map: "notas_de_credito_debito")
 }
 
@@ -1206,7 +1206,7 @@ model link_fintoc_bancos {
 
 model movimientos_cuenta {
   id                                    String    @id @db.VarChar(100)
-  cuenta_id                             Int
+  cuenta_id                             String    @db.VarChar(100)
   description                           String?   @db.VarChar(255)
   amount                                Decimal?  @db.Decimal(30, 2)
   currency                              String?   @db.VarChar(3)

@@ -8,7 +8,8 @@ import {
   getConciliacionesByUserId,
   getCuentasBancariasByConciliacionId,
   getMovimientosByCuentaId,
-  updateUserConciliacion
+  updateUserConciliacion,
+  updateCuentaBancariaById
 } from '../../controllers/conciliacion/conciliacionController.js';
 
 const router = Router();
@@ -39,6 +40,9 @@ router.get('/movimientos/:cuentaId', getMovimientosByCuentaId);
 
 // Actualizar el user que pidio la conciliacion bancaria despues que se creo
 router.put('/update/:id', updateUserConciliacion);
+
+// Actualizar cuenta bancatia para activarla
+router.put('/bankUpdate/:id', updateCuentaBancariaById);
 
 
 export default router;

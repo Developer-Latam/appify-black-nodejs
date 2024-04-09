@@ -33,9 +33,9 @@ export const getLinkByUserId = async (req, res) => {
 
 export const getCuentasByCuentaId = async (req, res) => {
     try {
-        const cuentaId = req.params;
-        await conciliacionService.getCuentasByCuentaId(cuentaId);
-        res.status(200).json({response: 'ok' });
+        const {cuentaId} = req.params;
+        const respuesta = await conciliacionService.getCuentasByCuentaId(cuentaId);
+        res.status(200).json({ respuesta });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -43,9 +43,9 @@ export const getCuentasByCuentaId = async (req, res) => {
 
 export const getMovimientosById = async (req, res) => {
     try {
-        const id = req.params;
-        await conciliacionService.getMovimientosById(id);
-        res.status(200).json({response: 'ok' });
+        const {id} = req.params;
+        const respuesta = await conciliacionService.getMovimientosById(id);
+        res.status(200).json({ respuesta });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -53,9 +53,9 @@ export const getMovimientosById = async (req, res) => {
 
 export const getConciliacionesByUserId = async (req, res) => {
     try {
-        const userId = req.params;
-        await conciliacionService.getConciliacionesByUserId(userId);
-        res.status(200).json({response: 'ok' });
+        const {userId} = req.params;
+        const respuesta = await conciliacionService.getConciliacionesByUserId(userId);
+        res.status(200).json({respuesta});
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -63,9 +63,9 @@ export const getConciliacionesByUserId = async (req, res) => {
 
 export const getCuentasBancariasByConciliacionId = async (req, res) => {
     try {
-        const conciliacionId = req.params;
-        await conciliacionService.getCuentasBancariasByConciliacionId(conciliacionId);
-        res.status(200).json({response: 'ok' });
+        const {conciliacionId} = req.params;
+        const respuesta = await conciliacionService.getCuentasBancariasByConciliacionId(conciliacionId);
+        res.status(200).json({respuesta});
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -73,9 +73,9 @@ export const getCuentasBancariasByConciliacionId = async (req, res) => {
 
 export const getMovimientosByCuentaId = async (req, res) => {
     try {
-        const cuentaId = req.params;
-        await conciliacionService.getMovimientosByCuentaId(cuentaId);
-        res.status(200).json({response: 'ok' });
+        const {cuentaId} = req.params;
+        const respuesta = await conciliacionService.getMovimientosByCuentaId(cuentaId);
+        res.status(200).json({respuesta});
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -84,13 +84,25 @@ export const getMovimientosByCuentaId = async (req, res) => {
 export const updateUserConciliacion = async (req, res) => {
     try {
         const { id } = req.params;
-        const user = req.body;
-        await conciliacionService.updateUserConciliacion({id : id, userId: user});
-        res.status(200).json({response: 'ok' });
+        const { user } = req.body; // Solo extraer el campo 'user' del cuerpo de la solicitud
+        await conciliacionService.updateUserConciliacion(id, user); // Pasar solo 'user' al servicio
+        res.status(200).json({ response: 'ok' });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 };
+
+export const updateCuentaBancariaById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { accId } = req.body; // Solo extraer el campo 'user' del cuerpo de la solicitud
+        await conciliacionService.updateCuentaBancariaById(id, accId); // Pasar solo 'user' al servicio
+        res.status(200).json({ response: 'ok' });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
 
 
 
