@@ -1179,15 +1179,16 @@ model item_servicio_proyecto {
 }
 
 model CuentasBancarias {
-  cuenta_id        String  @id @db.VarChar(100)
+  cuenta_id        String   @id @db.VarChar(100)
   conciliacion_id  Int?
-  account_id       String? @db.VarChar(255)
-  tipo             String? @db.VarChar(255)
-  numero           String? @db.VarChar(255)
-  nombre           String? @db.VarChar(255)
+  account_id       String?  @db.VarChar(255)
+  tipo             String?  @db.VarChar(255)
+  numero           String?  @db.VarChar(255)
+  nombre           String?  @db.VarChar(255)
   saldo_disponible Int?
   saldo_actual     Int?
-  moneda           String? @db.VarChar(5)
+  moneda           String?  @db.VarChar(5)
+  activo           Boolean? @default(false)
 
   @@index([conciliacion_id], map: "link_fintoc_bancos")
 }

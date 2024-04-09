@@ -41,15 +41,14 @@ class conciliacionService {
         }
     }
 
-    async createMovimiento(data) {
-        const { id } = idgenerate('MOV')
+    async createMovimientos(data) {
 
-        return conciliacionRepository.createMovimiento({data, id : id});
+        return conciliacionRepository.createMovimientos(data);
     }
 
-    async getLinkByUserId(userid){
+    async getLinkByUserId(userId){
 
-        return conciliacionRepository.findLinkByUserId(userid);
+        return conciliacionRepository.findLinkByUserId(userId);
 
     }
 
