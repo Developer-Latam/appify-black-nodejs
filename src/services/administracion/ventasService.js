@@ -90,7 +90,7 @@ class VentasService {
             if (nota_factura_venta) {
                 operations.push(ventasRepository.createNotaFV(nota_factura_venta.idFacturaVenta, idNCoD));
             } else if (nota_factura_venta_excenta) {
-                operations.push(ventasRepository.createNotaFVE(nota_factura_venta_excenta.idFacturaVenta, idNCoD));
+                operations.push(ventasRepository.createNotaFVE(nota_factura_venta_excenta.idFacturaVentaExcenta, idNCoD));
             } else if (nota_voucher_venta) {
                 operations.push(ventasRepository.createNotaVV(nota_voucher_venta.idVoucherVenta, idNCoD));
             }
