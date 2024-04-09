@@ -15,33 +15,46 @@ class conciliacionRepository {
         });
     }
 
-    
-    async createMovimientos(data) {
-        // Si el dato recibido es un objeto iterable (como una lista)
-        if (Symbol.iterator in Object(data)) {
-            // Iterar sobre cada movimiento en la lista
-            for (const movimiento of data) {
-                await insertarMovimiento(movimiento);
-            }
-        } else {
-            // Si el dato recibido no es iterable, asumimos que es un solo movimiento
-            await insertarMovimiento(data);
-        }
-    }
-    
     async insertarMovimiento(movimiento) {
         try {
             // Verificar si el movimiento ya existe en la base de datos
             const existingMovimiento = await prisma.movimientos_cuenta.findUnique({
                 where: {
-                    id: movimiento.id // Suponiendo que el ID del movimiento es único
+                    id: movimiento.id
                 }
             });
     
             // Si el movimiento no existe en la base de datos, procede a insertarlo
             if (!existingMovimiento) {
+
+                const data = {
+                    id: movimiento.id,
+                    cuenta_id: movimiento.cuenta_id,
+                    description: movimiento.description || null,
+                    amount: movimiento.amount,
+                    currency: movimiento.currency,
+                    post_date: movimiento.post_date,
+                    transaction_date: movimiento.transaction_date || null,
+                    type: movimiento.type,
+                    sender_account_holder_id: movimiento.sender_account?.holder_id || null,
+                    sender_account_number: movimiento.sender_account?.number || null,
+                    sender_account_institution_id: movimiento.sender_account?.institution?.id || null,
+                    sender_account_institution_name: movimiento.sender_account?.institution?.name || null,
+                    sender_account_institution_country: movimiento.sender_account?.institution?.country || null,
+                    sender_account_name: movimiento.sender_account?.holder_name || null,
+                    recipient_account_holder_id: movimiento.recipient_account?.holder_id || null,
+                    recipient_account_number: movimiento.recipient_account?.number || null,
+                    recipient_account_institution_id: movimiento.recipient_account?.institution?.id || null,
+                    recipient_account_institution_name: movimiento.recipient_account?.institution?.name || null,
+                    recipient_account_institution_country: movimiento.recipient_account?.institution?.country || null,
+                    recipient_account_name: movimiento.recipient_account?.holder_name || null,
+                    comment: movimiento.comment || null,
+                    reference_id: movimiento.reference_id || null,
+                    pending: movimiento.pending
+                };
+
                 await prisma.movimientos_cuenta.create({
-                    data: movimiento
+                    data: data
                 });
                 console.log(`Movimiento con ID ${movimiento.id} insertado correctamente.`);
             } else {
@@ -51,6 +64,21 @@ class conciliacionRepository {
             console.error(`Error al insertar el movimiento con ID ${movimiento.id}: ${error.message}`);
         }
     }
+
+    
+    async createMovimientos(data) {
+        // Si el dato recibido es un objeto iterable (como una lista)
+        if (Symbol.iterator in Object(data)) {
+            // Iterar sobre cada movimiento en la lista
+            for (const movimiento of data) {
+                await this.insertarMovimiento(movimiento);
+            }
+        } else {
+            // Si el dato recibido no es iterable, asumimos que es un solo movimiento
+            await this.insertarMovimiento(data);
+        }
+    }
+    
 
     async findLinkByUserId(userid) {
         return prisma.link_fintoc_bancos.findUnique({
@@ -89,12 +117,23 @@ class conciliacionRepository {
       });
     }
 
-    async updateUserConciliacion(id, userId) {
+    async updateUserConciliacion(id, updateData) {
         return prisma.link_fintoc_bancos.update({
-            where: { id: id },
-            user: userId
+            where: { conciliacion_id: id },
+            data : updateData
+            
         });
     }
+
+    async updateCuentaBancariaById(id, updateData) {
+        return prisma.CuentasBancarias.update({
+            where: { cuenta_id: id },
+            data : updateData
+            
+        });
+    }
+
+    
 
 }
 

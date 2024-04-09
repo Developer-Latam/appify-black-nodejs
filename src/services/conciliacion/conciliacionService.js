@@ -98,9 +98,14 @@ class conciliacionService {
         return conciliacionRepository.findMovimientosByCuentaId(cuentaId);
     }
 
-    async updateUserConciliacion(id, userId) {
+    async updateUserConciliacion(id, user) {
+        const updateData = { user }; 
+        return conciliacionRepository.updateUserConciliacion(id, updateData);
+    }
 
-        return conciliacionRepository.updateUserConciliacion(id, userId);
+    async updateCuentaBancariaById(id, accId) {
+        const updateData = { accId }; 
+        return conciliacionRepository.updateCuentaBancariaById(id, updateData);
     }
 }
 
