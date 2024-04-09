@@ -619,6 +619,7 @@ model notas_de_credito_debito {
   tipo_credito        Boolean
   tipo_debito         Boolean
   numero_documento    String    @db.VarChar(100)
+  tipo_nota           String    @db.VarChar(100)
   fecha               DateTime? @db.Date
   motivo_referencia   String?   @db.VarChar(40)
   centro_de_beneficio String    @db.VarChar(50)
@@ -1179,15 +1180,16 @@ model item_servicio_proyecto {
 }
 
 model CuentasBancarias {
-  cuenta_id        String  @id @db.VarChar(100)
-  conciliacion_id  Int?
-  account_id       String? @db.VarChar(255)
-  tipo             String? @db.VarChar(255)
-  numero           String? @db.VarChar(255)
-  nombre           String? @db.VarChar(255)
+  cuenta_id        String   @id @db.VarChar(100)
+  conciliacion_id  String   @db.VarChar(100)
+  account_id       String?  @db.VarChar(255)
+  tipo             String?  @db.VarChar(255)
+  numero           String?  @db.VarChar(255)
+  nombre           String?  @db.VarChar(255)
   saldo_disponible Int?
   saldo_actual     Int?
-  moneda           String? @db.VarChar(5)
+  moneda           String?  @db.VarChar(5)
+  activo           Boolean? @default(false)
 
   @@index([conciliacion_id], map: "link_fintoc_bancos")
 }
@@ -1196,7 +1198,7 @@ model link_fintoc_bancos {
   conciliacion_id String @id @db.VarChar(100)
   link_id_banco   String @db.VarChar(150)
   link_token      String @db.VarChar(150)
-  holder_id       Int
+  holder_id       String @db.VarChar(100)
   user            String @db.VarChar(100)
 
   @@index([user], map: "usuarios")
