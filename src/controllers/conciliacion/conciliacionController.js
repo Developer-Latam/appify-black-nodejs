@@ -95,8 +95,10 @@ export const updateUserConciliacion = async (req, res) => {
 export const updateCuentaBancariaById = async (req, res) => {
     try {
         const { id } = req.params;
-        const { accId } = req.body; // Solo extraer el campo 'user' del cuerpo de la solicitud
-        await conciliacionService.updateCuentaBancariaById(id, accId); // Pasar solo 'user' al servicio
+        const { activo } = req.body; 
+        await conciliacionService.updateCuentaBancariaById(id, activo); // Pasar solo 'user' al servicio
+        // console.log(activo)
+        // console.log(id)
         res.status(200).json({ response: 'ok' });
     } catch (err) {
         res.status(400).json({ message: err.message });

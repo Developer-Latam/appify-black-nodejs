@@ -104,7 +104,7 @@ class conciliacionService {
     }
 
     async updateCuentaBancariaById(id, accId) {
-        const updateData = { accId }; 
+        const updateData = {activo: accId}; 
         return conciliacionRepository.updateCuentaBancariaById(id, updateData);
     }
 }
