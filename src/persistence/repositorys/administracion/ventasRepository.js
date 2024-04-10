@@ -1,6 +1,7 @@
 import { prisma, prismaError } from "../../../utils/dependencys/injection.js";
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../../utils/id/idGenerate.js";
+
 class VentasRepository {
     createDocVentas (idDV, {user}){
             try {
@@ -176,7 +177,7 @@ class VentasRepository {
             }
         }
     }
-    createNCoD (idNCoD,{idDoc,idCliente,idVendedor,tipo_credito, tipo_debito, numero_documento,tipo_nota,fecha,motivo_referencia,centro_de_beneficio, observacion, nota_interna}){
+    createNCoD (idNCoD,{idDoc,idCliente,idVendedor,tipo_credito, tipo_debito, numero_documento,tipo_nota,fecha,motivo_referencia,centro_de_beneficio, observacion, nota_interna, anula_doc, corrige_monto}){
         try {
             return prisma.notas_de_credito_debito.create({
                 data: {
@@ -194,7 +195,9 @@ class VentasRepository {
                     motivo_referencia,
                     centro_de_beneficio,
                     observacion,
-                    nota_interna
+                    nota_interna,
+                    anula_doc,
+                    corrige_monto
                 }
             })
         } catch (error) {
@@ -256,6 +259,59 @@ class VentasRepository {
                     nota_interna
                 }
             })
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    
+    createItemServicioForNCoD (idNCoD,itemsServicioNCoD){
+        try {
+            const op = itemsServicioNCoD.map(item => prisma.item_servicio_nota_credito.create({
+                data: {
+                    idServicio: item.idServicio,
+                    idNotaCredito: idNCoD,
+                    codigo: item.codigo,
+                    cantidad: item.cantidad,
+                    unitario: item.unitario,
+                    bruto: item.bruto,
+                    neto: item.neto,
+                    cuenta: item.cuenta,
+                    bonificacion: item.bonificacion,
+                    notas: item.notas,
+                }
+            }));
+            return op
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    createItemProductoForNCoD (idNCoD,itemsProductoNCoD){
+        try {
+            const operations = itemsProductoNCoD.map(item => prisma.item_producto_nota_credito.create({
+                data: {
+                    idProducto: item.idProducto,
+                    idNotaCredito: idNCoD,
+                    codigo: item.codigo,
+                    cantidad: item.cantidad,
+                    unitario: item.unitario,
+                    bruto: item.bruto,
+                    neto: item.neto,
+                    cuenta: item.cuenta,
+                    bonificacion: item.bonificacion,
+                    notas: item.notas,
+                }
+            }));
+            return operations
         } catch (error) {
             if (error instanceof prismaError.PrismaClientValidationError) {
                 // Error específico de Prisma por tipo de dato incorrecto

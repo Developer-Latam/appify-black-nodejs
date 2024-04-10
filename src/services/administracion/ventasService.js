@@ -75,6 +75,65 @@ class VentasService {
             throw error;
         }
     }
+    async createNCoDyItems(data){
+        try {
+            const {
+                notas_de_credito_debito,
+                nota_factura_venta,
+                nota_factura_venta_excenta,
+                nota_credito_nota_NC,
+            } = data;
+            let idNCoD;
+            let operations = []
+            if(notas_de_credito_debito.tipo_debito === true){
+                idNCoD = idgenerate("ND")
+            } else {
+                idNCoD = idgenerate("NC")
+            }
+            if(notas_de_credito_debito.anula_doc === true){
+                operations.push(ventasRepository.createNCoD(idNCoD, notas_de_credito_debito ));
+                 // Determina qué tipo de nota adicional crear y prepara la operación correspondiente
+                 //ACA SE DETALLAN LOS TIPOS DE DOCUMENTOS RELACIONADOS A LA NOTA DE CREDITO/DEBITO
+                if (nota_factura_venta) {
+                    operations.push(ventasRepository.createNotaFV(nota_factura_venta.idFacturaVenta, idNCoD));
+                } else if (nota_factura_venta_excenta) {
+                    operations.push(ventasRepository.createNotaFVE(nota_factura_venta_excenta.idFacturaVentaExcenta, idNCoD));
+                } else if (nota_credito_nota_NC) {
+                    operations.push(ventasRepository.createNotaNC(nota_credito_nota_NC));
+                }
+                //Ejecutar las operaciones en una transaction
+                const result = await executeTransactions(operations)
+                return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result };
+            }
+            if(notas_de_credito_debito.corrige_monto === true){
+                //ACA SE DETALLAN LOS TIPOS DE DOCUMENTOS RELACIONADOS A LA NOTA DE CREDITO/DEBITO
+                 //CUANDO SE RESTABLECEN LOS ITEMS DE PRODUCTOS Y SERVICIOS
+                //item_servicio_nota_credito
+                //item_producto_nota_credito
+                //Validacion para asegurarse que al menos 1 de los dos items venga en la creacion de la factura
+                if(!item_servicio_nota_credito && !item_producto_nota_credito){
+                throw new CustomError(400, "Bad Request", "Se requiere al menos un item de servicio o producto para realizar este movimiento")
+                }
+                operations.push(ventasRepository.createNCoD(idNCoD, notas_de_credito_debito ));
+                if (item_servicio_nota_credito && item_servicio_nota_credito.length > 0) {
+                    // Invocar la función y obtener la promesa Prisma
+                    const itemServicioPromiseNCoD = ventasRepository.createItemServicioForNCoD(idNCoD,item_servicio_nota_credito);
+                    operations.push(...itemServicioPromiseNCoD);
+                }
+                 // Agregar operaciones para ítems de producto si existen (asumiendo una función similar para productos)
+                if (item_producto_nota_credito && item_producto_nota_credito.length > 0) {
+                    // Invocar la función y obtener la promesa Prisma
+                const itemProductoPromiseNCoD = ventasRepository.createItemProductoFV(idNCoD, item_producto_nota_credito);
+                operations.push(...itemProductoPromiseNCoD);
+                }   
+                //Ejecutar las operaciones en una transaction
+                const result = await executeTransactions(operations)
+                return { message: "Transacciones (NOTA DE CREDITO/DEBITO - CORRIGE DOC) completas con éxito", result };
+            }   
+        } catch (error) {
+            throw error
+        }
+    }
     async createNCoD(data) {
         try {
             const {

@@ -4,6 +4,7 @@ import "dotenv/config"
 import { validatePassword } from "../../utils/password/validatesPassword.js"
 import { ResponseHandler } from "../../utils/dependencys/injection.js";
 import { createHash } from "../../utils/password/hashPass.js";
+import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 //Funciones que interactuan con Service, se encargan de las respuestas al cliente
 //Realiza el login del usuario
 export const loginUser = async (req, res, next) => {
@@ -17,14 +18,14 @@ export const loginUser = async (req, res, next) => {
 }
 //Realiza el registro del usuario 
 export const signUpController = async (req, res, next) => {
-    const { nombre, apellido, email, celular, fecha_de_nacimiento, password, passwordConfirm } = req.body;
+    const { nombre, apellido, email, celular, fecha_de_nacimiento, password, passwordConfirm, activo } = req.body;
     const validationResult = validatePassword(password, passwordConfirm)
-    if (!validationResult.isValid){
-        ResponseHandler.HandleError(res, validationResult.message)
-    }
     try {
+        if (!validationResult.isValid){
+            return ResponseHandler.HandleError(res, validationResult.message);
+        }
         const passwordHash = createHash(password)
-        const result = await userService.signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash);
+        const result = await userService.signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo);
         ResponseHandler.Ok(res, result)
     } catch (error) {
         ResponseHandler.HandleError(res, error)

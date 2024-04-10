@@ -95,7 +95,7 @@ class UserRepository {
         return response;
     }
     //Realiza la creacion de usuario y un sub usuario
-    async createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash) {
+    async createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo) {
         // Datos para el usuario principal
         let userIDsuperUser = idgenerate("super-user")
         let fecha = new Date(fecha_de_nacimiento)
@@ -108,6 +108,7 @@ class UserRepository {
             celular,
             fecha_de_nacimiento: fecha_ISO,
             password: passwordHash,
+            activo,
         };
         // Datos para el subusuario
         let subUserData = {
@@ -122,6 +123,7 @@ class UserRepository {
             ref_superusuario: 1,
             checkeado: 1,
             password: passwordHash,
+            estado: "true",
         };
         // Preparando las operaciones para la transacción
         const operations = [
@@ -152,7 +154,8 @@ class UserRepository {
                 cargo: cargo,
                 ref_superusuario:0,
                 checkeado:0,
-                password: null
+                password: null,
+                estado: "true",
             }
         });
     }
