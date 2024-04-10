@@ -241,12 +241,19 @@ class VentasRepository {
             }
         }
     }
-    createNotaVV(idVV, idNCoD) {
+    createNotaNC({idNotadeCD,numero_documento, tipo_nota, fecha, motivo_referencia, centro_de_beneficio, observacion, nota_interna}) {
         try {
-            return prisma.nota_voucher_venta.create({
+            return prisma.nota_credito_nota_NC.create({
                 data: {
-                    idVoucherVenta: idVV,
-                    idNotadeCD: idNCoD,
+                    idNotadeCD,
+                    //numero que viene del sii
+                    numero_documento,
+                    tipo_nota,
+                    fecha,
+                    motivo_referencia,
+                    centro_de_beneficio,
+                    observacion,
+                    nota_interna
                 }
             })
         } catch (error) {

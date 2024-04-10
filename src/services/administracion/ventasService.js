@@ -81,7 +81,7 @@ class VentasService {
                 notas_de_credito_debito,
                 nota_factura_venta,
                 nota_factura_venta_excenta,
-                nota_voucher_venta,
+                nota_credito_nota_NC,
             } = data;
             const idNCoD = idgenerate("NC")
             let operations = []
@@ -91,8 +91,8 @@ class VentasService {
                 operations.push(ventasRepository.createNotaFV(nota_factura_venta.idFacturaVenta, idNCoD));
             } else if (nota_factura_venta_excenta) {
                 operations.push(ventasRepository.createNotaFVE(nota_factura_venta_excenta.idFacturaVentaExcenta, idNCoD));
-            } else if (nota_voucher_venta) {
-                operations.push(ventasRepository.createNotaVV(nota_voucher_venta.idVoucherVenta, idNCoD));
+            } else if (nota_credito_nota_NC) {
+                operations.push(ventasRepository.createNotaNC(nota_credito_nota_NC));
             }
             //Ejecutar las operaciones en una transaction
             const result = await executeTransactions(operations)
