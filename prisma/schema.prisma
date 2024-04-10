@@ -53,15 +53,15 @@ model clientes {
   ciudad                  String?  @db.VarChar(150)
   suscripcion_a_encuestas Boolean?
   activo                  Boolean?
-  condicion_de_pago       Int
+  condicion_de_pago       String   @db.VarChar(100)
   linea_de_credito        Float?   @db.Float
   exension_de_impuestos   Boolean?
   notas                   String?  @db.Text
   pie_de_pagina           String?  @db.Text
 
-  @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([lista_de_precios], map: "listas_de_precio")
   @@index([user], map: "usuarios")
+  @@index([condicion_de_pago], map: "condicion_pago")
 }
 
 model cobros {
@@ -235,13 +235,13 @@ model factura_compra {
   idProvedoor       String   @db.VarChar(100)
   numero_documento  Int
   fecha             DateTime @db.Date
-  condicion_de_pago Int
+  condicion_de_pago String   @db.VarChar(100)
   cuenta            String   @db.VarChar(100)
   notas             String?  @db.Text
 
-  @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([idDocCompra], map: "documento_compra")
   @@index([idProvedoor], map: "proveedores")
+  @@index([condicion_de_pago], map: "condicion_pago")
 }
 
 model factura_venta {
@@ -252,15 +252,15 @@ model factura_venta {
   numero_documento  String    @db.VarChar(100)
   fecha             DateTime? @db.Date
   idVendedor        String    @db.VarChar(100)
-  condicion_de_pago Int
+  condicion_de_pago String    @db.VarChar(100)
   centro_beneficio  String    @db.VarChar(100)
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
 
   @@index([idCliente], map: "clientes")
-  @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([idDoc], map: "documento_venta")
   @@index([idVendedor], map: "subusuarios")
+  @@index([condicion_de_pago], map: "condicion_pago")
 }
 
 model factura_venta_excenta {
@@ -271,15 +271,15 @@ model factura_venta_excenta {
   numero_documento  String    @db.VarChar(100)
   fecha             DateTime? @db.Date
   idVendedor        String    @db.VarChar(100)
-  condicion_de_pago Int
+  condicion_de_pago String    @db.VarChar(100)
   centro_beneficio  String    @db.VarChar(100)
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
 
   @@index([idCliente], map: "clientes")
-  @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([idDoc], map: "documento_venta")
   @@index([idVendedor], map: "subusuarios")
+  @@index([condicion_de_pago], map: "condicion_pago")
 }
 
 model item_despacho_traslado_ot {
@@ -646,14 +646,14 @@ model orden_compra {
   idProvedor        String    @db.VarChar(100)
   numero_documento  String    @db.VarChar(100)
   fecha             DateTime? @db.Date
-  condicion_de_pago Int
+  condicion_de_pago String    @db.VarChar(100)
   notas             String?   @db.Text
   subtotal          Float     @db.Float
   IVA               Float     @db.Float
   total             Float     @db.Float
 
-  @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([idProvedor], map: "proveedores")
+  @@index([condicion_de_pago], map: "condicion_pago")
 }
 
 model orden_trabajo {
@@ -744,7 +744,7 @@ model proveedores {
   razon_social        String   @db.VarChar(200)
   activo              Boolean?
   giro                String?  @db.VarChar(200)
-  condicion_de_pago   Int
+  condicion_de_pago   String   @db.VarChar(100)
   nombre_fantasia     String?  @db.VarChar(200)
   cuenta_contable     String?  @db.VarChar(100)
   persona             String?  @db.VarChar(150)
@@ -760,8 +760,8 @@ model proveedores {
   nro_cta_corriente   String?  @db.VarChar(50)
   correo_cobranzas    String?  @db.VarChar(200)
 
-  @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([user], map: "usuarios")
+  @@index([condicion_de_pago], map: "condicion_pago")
 }
 
 model proyectos {
@@ -773,7 +773,7 @@ model proyectos {
   contacto              String    @db.VarChar(100)
   comision              Float?    @db.Float
   nombre_etiqueta       String?   @db.VarChar(100)
-  condicion_de_pago     Int
+  condicion_de_pago     String    @db.VarChar(100)
   boton_de_pago         Boolean?
   plazo_de_entrega_dias Int?
   plazo_de_entrega      DateTime? @db.Date
@@ -781,9 +781,9 @@ model proyectos {
   estado                String?   @db.VarChar(100)
 
   @@index([cliente], map: "clientes")
-  @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([vendedor], map: "subusuarios")
   @@index([user], map: "usuarios")
+  @@index([condicion_de_pago], map: "condicion_pago")
 }
 
 model puntos_de_despacho_por_cliente {
@@ -896,15 +896,15 @@ model voucher_venta {
   numero_documento  String    @db.VarChar(100)
   fecha             DateTime? @db.Date
   idVendedor        String    @db.VarChar(100)
-  condicion_de_pago Int
+  condicion_de_pago String    @db.VarChar(100)
   centro_beneficio  String    @db.VarChar(100)
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
 
   @@index([idCliente], map: "clientes")
-  @@index([condicion_de_pago], map: "condicion_de_pago")
   @@index([idDoc], map: "documento_venta")
   @@index([idVendedor], map: "subusuarios")
+  @@index([condicion_de_pago], map: "condicion_pago")
 }
 
 model proveedor_productos {
