@@ -9,19 +9,19 @@ import {
 const router = Router();
 
 // Ruta para crear un Transportista
-router.post('/cliente', createTransportista);
+router.post('/crear', createTransportista);
 
 // Ruta para obtener un Transportista con su ID
-router.get('/cliente/:idCliente', getTransportistaById);
+router.get('/obtener/:idTransportista', getTransportistaById);
 
 // Ruta para obtener todos los Transportistas por ID de usuario
-router.get('/clientes/:id', getTransportistaByUserId);
+router.get('/todos/:id', getTransportistaByUserId);
 
 // Ruta para actualizar un Transportista
-router.put('/cliente/:idCliente', updateTransportista);
+router.put('/actualizar/:idTransportista', updateTransportista);
 
 // Ruta para eliminar un Transportista con su ID
-router.delete('/cliente/:idCliente', deleteTransportista);
+router.delete('/eliminar/:idTransportista', deleteTransportista);
 
 export default router
 

@@ -5,7 +5,7 @@ export const createTransportista = async (req, res) => {
     try {
         const data = req.body;
         const response = await transportistaService.createTransportista(data);
-        res.status(200).json({cliente: response });
+        res.status(200).json({transportista: response });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
