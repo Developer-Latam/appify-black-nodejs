@@ -857,12 +857,15 @@ model subusuarios {
 }
 
 model transportista {
-  id       Int     @id @default(autoincrement())
-  iduser   String  @db.VarChar(100)
-  nombre   String? @db.VarChar(50)
-  apellido String  @db.VarChar(50)
+  id                       String  @id @db.VarChar(100)
+  iduser                   String  @db.VarChar(100)
+  nombre_transportista     String  @db.VarChar(50)
+  nombre_conducor          String  @db.VarChar(50)
+  numero_placa             String? @db.VarChar(50)
+  numero_doc_conductor     String  @db.VarChar(50)
+  numero_doc_transportista String  @db.VarChar(50)
 
-  @@index([iduser], map: "usuarios")
+  @@index([iduser], map: "user")
 }
 
 model usuarios {
@@ -873,6 +876,7 @@ model usuarios {
   celular             String    @db.VarChar(50)
   fecha_de_nacimiento DateTime? @db.Date
   password            String    @db.VarChar(100)
+  activo              Boolean   @default(true)
 }
 
 model vendedores_por_contacto {
