@@ -68,10 +68,12 @@ model cobros {
   id                    String   @id @db.VarChar(100)
   user                  String   @db.VarChar(100)
   banco                 String   @db.VarChar(100)
+  clienteId             String   @db.VarChar(100)
+  pagado                Boolean  @default(false)
   cuenta_origen_destino String   @db.VarChar(100)
   fecha                 DateTime @db.Date
-  movimiento            String   @db.VarChar(50)
-  movimiento_monto      Int
+  movimiento            String?  @db.VarChar(50)
+  movimiento_monto      Decimal? @db.Decimal(30, 2)
   tipo                  String   @db.VarChar(50)
   tipo_n                String   @db.VarChar(100)
   glosa                 String?  @db.Text
@@ -140,6 +142,7 @@ model cuentas_banco {
   id                    String  @id @db.VarChar(100)
   user                  String  @db.VarChar(100)
   nombre                String  @db.VarChar(100)
+  bancoId               String  @db.VarChar(100)
   tipo_cuenta           String  @db.VarChar(100)
   nro_cuenta_corriente  String  @db.VarChar(100)
   codigo                String  @db.VarChar(100)
@@ -151,6 +154,7 @@ model cuentas_banco {
   documentos_permitidos Boolean
 
   @@index([user], map: "usuarios")
+  @@index([bancoId], map: "bancos")
 }
 
 model direccion_de_prestacion_proyecto {
@@ -1303,4 +1307,31 @@ model item_servicio_nota_credito_NC {
 
   @@index([idNotaCredito], map: "nota_credito_nota_NC")
   @@index([idServicio], map: "servicios")
+}
+
+model cobros_factura_venta {
+  id             String @id @db.VarChar(100)
+  idCobro        String @db.VarChar(100)
+  idFacturaVenta String @db.VarChar(100)
+
+  @@index([idCobro], map: "cobros")
+  @@index([idFacturaVenta], map: "factura_venta")
+}
+
+model cobros_factura_venta_excenta {
+  id                    String @id @db.VarChar(100)
+  idCobro               String @db.VarChar(100)
+  idFacturaVentaExcenta String @db.VarChar(100)
+
+  @@index([idCobro], map: "cobros")
+  @@index([idFacturaVentaExcenta], map: "factura_venta_excenta")
+}
+
+model cuenta_banco_conciliacion {
+  id             String @id @db.VarChar(100)
+  idCuentaBanco  String @db.VarChar(100)
+  idConciliacion String @db.VarChar(100)
+
+  @@index([idCuentaBanco], map: "cuentas_banco")
+  @@index([idConciliacion], map: "link_fintoc_bancos")
 }

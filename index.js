@@ -21,6 +21,7 @@ import sistemRouter from './src/routes/miempresa/configs/sistemaRouter.js'
 import comercialRouter from './src/routes/miempresa/configs/comercialRouter.js'
 import contabilidadRouter from './src/routes/miempresa/configs/contabilidadRouter.js'
 import ventasRouter from './src/routes/administracion/ventasRouter.js'
+import transportistaRouter from './src/routes/administracion/transportistaRouter.js'
 import cors from 'cors';
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
@@ -60,6 +61,7 @@ app.use('/puntoDes', puntodespachorouter)
 app.use('/costosProyecto', costorouter)
 app.use('/anticipos', anticiposrouter)
 
+
 // Routers a Operaciones
 
 app.use('/ordenTrabajo', ordentrabajorouter)
@@ -73,6 +75,7 @@ app.use('/conciliacion', conciliacionrouter)
 
 // Routers a Administracion
 app.use('/administracion', ventasRouter)
+app.use('/transportista', transportistaRouter)
 
 
 app.get('/', (req, res) => {

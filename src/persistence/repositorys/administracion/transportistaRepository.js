@@ -16,7 +16,7 @@ class TransportistaRepository {
 
     async findAllTransportistasByUserId(userId) {
         return prisma.transportista.findMany({
-            where: { user: userId }
+            where: { iduser: userId }
         });
     }
 
