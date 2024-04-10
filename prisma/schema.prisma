@@ -616,6 +616,8 @@ model notas_de_credito_debito {
   centro_de_beneficio String    @db.VarChar(50)
   observacion         String?   @db.Text
   nota_interna        String?   @db.Text
+  anula_doc           Boolean
+  corrige_monto       Boolean
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")
@@ -1228,15 +1230,77 @@ model movimientos_cuenta {
 }
 
 model nota_credito_nota_NC {
-  id                  Int       @id @default(autoincrement())
-  idNotadeCD          String    @db.VarChar(100)
-  numero_documento    String    @db.VarChar(100)
-  tipo_nota           String    @db.VarChar(100)
-  fecha               DateTime? @db.Date
-  motivo_referencia   String?   @db.VarChar(40)
-  centro_de_beneficio String    @db.VarChar(50)
-  observacion         String?   @db.Text
-  nota_interna        String?   @db.Text
+  id               Int    @id @default(autoincrement())
+  idNotadeCD       String @db.VarChar(100)
+  numero_documento String @db.VarChar(100)
 
   @@index([idNotadeCD], map: "notas_de_credito_debito")
+}
+
+model item_producto_nota_credito {
+  id            Int     @id @default(autoincrement())
+  idProducto    String  @db.VarChar(100)
+  idNotaCredito String  @db.VarChar(100)
+  codigo        String? @db.VarChar(100)
+  cantidad      Int
+  unitario      Int
+  bruto         Float   @db.Float
+  neto          Float   @db.Float
+  cuenta        String? @db.VarChar(100)
+  bonificacion  Float?  @db.Float
+  notas         String? @db.Text
+
+  @@index([idNotaCredito], map: "notas_de_credito_debito")
+  @@index([idProducto], map: "productos")
+}
+
+model item_producto_nota_credito_NC {
+  id            Int     @id @default(autoincrement())
+  idProducto    String  @db.VarChar(100)
+  idNotaCredito String  @db.VarChar(100)
+  codigo        String? @db.VarChar(100)
+  cantidad      Int
+  unitario      Int
+  bruto         Float   @db.Float
+  neto          Float   @db.Float
+  cuenta        String? @db.VarChar(100)
+  bonificacion  Float?  @db.Float
+  notas         String? @db.Text
+
+  @@index([idNotaCredito], map: "nota_credito_nota_NC")
+  @@index([idProducto], map: "productos")
+}
+
+model item_servicio_nota_credito {
+  id            Int     @id @default(autoincrement())
+  idServicio    String  @db.VarChar(100)
+  idNotaCredito String  @db.VarChar(100)
+  codigo        String? @db.VarChar(100)
+  cantidad      Int
+  unitario      Int
+  bruto         Float   @db.Float
+  neto          Float   @db.Float
+  cuenta        String? @db.VarChar(100)
+  bonificacion  Float?  @db.Float
+  notas         String? @db.Text
+
+  @@index([idNotaCredito], map: "notas_de_credito_debito")
+  @@index([idServicio], map: "servicios")
+}
+
+model item_servicio_nota_credito_NC {
+  id            Int     @id @default(autoincrement())
+  idServicio    String  @db.VarChar(100)
+  idNotaCredito String  @db.VarChar(100)
+  codigo        String? @db.VarChar(100)
+  cantidad      Int
+  unitario      Int
+  bruto         Float   @db.Float
+  neto          Float   @db.Float
+  cuenta        String? @db.VarChar(100)
+  bonificacion  Float?  @db.Float
+  notas         String? @db.Text
+
+  @@index([idNotaCredito], map: "nota_credito_nota_NC")
+  @@index([idServicio], map: "servicios")
 }
