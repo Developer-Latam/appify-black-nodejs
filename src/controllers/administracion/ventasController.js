@@ -43,3 +43,19 @@ export const createNCoDController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+export const createNCoDConItemsController = async (req, res) => {
+    try {
+        const data = {
+            notas_de_credito_debito: req.body.notas_de_credito_debito,
+            nota_factura_venta: req.body.nota_factura_venta,
+            nota_factura_venta_excenta: req.body.nota_factura_venta_excenta,
+            nota_credito_nota_NC: req.body.nota_credito_nota_NC,
+            item_servicio_nota_credito: req.body.item_servicio_nota_credito,
+            item_producto_nota_credito: req.body.item_producto_nota_credito,
+        };
+        const result = await ventasService.createNCoDyItems(data);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}

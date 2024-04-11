@@ -182,7 +182,7 @@ class VentasRepository {
             return prisma.notas_de_credito_debito.create({
                 data: {
                     id: idNCoD,
-                    //numero del documento de venta que proviene del sii, del detalle de la factura del sii
+                    //numero del documento a anular o cambiar items, numero de referencia al documento
                     idDoc,
                     idCliente,
                     idVendedor,
@@ -298,6 +298,58 @@ class VentasRepository {
     createItemProductoForNCoD (idNCoD,itemsProductoNCoD){
         try {
             const operations = itemsProductoNCoD.map(item => prisma.item_producto_nota_credito.create({
+                data: {
+                    idProducto: item.idProducto,
+                    idNotaCredito: idNCoD,
+                    codigo: item.codigo,
+                    cantidad: item.cantidad,
+                    unitario: item.unitario,
+                    bruto: item.bruto,
+                    neto: item.neto,
+                    cuenta: item.cuenta,
+                    bonificacion: item.bonificacion,
+                    notas: item.notas,
+                }
+            }));
+            return operations
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    createItemServicioForNCoD_NCOD (idNCoD,itemsServicioNCoD_NC){
+        try {
+            const op = itemsServicioNCoD_NC.map(item => prisma.item_servicio_nota_credito_NC.create({
+                data: {
+                    idServicio: item.idServicio,
+                    idNotaCredito: idNCoD,
+                    codigo: item.codigo,
+                    cantidad: item.cantidad,
+                    unitario: item.unitario,
+                    bruto: item.bruto,
+                    neto: item.neto,
+                    cuenta: item.cuenta,
+                    bonificacion: item.bonificacion,
+                    notas: item.notas,
+                }
+            }));
+            return op
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    createItemProductoForNCoD_NCOD (idNCoD,itemsProductoNCoD_NC){
+        try {
+            const operations = itemsProductoNCoD_NC.map(item => prisma.item_producto_nota_credito_NC.create({
                 data: {
                     idProducto: item.idProducto,
                     idNotaCredito: idNCoD,
