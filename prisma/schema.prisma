@@ -67,18 +67,19 @@ model clientes {
 model cobros {
   id                    String   @id @db.VarChar(100)
   user                  String   @db.VarChar(100)
-  banco                 String   @db.VarChar(100)
+  cuenta_banco          String   @db.VarChar(100)
   clienteId             String   @db.VarChar(100)
   pagado                Boolean  @default(false)
   cuenta_origen_destino String   @db.VarChar(100)
   fecha                 DateTime @db.Date
-  movimiento            String?  @db.VarChar(50)
   movimiento_monto      Decimal? @db.Decimal(30, 2)
   tipo                  String   @db.VarChar(50)
   tipo_n                String   @db.VarChar(100)
   glosa                 String?  @db.Text
 
   @@index([user], map: "usuarios")
+  @@index([clienteId], map: "clientes")
+  @@index([cuenta_banco], map: "cuentas_banco")
 }
 
 model condiciones_condicion_pago {
@@ -629,22 +630,25 @@ model notas_de_credito_debito {
 }
 
 model notas_de_credito_debito_compras {
-  id               String    @id @db.VarChar(100)
-  idDoc            String    @db.VarChar(100)
-  idCliente        String    @db.VarChar(100)
-  idVendedor       String    @db.VarChar(100)
-  tipo_credito     Boolean
-  tipo_debito      Boolean
-  tipo_de_nota     String    @db.VarChar(100)
-  numero_documento String    @db.VarChar(100)
-  fecha            DateTime? @db.Date
-  tipo_doc_rel     String    @db.VarChar(50)
-  cuenta           String    @db.VarChar(100)
-  notas            String?   @db.Text
+  id                  String    @id @db.VarChar(100)
+  idDoc               String    @db.VarChar(100)
+  idProveedor         String    @db.VarChar(100)
+  idVendedor          String    @db.VarChar(100)
+  tipo_credito        Boolean
+  tipo_debito         Boolean
+  anula_doc           Boolean
+  corrige_monto       Boolean
+  numero_documento    String    @db.VarChar(100)
+  tipo_nota           String    @db.VarChar(100)
+  fecha               DateTime? @db.Date
+  motivo_referencia   String?   @db.VarChar(40)
+  centro_de_beneficio String    @db.VarChar(50)
+  observacion         String?   @db.Text
+  nota_interna        String?   @db.Text
 
-  @@index([idCliente], map: "clientes")
-  @@index([idDoc], map: "documento_compra")
   @@index([idVendedor], map: "subusuarios")
+  @@index([idDoc], map: "factura_compra")
+  @@index([idProveedor], map: "proveedores")
 }
 
 model orden_compra {
@@ -674,16 +678,19 @@ model orden_trabajo {
 model pagos {
   id                    String   @id @db.VarChar(100)
   user                  String   @db.VarChar(100)
-  banco                 String   @db.VarChar(100)
+  cuenta_banco          String   @db.VarChar(100)
+  proveedorId           String   @db.VarChar(100)
+  pagado                Boolean  @default(false)
   cuenta_origen_destino String   @db.VarChar(100)
   fecha                 DateTime @db.Date
-  movimiento            String   @db.VarChar(50)
-  movimiento_monto      Int
+  movimiento_monto      Decimal? @db.Decimal(30, 2)
   tipo                  String   @db.VarChar(50)
   tipo_n                String   @db.VarChar(100)
   glosa                 String?  @db.Text
 
   @@index([user], map: "usuarios")
+  @@index([cuenta_banco], map: "cuentas_banco")
+  @@index([proveedorId], map: "proveedores")
 }
 
 model permisos {
@@ -1334,4 +1341,31 @@ model cuenta_banco_conciliacion {
 
   @@index([idCuentaBanco], map: "cuentas_banco")
   @@index([idConciliacion], map: "link_fintoc_bancos")
+}
+
+model cobros_factura_nota_credito {
+  id            String @id @db.VarChar(100)
+  idCobro       String @db.VarChar(100)
+  idNotaCredito String @db.VarChar(100)
+
+  @@index([idCobro], map: "cobros")
+  @@index([idNotaCredito], map: "notas_de_credito_debito")
+}
+
+model pagos_factura_compra {
+  id              String @id @db.VarChar(100)
+  idPago          String @db.VarChar(100)
+  idFacturaCompra String @db.VarChar(100)
+
+  @@index([idFacturaCompra], map: "factura_compra")
+  @@index([idPago], map: "pagos")
+}
+
+model pagos_factura_nota_credito {
+  id            String @id @db.VarChar(100)
+  idCobro       String @db.VarChar(100)
+  idNotaCredito String @db.VarChar(100)
+
+  @@index([idCobro], map: "cobros")
+  @@index([idNotaCredito], map: "notas_de_credito_debito_compras")
 }
