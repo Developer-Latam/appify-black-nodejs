@@ -16,7 +16,7 @@ export const getTransportistaById = async (req, res) => {
         const { idTransportista } = req.params;
         const transportista = await transportistaService.getTransportistaById(idTransportista);
         if (!transportista) {
-            return res.status(404).json({ message: 'Cliente no encontrado' });
+            return res.status(404).json({ message: 'Transportista no encontrado' });
         }
         res.status(200).json(transportista);
     } catch (err) {

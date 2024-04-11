@@ -43,3 +43,12 @@ export const createNCoDController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+
+
+
+const data = {
+    cobros: req.body.cobros,
+    cobros_factura_venta: req.body.cobros_factura_venta,
+    cobros_factura_venta_excenta: req.body.cobros_factura_venta_excenta,
+    cobros_factura_venta_nota_credito: req.body.cobros_factura_venta_nota_credito
+};
