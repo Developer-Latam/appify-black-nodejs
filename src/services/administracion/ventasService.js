@@ -186,20 +186,21 @@ class VentasService {
             const items = [
                 { item: nota_factura_venta, repository: ventasRepository.createNotaFV, idProperty: "idFacturaVenta" },
                 { item: nota_factura_venta_excenta, repository: ventasRepository.createNotaFVE, idProperty: "idFacturaVentaExcenta" },
-                { item: nota_credito_nota_NC, repository: ventasRepository.createNotaNC }
+                { item: nota_credito_nota_NC, repository: ventasRepository.createNotaNC}
             ];
             for (const { item, repository, idProperty } of items) {
-                if (item) {
-                    if (idProperty) {
-                        operations.push(repository(item[idProperty], idNCoD));
-                    } else {
-                        operations.push(repository(item, idNCoD));
-                    }
+            if (item) {
+                if (idProperty) {
+                operations.push(repository(item[idProperty], idNCoD));
+                } else {
+                operations.push(repository(item, idNCoD));
                 }
+            }
             }
             const result = await executeTransactions(operations);
             return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result };
         } catch (error) {
+            console.log(error)
             throw error;
         }
     }
