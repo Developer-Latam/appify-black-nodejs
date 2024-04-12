@@ -25,11 +25,11 @@ export const getCobrosAllById = async (req, res) => {
     }
 };
 
-export const getTransportistaByUserId = async (req, res) => {
+export const getAllCobrosByUserId = async (req, res) => {
     try {
         const { id } = req.params;
-        const transportista = await cobrosService.getTransportistaByUserId(id);
-        res.status(200).json({ data: transportista });
+        const cobros = await cobrosService.getCobrosByUserId(id);
+        res.status(200).json({ data: cobros });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }

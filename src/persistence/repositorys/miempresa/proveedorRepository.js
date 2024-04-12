@@ -57,6 +57,15 @@ class proveedorRepository {
             throw new CustomError(500, 'Error al obtener el proveedor de la base de datos', { detail: error.message });
         }
     }
+    //OBTENER TODOS LOS PROVEEDORES POR USER ID PARA LA AGOS   
+     
+    async findAllProveedoresByUserId(userId) {
+        return prisma.proveedores.findMany({
+            where: { user: userId }
+        });
+    }
+
+
     //Actualiza un proveedor
     //Se hace una query custom para tomar los campos a actualizar y colocarlos en la query
     async updateProveedor({ id, ...fieldsToUpdate }) {

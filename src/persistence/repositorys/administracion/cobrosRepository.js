@@ -9,23 +9,20 @@ class cobrosRepository {
         });
     }
 
-    async createCobrosFV(id, data) {
+    async createCobrosFV(data) {
         return prisma.cobros_factura_venta.create({
-            where: { idCobro : id },
             data : data
         });
     }
 
-    async createCobrosFVE(id, data) {
+    async createCobrosFVE(data) {
         return prisma.cobros_factura_venta_excenta.create({
-            where: { idCobro : id },
             data : data
         });
     }
 
-    async createCobrosNC(id, data) {
+    async createCobrosNC(data) {
         return prisma.cobros_factura_nota_credito.create({
-            where: { idCobro : id },
             data : data
         });
     }
