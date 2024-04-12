@@ -13,8 +13,8 @@ class ProductService {
         return ProductRepository.createProduct({ ...data, id: id });
     }
 
-    async getProductById(id, userid) {
-        return ProductRepository.findProductById(id, userid);
+    async getProductById(id) {
+        return ProductRepository.findProductById(id);
     }
 
     async getProductsByUserId(userId) {

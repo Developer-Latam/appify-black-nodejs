@@ -6,7 +6,7 @@ class ProductRepository {
         });
     }
 
-    async findProductById(id, userid) {
+    async findProductById(id) {
         return prisma.productos.findUnique({
             where: { id: id
                 //user: userid
