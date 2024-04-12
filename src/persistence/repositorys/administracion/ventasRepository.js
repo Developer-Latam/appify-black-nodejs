@@ -190,7 +190,6 @@ class VentasRepository {
                     tipo_debito,
                     //numero que viene de SII
                     numero_documento,
-                    tipo_nota,
                     fecha,
                     motivo_referencia,
                     centro_de_beneficio,
@@ -244,19 +243,14 @@ class VentasRepository {
             }
         }
     }
-    createNotaNC({idNotadeCD,numero_documento, tipo_nota, fecha, motivo_referencia, centro_de_beneficio, observacion, nota_interna}) {
+    createNotaNC({numero_documento, idNotadeCD}) {
         try {
             return prisma.nota_credito_nota_NC.create({
                 data: {
+                    //id de la nota de credito a anular
                     idNotadeCD,
                     //numero que viene del sii
                     numero_documento,
-                    tipo_nota,
-                    fecha,
-                    motivo_referencia,
-                    centro_de_beneficio,
-                    observacion,
-                    nota_interna
                 }
             })
         } catch (error) {
