@@ -111,30 +111,26 @@ class cobrosService {
         }
     }
 
-    async getCobrosAllById(id, data) {
-        try {
-            let getCobroFunction;
+    async getCobrosAllById(id) {
+        const functionsToTry = [
+            this.getCobroFVById,
+            this.getCobroFVEById,
+            this.getCobroNCById
+        ];
     
-            if (data.cobros_factura_venta) {
-                getCobroFunction = this.getCobroFVById;
-            } else if (data.cobros_factura_venta_excenta) {
-                getCobroFunction = this.getCobroFVEById;
-            } else if (data.cobros_factura_venta_nota_credito) {
-                getCobroFunction = this.getCobroNCById;
-            } else {
-                throw new Error('Tipo de cobro no válido en los datos recibidos');
+        for (const func of functionsToTry) {
+            try {
+                const result = await func(id);
+                // Si la función no arroja error y devuelve algo, retornamos el resultado
+                return result;
+            } catch (error) {
+                // Si hay un error, continuamos con la siguiente función
+                console.error(`Error al intentar ejecutar la función ${func.name}:`, error.message);
             }
-    
-            // Llamar a la función correspondiente para obtener los datos del cobro
-            const result = await getCobroFunction(id);
-    
-            // Devolver los resultados obtenidos
-            return result;
-        } catch (error) {
-            // Manejar cualquier error que pueda ocurrir
-            console.error("Error al buscar el cobro y cobro de factura de venta:", error.message);
-            throw error; // Relanzar el error para que pueda ser manejado por el código que llama a esta función
         }
+    
+        // Si ninguna función devuelve nada sin error, lanzamos una excepción
+        throw new Error('No se encontró ningún cobro para el ID proporcionado');
     }
 
     async getCobroFVById(id) {
@@ -147,7 +143,7 @@ class cobrosService {
             }
     
             // Buscar el cobro de factura de venta utilizando el ID del cobro
-            const cobroFV = await cobrosRepository.findCobroFVByCobroId(cobro.id);
+            const cobroFV = await cobrosRepository.findCobroFVByCobroId(id);
     
             if (!cobroFV) {
                 throw new Error(`No se encontró ningún cobro de factura de venta para el cobro con ID ${id}`);
@@ -171,7 +167,7 @@ class cobrosService {
             }
     
             // Buscar el cobro de factura de venta utilizando el ID del cobro
-            const cobroFVE = await cobrosRepository.findCobroFVEByCobroId(cobro.id);
+            const cobroFVE = await cobrosRepository.findCobroFVEByCobroId(id);
     
             if (!cobroFVE) {
                 throw new Error(`No se encontró ningún cobro de factura de venta excenta para el cobro con ID ${id}`);
@@ -195,7 +191,7 @@ class cobrosService {
             }
     
             // Buscar el cobro de factura de venta utilizando el ID del cobro
-            const cobroNC = await cobrosRepository.findCobroNCByCobroId(cobro.id);
+            const cobroNC = await cobrosRepository.findCobroNCByCobroId(id);
     
             if (!cobroNC) {
                 throw new Error(`No se encontró ningún cobro de nota de credito para el cobro con ID ${id}`);
@@ -233,8 +229,13 @@ class cobrosService {
 
     async deleteCobroFV(id) {
         try {
+            const cobro = await cobrosRepository.findCobroFVByCobroId(id);
+            if (!cobro) {
+                throw new Error(`No se encontró ningún cobro de factura de venta con el ID ${id}`);
+            }
+            console.log(cobro.id);
+            const delCobroFV = await cobrosRepository.deleteCobroFVByCobroId(cobro.id);
             const delCobro = await cobrosRepository.deleteCobro(id);
-            const delCobroFV = await cobrosRepository.deleteCobroFVByCobroId(id);
             
             return [delCobro, delCobroFV];
         } catch (error) {
@@ -245,27 +246,39 @@ class cobrosService {
 
     async deleteCobroFVE(id) {
         try {
+            const cobro = await cobrosRepository.findCobroFVEByCobroId(id);
+            if (!cobro) {
+                throw new Error(`No se encontró ningún cobro de factura de venta con el ID ${id}`);
+            }
+            console.log(cobro.id);
+            const delCobroFV = await cobrosRepository.deleteCobroFVEByCobroId(cobro.id);
             const delCobro = await cobrosRepository.deleteCobro(id);
-            const delCobroFVE = await cobrosRepository.deleteCobroFVEByCobroId(id);
             
-            return [delCobro, delCobroFVE];
+            return [delCobro, delCobroFV];
         } catch (error) {
-            console.error("Error al eliminar el cobro y cobro de factura de venta excenta:", error.message);
+            console.error("Error al eliminar el cobro y cobro de factura de venta:", error.message);
             throw error;
         }
     }
 
+
     async deleteCobroNC(id) {
         try {
+            const cobro = await cobrosRepository.findCobroNCByCobroId(id);
+            if (!cobro) {
+                throw new Error(`No se encontró ningún cobro de factura de venta con el ID ${id}`);
+            }
+            console.log(cobro.id);
+            const delCobroFV = await cobrosRepository.deleteCobroNCByCobroId(cobro.id);
             const delCobro = await cobrosRepository.deleteCobro(id);
-            const delCobroFV = await cobrosRepository.deleteCobroNCByCobroId(id);
             
             return [delCobro, delCobroFV];
         } catch (error) {
-            console.error("Error al eliminar el cobro y cobro de nota de credito:", error.message);
+            console.error("Error al eliminar el cobro y cobro de factura de venta:", error.message);
             throw error;
         }
     }
+
 
 
 

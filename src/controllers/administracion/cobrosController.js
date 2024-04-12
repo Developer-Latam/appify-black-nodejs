@@ -16,14 +16,12 @@ export const getCobrosAllById = async (req, res) => {
     try {
         const { id } = req.params;
         const cobro = await cobrosService.getCobrosAllById(id);
-        if (!cobro) {
-            return res.status(404).json({ message: 'Cobro no encontrado' });
-        }
         res.status(200).json(cobro);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        res.status(404).json({ message: err.message });
     }
 };
+
 
 export const getAllCobrosByUserId = async (req, res) => {
     try {

@@ -1316,7 +1316,7 @@ model item_servicio_nota_credito_NC {
 
 model cobros_factura_venta {
   id             String @id @db.VarChar(100)
-  idCobro        String @db.VarChar(100)
+  idCobro        String @db.VarChar(100) @unique
   idFacturaVenta String @db.VarChar(100)
 
   @@index([idCobro], map: "cobros")
@@ -1325,7 +1325,7 @@ model cobros_factura_venta {
 
 model cobros_factura_venta_excenta {
   id                    String @id @db.VarChar(100)
-  idCobro               String @db.VarChar(100)
+  idCobro               String @db.VarChar(100) @unique
   idFacturaVentaExcenta String @db.VarChar(100)
 
   @@index([idCobro], map: "cobros")
@@ -1343,7 +1343,7 @@ model cuenta_banco_conciliacion {
 
 model cobros_factura_nota_credito {
   id            String @id @db.VarChar(100)
-  idCobro       String @db.VarChar(100)
+  idCobro       String @db.VarChar(100) @unique
   idNotaCredito String @db.VarChar(100)
 
   @@index([idCobro], map: "cobros")

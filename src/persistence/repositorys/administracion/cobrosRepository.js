@@ -34,19 +34,19 @@ class cobrosRepository {
     }
 
     async findCobroFVByCobroId(id) {
-        return prisma.cobros_factura_venta.findUnique({
+        return prisma.cobros_factura_venta.findFirst({
             where: { idCobro: id }
         });
     }
 
     async findCobroFVEByCobroId(id) {
-        return prisma.cobros_factura_venta_excenta.findUnique({
+        return prisma.cobros_factura_venta_excenta.findFirst({
             where: { idCobro: id }
         });
     }
 
     async findCobroNCByCobroId(id) {
-        return prisma.cobros_factura_nota_credito.findUnique({
+        return prisma.cobros_factura_nota_credito.findFirst({
             where: { idCobro: id }
         });
     }
@@ -94,19 +94,19 @@ class cobrosRepository {
 
     async deleteCobroFVByCobroId(id) {
         return prisma.cobros_factura_venta.delete({
-            where: { idCobro: id }
+            where: { id: id }
         });
     }
 
     async deleteCobroFVEByCobroId(id) {
         return prisma.cobros_factura_venta_excenta.delete({
-            where: { idCobro: id }
+            where: { id: id }
         });
     }
 
     async deleteCobroNCByCobroId(id) {
         return prisma.cobros_factura_nota_credito.delete({
-            where: { idCobro: id }
+            where: { id: id }
         });
     }
 
