@@ -11,7 +11,7 @@ export const createProduct = async (req, res) => {
 
 export const getProductById = async (req, res) => {
     try {
-        const { idProducto } = req.params.id;
+        const { idProducto } = req.params.idProducto;
         const { userid } = req.params.userid;
         const product = await ProductService.getProductById(idProducto,userid);
         if (!product) {
