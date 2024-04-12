@@ -75,63 +75,7 @@ class VentasService {
             throw error;
         }
     }
-    // async createNCoDyItems(data){
-    //     try {
-    //         const {
-    //             notas_de_credito_debito,
-    //             nota_factura_venta,
-    //             nota_factura_venta_excenta,
-    //             nota_credito_nota_NC,
-    //             item_servicio_nota_credito,
-    //             item_producto_nota_credito
-    //         } = data;
-    //         let idNCoD;
-    //         let operations = []
-    //         if(notas_de_credito_debito.tipo_debito === true){
-    //             idNCoD = idgenerate("ND")
-    //         } else {
-    //             idNCoD = idgenerate("NC")
-    //         }
-    //         if(notas_de_credito_debito.anula_doc === true){
-    //             console.log("entre a anula doc")
-    //             operations.push(ventasRepository.createNCoD(idNCoD, notas_de_credito_debito ));
-    //              // Determina qué tipo de nota adicional crear y prepara la operación correspondiente
-    //              //ACA SE DETALLAN LOS TIPOS DE DOCUMENTOS RELACIONADOS A LA NOTA DE CREDITO/DEBITO
-    //             if (nota_factura_venta) {
-    //                 operations.push(ventasRepository.createNotaFV(nota_factura_venta.idFacturaVenta, idNCoD));
-    //             } else if (nota_factura_venta_excenta) {
-    //                 operations.push(ventasRepository.createNotaFVE(nota_factura_venta_excenta.idFacturaVentaExcenta, idNCoD));
-    //             } else if (nota_credito_nota_NC) {
-    //                 operations.push(ventasRepository.createNotaNC(nota_credito_nota_NC));
-    //             }
-    //             //Ejecutar las operaciones en una transaction
-    //             const result = await executeTransactions(operations)
-    //             return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result };
-    //         }
-    //         if(notas_de_credito_debito.corrige_monto === true){
-    //             if(!item_servicio_nota_credito && !item_producto_nota_credito){
-    //             throw new CustomError(400, "Bad Request", "Se requiere al menos un item de servicio o producto para realizar este movimiento")
-    //             }
-    //             operations.push(ventasRepository.createNCoD(idNCoD, notas_de_credito_debito ));
-    //             if (item_servicio_nota_credito && item_servicio_nota_credito.length > 0) {
-    //                 // Invocar la función y obtener la promesa Prisma
-    //                 const itemServicioPromiseNCoD = ventasRepository.createItemServicioForNCoD(idNCoD,item_servicio_nota_credito);
-    //                 operations.push(...itemServicioPromiseNCoD);
-    //             }
-    //              // Agregar operaciones para ítems de producto si existen (asumiendo una función similar para productos)
-    //             if (item_producto_nota_credito && item_producto_nota_credito.length > 0) {
-    //                 // Invocar la función y obtener la promesa Prisma
-    //             const itemProductoPromiseNCoD = ventasRepository.createItemProductoForNCoD(idNCoD, item_producto_nota_credito);
-    //             operations.push(...itemProductoPromiseNCoD);
-    //             }
-    //             //Ejecutar las operaciones en una transaction
-    //             const result = await executeTransactions(operations)
-    //             return { message: "Transacciones (NOTA DE CREDITO/DEBITO - CORRIGE DOC) completas con éxito", result };
-    //         }   
-    //     } catch (error) {
-    //         throw error
-    //     }
-    // }
+    
     async createNCoDyItems(data) {
         try {
             const {
@@ -142,7 +86,11 @@ class VentasService {
                 item_servicio_nota_credito,
                 item_producto_nota_credito,
                 item_servicio_nota_credito_NC,
-                item_producto_nota_credito_NC
+                item_producto_nota_credito_NC,
+                item_servicio_factura_venta,
+                item_producto_factura_venta,
+                item_servicio_factura_venta_excenta,
+                item_producto_factura_venta_excenta
             } = data;
             let idNCoD;
             if(notas_de_credito_debito.tipo_debito === true){
@@ -204,76 +152,7 @@ class VentasService {
             throw error;
         }
     }
-    // async createNCoDyItemsAnulaDoc(idNCoD,data) {
-    //     try {
-    //         const {
-    //             notas_de_credito_debito,
-    //             nota_factura_venta,
-    //             nota_factura_venta_excenta,
-    //             nota_credito_nota_NC
-    //         } = data;
-    //          // Validación
-    //         if (!notas_de_credito_debito) {
-    //             throw new CustomError(400, "Bad Request", "El parámetro notas_de_credito_debito es obligatorio");
-    //         }
-    //         if (
-    //             (nota_factura_venta && (nota_factura_venta_excenta || nota_credito_nota_NC)) ||
-    //             (nota_factura_venta_excenta && (nota_factura_venta || nota_credito_nota_NC)) ||
-    //             (nota_credito_nota_NC && (nota_factura_venta || nota_factura_venta_excenta))
-    //         ) {
-    //             throw new CustomError(400, "Bad Request", "Solo se puede especificar una opción: nota_factura_venta, nota_factura_venta_excenta o nota_credito_nota_NC");
-    //         }
-    //         let operations = [];
-    //         operations.push(ventasRepository.createNCoD(idNCoD, notas_de_credito_debito));
-    //         if (nota_factura_venta) {
-    //             operations.push(ventasRepository.createNotaFV(nota_factura_venta.idFacturaVenta, idNCoD));
-    //         } else if (nota_factura_venta_excenta) {
-    //             operations.push(ventasRepository.createNotaFVE(nota_factura_venta_excenta.idFacturaVentaExcenta, idNCoD));
-    //         } else if (nota_credito_nota_NC) {
-    //             operations.push(ventasRepository.createNotaNC(nota_credito_nota_NC));
-    //         }
-    //         const result = await executeTransactions(operations);
-    //         return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result };
-    //     } catch (error) {
-    //     throw error;
-    //     }
-    // }
-    // async createNCoDyItemsCorrigeMonto(idNCoD,data) {
-    //     try {
-    //         const {
-    //             notas_de_credito_debito,
-    //             item_servicio_nota_credito,
-    //             item_producto_nota_credito,
-    //             item_servicio_nota_credito_NC,
-    //             item_producto_nota_credito_NC
-    //         } = data;
-    //         let operations = [];
-    //         if (!item_servicio_nota_credito &&!item_producto_nota_credito) {
-    //             throw new CustomError(400, "Bad Request", "Se requiere al menos un item de servicio o producto para realizar este movimiento");
-    //         }
-    //         operations.push(ventasRepository.createNCoD(idNCoD, notas_de_credito_debito));
-    //         if (item_servicio_nota_credito && item_servicio_nota_credito.length > 0) {
-    //             const itemServicioPromiseNCoD = ventasRepository.createItemServicioForNCoD(idNCoD, item_servicio_nota_credito);
-    //             operations.push(...itemServicioPromiseNCoD);
-    //         }
-    //         if (item_producto_nota_credito && item_producto_nota_credito.length > 0) {
-    //             const itemProductoPromiseNCoD = ventasRepository.createItemProductoForNCoD(idNCoD, item_producto_nota_credito);
-    //             operations.push(...itemProductoPromiseNCoD);
-    //         }
-    //         if (item_servicio_nota_credito_NC && item_servicio_nota_credito_NC.length > 0) {
-    //             const itemServicioPromiseNCoD_NCOD = ventasRepository.createItemServicioForNCoD_NCOD(idNCoD, item_servicio_nota_credito_NC);
-    //             operations.push(...itemServicioPromiseNCoD_NCOD);
-    //         }
-    //         if (item_producto_nota_credito_NC && item_producto_nota_credito_NC.length > 0) {
-    //             const itemProductoPromiseNCoD_NCOD = ventasRepository.createItemProductoForNCoD_NCOD(idNCoD, item_producto_nota_credito_NC);
-    //             operations.push(...itemProductoPromiseNCoD_NCOD);
-    //         }
-    //         const result = await executeTransactions(operations);
-    //         return { message: "Transacciones (NOTA DE CREDITO/DEBITO - CORRIGE MONTO) completas con éxito", result };
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
+    
     async createNCoDyItemsCorrigeMonto(idNCoD, data) {
         try {
             const {
@@ -281,28 +160,60 @@ class VentasService {
                 item_servicio_nota_credito,
                 item_producto_nota_credito,
                 item_servicio_nota_credito_NC,
-                item_producto_nota_credito_NC
+                item_producto_nota_credito_NC,
+                item_servicio_factura_venta,
+                item_producto_factura_venta,
+                item_servicio_factura_venta_excenta,
+                item_producto_factura_venta_excenta
             } = data;
             // Validación adicional
             if (!notas_de_credito_debito) {
                 throw new CustomError(400, "Bad Request", "El parámetro notas_de_credito_debito es obligatorio");
             }
-            if (!item_servicio_nota_credito && !item_producto_nota_credito && !item_servicio_nota_credito_NC && !item_producto_nota_credito_NC) {
+            if (!item_servicio_nota_credito && !item_producto_nota_credito && !item_servicio_nota_credito_NC && !item_producto_nota_credito_NC && !item_servicio_factura_venta && !item_producto_factura_venta && !item_servicio_factura_venta_excenta && !item_producto_factura_venta_excenta) {
                 throw new CustomError(400, "Bad Request", "Se requiere al menos un item de servicio o producto para realizar este movimiento");
             }
             let operations = [ventasRepository.createNCoD(idNCoD, notas_de_credito_debito)];
-            const items = [
-                { item: item_servicio_nota_credito, repository: ventasRepository.createItemServicioForNCoD },
-                { item: item_producto_nota_credito, repository: ventasRepository.createItemProductoForNCoD },
-                { item: item_servicio_nota_credito_NC, repository: ventasRepository.createItemServicioForNCoD_NCOD },
-                { item: item_producto_nota_credito_NC, repository: ventasRepository.createItemProductoForNCoD_NCOD }
-            ];
-            for (const { item, repository } of items) {
-                if (item && item.length > 0) {
-                const promise = repository(idNCoD, item);
-                operations.push(...promise);
+            // Determinar el conjunto de datos a procesar
+            if (item_servicio_nota_credito || item_producto_nota_credito || item_servicio_nota_credito_NC || item_producto_nota_credito_NC) {
+                // Primer camino: Nota de crédito/debito
+                const itemsNC = [
+                    { item: item_servicio_nota_credito, repository: ventasRepository.createItemServicioForNCoD },
+                    { item: item_producto_nota_credito, repository: ventasRepository.createItemProductoForNCoD },
+                    { item: item_servicio_nota_credito_NC, repository: ventasRepository.createItemServicioForNCoD_NCOD },
+                    { item: item_producto_nota_credito_NC, repository: ventasRepository.createItemProductoForNCoD_NCOD },
+                ];
+                for (const { item, repository } of itemsNC) {
+                    if (item && item.length > 0) {
+                        const promise = repository(idNCoD, item);
+                        operations.push(...promise);
+                    }
                 }
-            }
+            } else if (item_servicio_factura_venta || item_producto_factura_venta || item_servicio_factura_venta_excenta || item_producto_factura_venta_excenta) {
+                // Segundo camino: Factura venta y excenta
+                let idFV;
+                let idFVE;
+                if(item_servicio_factura_venta || item_producto_factura_venta){
+                    idFV = await ventasRepository.getFVidByIdDoc(notas_de_credito_debito.idDoc);
+                }
+                if(item_servicio_factura_venta_excenta || item_producto_factura_venta_excenta){
+                    idFVE = await ventasRepository.getFVEidByIdDoc(notas_de_credito_debito.idDoc)
+                }
+                const itemsFV_FVE = [
+                    { item: item_servicio_factura_venta, repository: ventasRepository.createItemServicioFV, id: idFV },
+                    { item: item_producto_factura_venta, repository: ventasRepository.createItemProductoFV, id: idFV },
+                    { item: item_servicio_factura_venta_excenta, repository: ventasRepository.createItemServicioFVE, id: idFVE },
+                    { item: item_producto_factura_venta_excenta, repository: ventasRepository.createItemProductoFVE, id: idFVE },
+                ];
+                for (const { item, repository, id } of itemsFV_FVE) {
+                    if (item && item.length > 0) {
+                        const promise = repository(id, item);
+                        operations.push(...promise);
+                    }
+                }
+        } else {
+            throw new CustomError(400, "Bad Request", "No se proporcionaron items válidos para procesar");
+        }
             const result = await executeTransactions(operations);
             return { message: "Transacciones (NOTA DE CREDITO/DEBITO - CORRIGE MONTO) completas con éxito", result };
         } catch (error) {

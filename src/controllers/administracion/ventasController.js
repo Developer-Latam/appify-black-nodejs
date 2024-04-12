@@ -53,6 +53,12 @@ export const createNCoDConItemsController = async (req, res) => {
             nota_credito_nota_NC: req.body.nota_credito_nota_NC,
             item_servicio_nota_credito: req.body.item_servicio_nota_credito,
             item_producto_nota_credito: req.body.item_producto_nota_credito,
+            item_servicio_nota_credito_NC: req.body.item_servicio_nota_credito_NC,
+            item_producto_nota_credito_NC: req.body.item_producto_nota_credito_NC,
+            item_servicio_factura_venta: req.body.item_servicio_factura_venta,
+            item_producto_factura_venta: req.body.item_producto_factura_venta,
+            item_servicio_factura_venta_excenta: req.body.item_servicio_factura_venta_excenta,
+            item_producto_factura_venta_excenta: req.body.item_producto_factura_venta_excenta,
         };
         const result = await ventasService.createNCoDyItems(data);
         ResponseHandler.Ok(res, result)
@@ -60,3 +66,5 @@ export const createNCoDConItemsController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+
+

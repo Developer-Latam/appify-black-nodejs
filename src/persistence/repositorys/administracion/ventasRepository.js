@@ -48,6 +48,26 @@ class VentasRepository {
                 }
             }
     }
+    async getFVidByIdDoc(idDoc){
+        try {
+            const facturaVenta = await prisma.factura_venta.findFirst({
+                where: {
+                    idDoc: idDoc
+                },
+                select: {
+                    id: true 
+                }
+            });
+            return facturaVenta ? facturaVenta.id : null;
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
     createItemServicioFV (idFV,itemsServicio){
         try {
             const op = itemsServicio.map(item => prisma.item_servicio_factura_venta.create({
@@ -118,6 +138,26 @@ class VentasRepository {
                     nota_interna
                 }
             })
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    async getFVEidByIdDoc(idDoc){
+        try {
+            const facturaVentaExenta = await prisma.factura_venta_excenta.findFirst({
+                where: {
+                    idDoc: idDoc
+                },
+                select: {
+                    id: true 
+                }
+            });
+            return facturaVentaExenta ? facturaVentaExenta.id : null;
         } catch (error) {
             if (error instanceof prismaError.PrismaClientValidationError) {
                 // Error específico de Prisma por tipo de dato incorrecto
