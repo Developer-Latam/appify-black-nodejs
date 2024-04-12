@@ -22,6 +22,16 @@ export const createProveedorController = async (req, res) => {
         ResponseHandler.HandleError(res, err)
     }
 }
+
+export const getProveedoresByUserId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const proveedores = await proveedorService.getProveedoresByUserId(id);
+        res.status(200).json({ data: proveedores });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
 //Actualiza un proveedor
 export const updateProveedorController = async (req, res, next) => {
     try {

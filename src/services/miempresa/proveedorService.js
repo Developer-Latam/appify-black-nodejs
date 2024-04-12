@@ -26,6 +26,13 @@ class proveedorService {
             throw (error)
         }
     }
+
+    async getProveedoresByUserId(userId) {
+
+        return proveedorRepository.findAllProveedoresByUserId(userId);
+    }
+
+
     //Actualiza el proveedor mediante su id
     async updateProveedorService(id, updateFields) {
         try {

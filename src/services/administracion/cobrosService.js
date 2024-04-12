@@ -11,38 +11,39 @@ class cobrosService {
                 cobroFunction = this.createCobroFV;
             } else if (data.cobros_factura_venta_excenta) {
                 cobroFunction = this.createCobroFVE;
-            } else if (data.cobros_factura_venta_nota_credito) {
+            } else if (data.cobros_factura_nota_credito) {
                 cobroFunction = this.createCobroNC;
             } else {
                 throw new Error('Tipo de cobro no válido en los datos recibidos');
             }
     
-            // Crear el registro de cobro
-            const cobro = await cobrosRepository.createCobros(data.cobros);
-    
             // Llamar a la función correspondiente para crear el registro de cobro de factura
             const cobroFV = await cobroFunction(data);
     
             // Devolver ambos registros como un arreglo
-            return [cobro, cobroFV];
+            return [cobroFV];
         } catch (error) {
             // Manejar cualquier error que pueda ocurrir
             console.error("Error al crear cobro y cobro de factura de venta/ venta excenta / nota de credito:", error);
             throw error; // Relanzar el error para que pueda ser manejado por el código que llama a esta función
         }
     }
+    
 
     async createCobroFV(data) {
         try {
             // Generar IDs para el cobro y el cobro de factura de venta
             const cobroId = idgenerate("Cobro");
             const cobroFVId = idgenerate("Cobro-FV");
+
+            // Extraer datos del objeto data
+            const { cobros, cobros_factura_venta } = data;
     
             // Crear el registro de cobro
-            const cobro = await cobrosRepository.createCobros({ ...data, id: cobroId });
+            const cobro = await cobrosRepository.createCobros({ ...cobros, id: cobroId });
     
             // Agregar el ID del cobro al objeto de datos para el cobro de factura de venta
-            const cobroFVData = { ...data, id: cobroFVId, idCobro: cobroId };
+            const cobroFVData = { ...cobros_factura_venta, id: cobroFVId, idCobro: cobroId };
     
             // Crear el registro de cobro de factura de venta
             const cobroFV = await cobrosRepository.createCobrosFV(cobroFVData);
@@ -61,18 +62,21 @@ class cobrosService {
             // Generar IDs para el cobro y el cobro de factura de venta
             const cobroId = idgenerate("Cobro");
             const cobroFVEId = idgenerate("Cobro-FVE");
+
+            // Extraer datos del objeto data
+            const { cobros, cobros_factura_venta_excenta } = data;
     
             // Crear el registro de cobro
-            const cobro = await cobrosRepository.createCobros({ ...data, id: cobroId });
+            const cobro = await cobrosRepository.createCobros({ ...cobros, id: cobroId });
     
             // Agregar el ID del cobro al objeto de datos para el cobro de factura de venta
-            const cobroFVEData = { ...data, id: cobroFVEId, idCobro: cobroId };
+            const cobroFVEData = { ...cobros_factura_venta_excenta, id: cobroFVEId, idCobro: cobroId };
     
             // Crear el registro de cobro de factura de venta
-            const cobroFV = await cobrosRepository.createCobrosFVE(cobroFVEData);
+            const cobroFVE = await cobrosRepository.createCobrosFVE(cobroFVEData);
     
             // Devolver ambos registros como un arreglo
-            return [cobro, cobroFV];
+            return [cobro, cobroFVE];
         } catch (error) {
             // Manejar cualquier error que pueda ocurrir
             console.error("Error al crear cobro y cobro de factura de venta:", error);
@@ -85,15 +89,18 @@ class cobrosService {
             // Generar IDs para el cobro y el cobro de factura de venta
             const cobroId = idgenerate("Cobro");
             const cobroNCId = idgenerate("Cobro-NC");
+
+            // Extraer datos del objeto data
+            const { cobros, cobros_factura_nota_credito } = data;
     
             // Crear el registro de cobro
-            const cobro = await cobrosRepository.createCobros({ ...data, id: cobroId });
+            const cobro = await cobrosRepository.createCobros({ ...cobros, id: cobroId });
     
             // Agregar el ID del cobro al objeto de datos para el cobro de factura de venta
-            const cobroNCData = { ...data, id: cobroNCId, idCobro: cobroId };
+            const cobroNCData = { ...cobros_factura_nota_credito, id: cobroNCId, idCobro: cobroId };
     
             // Crear el registro de cobro de factura de venta
-            const cobroNC = await cobrosRepository.createCobrosFVE(cobroNCData);
+            const cobroNC = await cobrosRepository.createCobrosNC(cobroNCData);
     
             // Devolver ambos registros como un arreglo
             return [cobro, cobroNC];

@@ -12,6 +12,8 @@ export const createProduct = async (req, res) => {
 export const getProductById = async (req, res) => {
     try {
         const { idProducto } = req.params;
+        console.log(idProducto)
+        //const { userid } = req.params.userid;
         const product = await ProductService.getProductById(idProducto);
         if (!product) {
             return res.status(404).json({ message: 'Producto no encontrado' });

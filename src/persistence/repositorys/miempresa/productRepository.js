@@ -8,7 +8,9 @@ class ProductRepository {
 
     async findProductById(id) {
         return prisma.productos.findUnique({
-            where: { id: id }
+            where: { id: id
+                //user: userid
+             }
         });
     }
     async productExistsByName(nameProduct) {
