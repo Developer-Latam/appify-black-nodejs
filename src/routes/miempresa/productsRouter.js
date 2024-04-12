@@ -9,7 +9,7 @@ router.post('/product', createProduct);
 
 // Obtener un unico porducto por ID
 
-router.get('/product/:idProducto', getProductById);
+router.get('/product/:idProducto/:userid', getProductById);
 
 // Obtener todos los productos por usuario
 
