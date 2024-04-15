@@ -192,7 +192,7 @@ model documento_despacho_traslado {
   idDoc             String    @db.VarChar(100)
   fecha             DateTime? @db.Date
   idCliente         String    @db.VarChar(100)
-  idTransportista   Int
+  idTransportista   String    @db.VarChar(100)
   punto             String    @db.VarChar(50)
   direccion_destino String    @db.VarChar(259)
   comuna            String    @db.VarChar(100)
