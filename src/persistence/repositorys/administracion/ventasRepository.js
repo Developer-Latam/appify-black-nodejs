@@ -87,6 +87,7 @@ class VentasRepository {
     createDocDespachoVenta(idDDV, idDD, {fecha, idCliente, idTransportista, ot, fact_libre, punto, direccion_destino, comuna, ciudad, observacion, numero_documento}) {
         try {
             return prisma.documento_despacho_venta.create({
+                data: {
                 id: idDDV,
                 idDoc: idDD,
                 fecha,
@@ -100,6 +101,7 @@ class VentasRepository {
                 ciudad,
                 observacion, 
                 numero_documento
+            }
             });
         } catch (error) {
             if (error instanceof prismaError.ValidationError) {
