@@ -66,7 +66,7 @@ class cuentasService {
         return cuentasRepository.findCuentaBancoById(id);
     }
 
-    async getCategoriaCuentaByIdId(id) {
+    async getCategoriaCuentaById(id) {
         return cuentasRepository.findCategoriaCuentaById(id);
     }
 
@@ -129,8 +129,6 @@ class cuentasService {
     async updateCondicionesCondicionPago(id, updateData) {
         return cuentasRepository.updateCondicionesCondicionPago(id, updateData);
     }
-
-
 
 
 }
