@@ -19,16 +19,16 @@ model agendamiento_proyecto {
 }
 
 model bancos {
-  id     Int    @id @default(autoincrement())
+  id     String @id @db.VarChar(100)
   user   String @db.VarChar(100)
   nombre String @db.VarChar(100)
   codigo String @db.VarChar(100)
 
-  @@index([user], map: "usuarios")
+  @@index([user], map: "usuario")
 }
 
 model categoria_cuenta {
-  id         Int     @id @default(autoincrement())
+  id         String  @id @db.VarChar(100)
   user       String  @db.VarChar(100)
   nombre     String  @db.VarChar(75)
   codigo     String  @db.VarChar(75)
@@ -83,12 +83,12 @@ model cobros {
 }
 
 model condiciones_condicion_pago {
-  id          Int   @id @default(autoincrement())
-  idCondicion Int
-  porcentaje  Float @db.Float
+  id          String @id @db.VarChar(100)
+  idCondicion String @db.VarChar(100)
+  porcentaje  Float  @db.Float
   numero_dias Int
 
-  @@index([idCondicion], map: "condicion_de_pago")
+  @@index([idCondicion], map: "condicion_pago")
 }
 
 model consultas {
@@ -130,13 +130,13 @@ model costos_por_proyecto {
 }
 
 model cuenta_tipo_documento {
-  id      Int     @id @default(autoincrement())
+  id      String  @id @db.VarChar(100)
   user    String  @db.VarChar(100)
   nombre  String  @db.VarChar(100)
   credito Boolean
   contado Boolean
 
-  @@index([user], map: "usuarios")
+  @@index([user], map: "usuario")
 }
 
 model cuentas_banco {
@@ -673,10 +673,12 @@ model orden_compra {
 model orden_trabajo {
   id         String    @id @db.VarChar(100)
   idProyecto String    @db.VarChar(100)
+  idVendedor String    @db.VarChar(100)
   fecha      DateTime? @db.Date
   estado     String    @db.VarChar(50)
 
   @@index([idProyecto], map: "proyectos")
+  @@index([idVendedor], map: "subusuarios")
 }
 
 model pagos {
@@ -1372,4 +1374,14 @@ model pagos_factura_nota_credito {
 
   @@index([idCobro], map: "cobros")
   @@index([idNotaCredito], map: "notas_de_credito_debito_compras")
+}
+
+model condicion_pago {
+  id           String  @id @db.VarChar(100)
+  user         String  @db.VarChar(100)
+  nombre       String  @db.VarChar(100)
+  interes      Float?  @db.Float
+  cuenta_cobro String? @db.VarChar(100)
+
+  @@index([user], map: "usuarios")
 }
