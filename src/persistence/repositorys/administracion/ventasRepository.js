@@ -140,11 +140,11 @@ class VentasRepository {
             }
         }
     }
-    createItemDespachoTrasladoOt(idDDTOT,idDDT, {idOt}) {
+    createItemDespachoTrasladoOt(idDDT, {idOt}) {
         try {
             return prisma.item_despacho_traslado_ot.create({
                 data: {
-                    id: idDDTOT,
+                    id: idgenerate("DDT-OT"),
                     idOt: idOt,
                     idDespachoTraslado: idDDT
                 }
@@ -158,11 +158,11 @@ class VentasRepository {
             }
         }
     }
-    createItemProductoDDT(idProductoDDT,idDDV, {idProducto, cantidad, unitario}) {
+    createItemProductoDDT(idDDV, {idProducto, cantidad, unitario}) {
         try {
             return prisma.item_producto_documento_despacho_traslado.create({
                 data: {
-                    id: idProductoDDT,
+                    id: idgenerate("DDT-PROD"),
                     idProducto,
                     idDocumentoVenta: idDDV,
                     cantidad,
