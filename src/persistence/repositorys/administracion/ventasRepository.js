@@ -21,12 +21,14 @@ class VentasRepository {
                 }
             }
     }
-    createDD (idDD, {user}){
+    createDD (idDD, {user, venta, traslado}){
         try {
             return prisma.documento_despacho.create({
                 data: {
                     id: idDD,
                     user,
+                    venta,
+                    traslado
                 }
             })
         } catch (error) {
@@ -38,13 +40,13 @@ class VentasRepository {
             }
         }
     }
-    createItemProductoDDV(idDD, id, idProducto, cantidad, unitario, costo_unitario, subtotal, iva, total_con_iva) {
+    createItemProductoDDV(idProductoDDV,idDDV,{ idProducto, cantidad, unitario, costo_unitario, subtotal, iva, total_con_iva}) {
         try {
             return prisma.item_producto_documento_despacho_venta.create({
                 data: {
-                    id: id,
+                    id: idProductoDDV,
                     idProducto,
-                    idDocumentoVenta: idDD,
+                    idDocumentoVenta: idDDV,
                     cantidad,
                     unitario,
                     costo_unitario,
@@ -62,12 +64,13 @@ class VentasRepository {
             }
         }
     }
-    createItemDespachoVOt(idOt, idDespachoVenta) {
+    createItemDespachoVentaOt(idDDVOT,idDDV, {idOt}) {
         try {
             return prisma.item_despacho_venta_ot.create({
                 data: {
-                    idOt: idOt,
-                    idDespachoVenta: idDespachoVenta
+                    id: idDDVOT,
+                    idOt,
+                    idDespachoVenta: idDDV
                 }
             });
         } catch (error) {
@@ -79,9 +82,10 @@ class VentasRepository {
             }
         }
     }
-    createDocDespachoVenta(idDD, {fecha, idCliente, idTransportista, ot, fact_libre, punto, direccion_destino, comuna, ciudad, observacion}) {
+    createDocDespachoVenta(idDDV, idDD, {fecha, idCliente, idTransportista, ot, fact_libre, punto, direccion_destino, comuna, ciudad, observacion, numero_documento}) {
         try {
             return prisma.documento_despacho_venta.create({
+                id: idDDV,
                 idDoc: idDD,
                 fecha,
                 idCliente,
@@ -92,7 +96,8 @@ class VentasRepository {
                 direccion_destino,
                 comuna,
                 ciudad,
-                observacion
+                observacion, 
+                numero_documento
             });
         } catch (error) {
             if (error instanceof prismaError.ValidationError) {
@@ -103,7 +108,52 @@ class VentasRepository {
             }
         }
     }
-    
+    createDDT(idDDT, idDD, {fecha, idCliente, idTransportista, punto, direccion_destino, comuna, ciudad, observacion, numero_documento}) {
+        try {
+            return prisma.documento_despacho_traslado.create({
+                data: {
+                    id: idDDT,
+                    idDoc: idDD,
+                    fecha,
+                    idCliente,
+                    idTransportista,
+                    punto,
+                    direccion_destino,
+                    comuna,
+                    ciudad,
+                    observacion,
+                    numero_documento,
+                    ot, 
+                    fact_libre
+                }
+            });
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message});
+            }
+        }
+    }
+    createItemDespachoTrasladoOt(id, idOt, idDespachoTraslado) {
+        try {
+            return prisma.item_despacho_traslado_ot.create({
+                data: {
+                    id: id,
+                    idOt: idOt,
+                    idDespachoTraslado: idDespachoTraslado
+                }
+            });
+        } catch (error) {
+            if (error instanceof prisma.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message});
+            }
+        }
+    }
     createFV (idFV,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
             try {
                 return prisma.factura_venta.create({

@@ -43,12 +43,28 @@ class VentasService {
         try {
             const {
                 documento_despacho,
-                documento_despacho_venta
+                documento_despacho_venta,
+                item_producto_documento_despacho_venta,
+                item_despacho_venta_ot
             } = data
             const idDD = idgenerate("DD")
             let operations = []
             operations.push(ventasRepository.createDD(idDD, documento_despacho));
-            operations.push(ventasRepository.createDocDespachoVenta(idDD, documento_despacho_venta))
+            if (documento_despacho.venta === true){
+                const idDDV = idgenerate("DDV")
+                operations.push(ventasRepository.createDocDespachoVenta(idDDV, idDD, documento_despacho_venta));
+                if(documento_despacho_venta.ot === true){
+                    const idDDVOT = idgenerate("DDV-OT")
+                    operations.push(ventasRepository.createItemDespachoVentaOt(idDDVOT,idDDV, item_despacho_venta_ot))
+                } else if (documento_despacho_venta.fact_libre === true){
+                    const idProductoDDV = idgenerate("DDV-PROD")
+                    operations.push(ventasRepository.createItemProductoDDV(idProductoDDV,idDDV, item_producto_documento_despacho_venta))
+                }
+            }else if(documento_despacho.traslado === true){
+                const idDDV = idgenerate("DDT")
+                operations.push(ventasRepository.createDDT(idDDV, idDD, documento_despacho_venta));
+            }
+            
         } catch (error) {
             throw error;
         }

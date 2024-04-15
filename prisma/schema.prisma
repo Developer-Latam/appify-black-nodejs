@@ -179,14 +179,16 @@ model documento_compra {
 }
 
 model documento_despacho {
-  id   String @id @db.VarChar(100)
-  user String @db.VarChar(100)
+  id       String  @id @db.VarChar(100)
+  user     String  @db.VarChar(100)
+  venta    Boolean
+  traslado Boolean
 
   @@index([user], map: "usuarios")
 }
 
 model documento_despacho_traslado {
-  id                Int       @id @default(autoincrement())
+  id                String    @id @db.VarChar(100)
   idDoc             String    @db.VarChar(100)
   fecha             DateTime? @db.Date
   idCliente         String    @db.VarChar(100)
@@ -196,6 +198,7 @@ model documento_despacho_traslado {
   comuna            String    @db.VarChar(100)
   ciudad            String    @db.VarChar(100)
   observacion       String?   @db.Text
+  numero_documento  String    @db.VarChar(100)
 
   @@index([idDoc], map: "documento_despacho")
   @@index([idTransportista], map: "transportista")
@@ -203,7 +206,7 @@ model documento_despacho_traslado {
 }
 
 model documento_despacho_venta {
-  id                Int       @id @default(autoincrement())
+  id                String    @id @db.VarChar(100)
   idDoc             String    @db.VarChar(100)
   fecha             DateTime? @db.Date
   idCliente         String    @db.VarChar(100)
@@ -215,6 +218,7 @@ model documento_despacho_venta {
   comuna            String    @db.VarChar(100)
   ciudad            String    @db.VarChar(100)
   observacion       String?   @db.Text
+  numero_documento  String    @db.VarChar(100)
 
   @@index([idDoc], map: "documento_despacho")
   @@index([idTransportista], map: "transportista")
@@ -288,18 +292,18 @@ model factura_venta_excenta {
 }
 
 model item_despacho_traslado_ot {
-  id                 Int    @id @default(autoincrement())
+  id                 String @id @db.VarChar(100)
   idOt               String @db.VarChar(100)
-  idDespachoTraslado Int
+  idDespachoTraslado String @db.VarChar(100)
 
   @@index([idDespachoTraslado], map: "documento_despacho_venta")
   @@index([idOt], map: "orden_trabajo")
 }
 
 model item_despacho_venta_ot {
-  id              Int    @id @default(autoincrement())
+  id              String @id @db.VarChar(100)
   idOt            String @db.VarChar(100)
-  idDespachoVenta Int
+  idDespachoVenta String @db.VarChar(100)
 
   @@index([idDespachoVenta], map: "documento_despacho_venta")
   @@index([idOt], map: "orden_trabajo")
@@ -1316,7 +1320,7 @@ model item_servicio_nota_credito_NC {
 
 model cobros_factura_venta {
   id             String @id @db.VarChar(100)
-  idCobro        String @db.VarChar(100) @unique
+  idCobro        String @db.VarChar(100)
   idFacturaVenta String @db.VarChar(100)
 
   @@index([idCobro], map: "cobros")
@@ -1325,7 +1329,7 @@ model cobros_factura_venta {
 
 model cobros_factura_venta_excenta {
   id                    String @id @db.VarChar(100)
-  idCobro               String @db.VarChar(100) @unique
+  idCobro               String @db.VarChar(100)
   idFacturaVentaExcenta String @db.VarChar(100)
 
   @@index([idCobro], map: "cobros")
@@ -1343,7 +1347,7 @@ model cuenta_banco_conciliacion {
 
 model cobros_factura_nota_credito {
   id            String @id @db.VarChar(100)
-  idCobro       String @db.VarChar(100) @unique
+  idCobro       String @db.VarChar(100)
   idNotaCredito String @db.VarChar(100)
 
   @@index([idCobro], map: "cobros")
