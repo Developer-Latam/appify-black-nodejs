@@ -125,51 +125,50 @@ class cuentasRepository {
         });
     }
 
+
+
+    async updateCuentasBanco(id, updateData) {
+        return prisma.cuentas_banco.update({
+            where: { id: id },
+            data: updateData
+        });
+    }
+
+    async updateCategoriaCuenta(id, updateData) {
+        return prisma.categoria_cuenta.update({
+            where: { id: id },
+            data: updateData
+        });
+    }
     
 
-
-    async updatePagos(id, updateData) {
-        return prisma.pagos.update({
+    async updateCuentaTipoDoc(id, updateData) {
+        return prisma.cuenta_tipo_documento.update({
             where: { id: id },
             data: updateData
         });
     }
 
-    async updatePagosFC(id, updateData) {
-        return prisma.pagos_factura_compra.update({
-            where: { id: id },
-            data: updateData
-        });
-    }
-    
-
-    async updatePagosNC(id, updateData) {
-        return prisma.pagos_factura_nota_credito.update({
+    async updateBanco(id, updateData) {
+        return prisma.bancos.update({
             where: { id: id },
             data: updateData
         });
     }
 
-
-    async deletePagos(id) {
-        return prisma.pagos.delete({
-            where: { id: id }
+    async updateCondicionPago(id, updateData) {
+        return prisma.condicion_pago.update({
+            where: { id: id },
+            data: updateData
         });
     }
 
-    async deletePagosFCByCobroId(id) {
-        return prisma.pagos_factura_compra.delete({
-            where: { id: id }
+    async updateCondicionesCondicionPago(id, updateData) {
+        return prisma.condiciones_condicion_pago.update({
+            where: { id: id },
+            data: updateData
         });
     }
-
-
-    async deletePagosNCByCobroId(id) {
-        return prisma.pagos_factura_nota_credito.delete({
-            where: { id: id }
-        });
-    }
-
 }
 
 
