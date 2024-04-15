@@ -21,6 +21,89 @@ class VentasRepository {
                 }
             }
     }
+    createDD (idDD, {user}){
+        try {
+            return prisma.documento_despacho.create({
+                data: {
+                    id: idDD,
+                    user,
+                }
+            })
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    createItemProductoDDV(idDD, id, idProducto, cantidad, unitario, costo_unitario, subtotal, iva, total_con_iva) {
+        try {
+            return prisma.item_producto_documento_despacho_venta.create({
+                data: {
+                    id: id,
+                    idProducto,
+                    idDocumentoVenta: idDD,
+                    cantidad,
+                    unitario,
+                    costo_unitario,
+                    subtotal,
+                    iva,
+                    total_con_iva
+                }
+            });
+        } catch (error) {
+            if (error instanceof prisma.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message});
+            }
+        }
+    }
+    createItemDespachoVOt(idOt, idDespachoVenta) {
+        try {
+            return prisma.item_despacho_venta_ot.create({
+                data: {
+                    idOt: idOt,
+                    idDespachoVenta: idDespachoVenta
+                }
+            });
+        } catch (error) {
+            if (error instanceof prisma.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message});
+            }
+        }
+    }
+    createDocDespachoVenta(idDD, {fecha, idCliente, idTransportista, ot, fact_libre, punto, direccion_destino, comuna, ciudad, observacion}) {
+        try {
+            return prisma.documento_despacho_venta.create({
+                idDoc: idDD,
+                fecha,
+                idCliente,
+                idTransportista,
+                ot,
+                fact_libre,
+                punto,
+                direccion_destino,
+                comuna,
+                ciudad,
+                observacion
+            });
+        } catch (error) {
+            if (error instanceof prismaError.ValidationError) {
+                // Error específico de Sequelize por validación de tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message});
+            }
+        }
+    }
+    
     createFV (idFV,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
             try {
                 return prisma.factura_venta.create({

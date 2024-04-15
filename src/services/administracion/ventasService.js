@@ -39,6 +39,20 @@ class VentasService {
             throw error;
         }
     }
+    async createDDV(data) {
+        try {
+            const {
+                documento_despacho,
+                documento_despacho_venta
+            } = data
+            const idDD = idgenerate("DD")
+            let operations = []
+            operations.push(ventasRepository.createDD(idDD, documento_despacho));
+            operations.push(ventasRepository.createDocDespachoVenta(idDD, documento_despacho_venta))
+        } catch (error) {
+            throw error;
+        }
+    }
     async createFVE(data) {
         try {
             const {
