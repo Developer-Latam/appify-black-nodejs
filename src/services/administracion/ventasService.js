@@ -61,42 +61,41 @@ class VentasService {
                     throw new CustomError(400, "Bad Request", "Los detalles de la venta son obligatorios.");
                 }
                 const idDDV = idgenerate("DDV")
-                operations.push(ventasRepository.createDocDespachoVenta(idDDV, idDD, documento_despacho_venta));}
-                // if(documento_despacho_venta.ot === true){
-                //     if (!item_despacho_venta_ot || item_despacho_venta_ot <= 0) {
-                //         throw new CustomError(400, "Bad Request", "Los items de despacho de venta OT son necesarios y deben ser mayores a 0.");
-                //     }
-                //     const idDDVOT = idgenerate("DDV-OT")
-                //     const promiseDVot = ventasRepository.createItemDespachoVentaOt(idDDVOT,idDDV, item_despacho_venta_ot)
-                //     operations.push(...promiseDVot)
-                // } else if (documento_despacho_venta.fact_libre === true){
-                //     if (!item_producto_documento_despacho_venta || item_producto_documento_despacho_venta <= 0) {
-                //         throw new CustomError(400, "Bad Request","Los productos del documento de despacho de venta son necesarios y deben ser mayores a 0.");
-                //     }
-                //     const idProductoDDV = idgenerate("DDV-PROD")
-                //     const promiseDDVProd = ventasRepository.createItemProductoDDV(idProductoDDV,idDDV, item_producto_documento_despacho_venta)
-                //     operations.push(...promiseDDVProd)
-                // }}
-            // }else if(documento_despacho.traslado === true){
-            //     if (!documento_despacho_traslado) {
-            //         throw new CustomError(400, "Bad Request","Los detalles de traslado son obligatorios.");
-            //     }
-            //     const idDDT = idgenerate("DDT")
-            //     operations.push(ventasRepository.createDDT(idDDT, idDD, documento_despacho_traslado ));
-            //     if(documento_despacho_traslado.ot === true){
-            //         if (!item_despacho_traslado_ot || item_despacho_traslado_ot <= 0) {
-            //             throw new CustomError(400, "Bad Request","Los items de despacho de traslado OT son necesarios y deben ser mayores a 0.");
-            //         }
-            //         const idDDTOT = idgenerate("DDT-OT")
-            //         operations.push(ventasRepository.createItemDespachoTrasladoOt(idDDTOT,idDDT, item_despacho_traslado_ot))
-            //     } else if (documento_despacho_traslado.fact_libre === true){
-            //         if (!item_producto_documento_despacho_traslado || item_producto_documento_despacho_traslado <= 0) {
-            //             throw new CustomError(400, "Bad Request","Los productos del documento de despacho de traslado son necesarios y deben ser mayores a 0.");
-            //         }
-            //         const idProductoDDT = idgenerate("DDT-PROD")
-            //         operations.push(ventasRepository.createItemProductoDDT(idProductoDDT,idDDT, item_producto_documento_despacho_traslado))
-            //     }
-            // }
+                operations.push(ventasRepository.createDocDespachoVenta(idDDV, idDD, documento_despacho_venta));
+                if(documento_despacho_venta.ot === true){
+                    if (!item_despacho_venta_ot || item_despacho_venta_ot <= 0) {
+                        throw new CustomError(400, "Bad Request", "Los items de despacho de venta OT son necesarios y deben ser mayores a 0.");
+                    }
+                    
+                    const promiseDVot = ventasRepository.createItemDespachoVentaOt(idDDV, item_despacho_venta_ot)
+                    operations.push(...promiseDVot)
+                } else if (documento_despacho_venta.fact_libre === true){
+                    if (!item_producto_documento_despacho_venta || item_producto_documento_despacho_venta <= 0) {
+                        throw new CustomError(400, "Bad Request","Los productos del documento de despacho de venta son necesarios y deben ser mayores a 0.");
+                    }
+                    const promiseDDVProd = ventasRepository.createItemProductoDDV(idDDV, item_producto_documento_despacho_venta)
+                    operations.push(...promiseDDVProd)
+                }
+            }else if(documento_despacho.traslado === true){
+                if (!documento_despacho_traslado) {
+                    throw new CustomError(400, "Bad Request","Los detalles de traslado son obligatorios.");
+                }
+                const idDDT = idgenerate("DDT")
+                operations.push(ventasRepository.createDDT(idDDT, idDD, documento_despacho_traslado ));
+                if(documento_despacho_traslado.ot === true){
+                    if (!item_despacho_traslado_ot || item_despacho_traslado_ot <= 0) {
+                        throw new CustomError(400, "Bad Request","Los items de despacho de traslado OT son necesarios y deben ser mayores a 0.");
+                    }
+                    const idDDTOT = idgenerate("DDT-OT")
+                    operations.push(ventasRepository.createItemDespachoTrasladoOt(idDDTOT,idDDT, item_despacho_traslado_ot))
+                } else if (documento_despacho_traslado.fact_libre === true){
+                    if (!item_producto_documento_despacho_traslado || item_producto_documento_despacho_traslado <= 0) {
+                        throw new CustomError(400, "Bad Request","Los productos del documento de despacho de traslado son necesarios y deben ser mayores a 0.");
+                    }
+                    const idProductoDDT = idgenerate("DDT-PROD")
+                    operations.push(ventasRepository.createItemProductoDDT(idProductoDDT,idDDT, item_producto_documento_despacho_traslado))
+                }
+            }
             //Ejecutar las operaciones en una transaction
             const result = await executeTransactions(operations)
             return { message: "Transacciones FVE completas con éxito", result };

@@ -40,11 +40,11 @@ class VentasRepository {
             }
         }
     }
-    createItemProductoDDV(idProductoDDV,idDDV, itemsProductoDDV) {
+    createItemProductoDDV(idDDV, itemsProductoDDV) {
         try {
             const op = itemsProductoDDV.map(item => prisma.item_producto_documento_despacho_venta.create({
                 data: {
-                    id: idProductoDDV,
+                    id: idgenerate("DDV-PROD"),
                     idProducto: item.idProducto,
                     idDocumentoVenta: idDDV,
                     cantidad: item.cantidad,
@@ -65,11 +65,11 @@ class VentasRepository {
             }
         }
     }
-    createItemDespachoVentaOt(idDDVOT,idDDV, itemsDVot) {
+    createItemDespachoVentaOt(idDDV, itemsDVot) {
         try {
             const op = itemsDVot.map(item => prisma.item_despacho_venta_ot.create({
                 data: {
-                    id: idDDVOT,
+                    id: idgenerate("DDV-OT"),
                     idOt: item.idOt,
                     idDespachoVenta: idDDV
                 }
