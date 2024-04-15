@@ -341,7 +341,7 @@ model item_producto_documento_despacho_traslado {
 model item_producto_documento_despacho_venta {
   id               String @id @db.VarChar(100)
   idProducto       String @db.VarChar(100)
-  idDocumentoVenta Int
+  idDocumentoVenta String @db.VarChar(100)
   cantidad         Int
   unitario         Int
   costo_unitario   Float  @db.Float
