@@ -199,6 +199,8 @@ model documento_despacho_traslado {
   ciudad            String    @db.VarChar(100)
   observacion       String?   @db.Text
   numero_documento  String    @db.VarChar(100)
+  ot                Boolean
+  fact_libre        Boolean
 
   @@index([idDoc], map: "documento_despacho")
   @@index([idTransportista], map: "transportista")

@@ -67,20 +67,20 @@ class cobrosRepository {
 
     async updateCobroFV(id, updateData) {
         return prisma.cobros_factura_venta.update({
-            where: { idCobro: id },
+            where: { id: id },
             data: updateData
         });
     }
     async updateCobroFVE(id, updateData) {
         return prisma.cobros_factura_venta_excenta.update({
-            where: { idCobro: id },
+            where: { id: id },
             data: updateData
         });
     }
 
     async updateCobroNC(id, updateData) {
         return prisma.cobros_factura_nota_credito.update({
-            where: { idCobro: id },
+            where: { id: id },
             data: updateData
         });
     }
