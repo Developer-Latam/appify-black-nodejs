@@ -112,7 +112,7 @@ class VentasRepository {
             }
         }
     }
-    createDDT(idDDT, idDD, {fecha, idCliente, idTransportista, punto, direccion_destino, comuna, ciudad, observacion, numero_documento}) {
+    createDDT(idDDT, idDD, {fecha, idCliente, idTransportista, punto, direccion_destino, comuna, ciudad, observacion, numero_documento, ot, fact_libre}) {
         try {
             return prisma.documento_despacho_traslado.create({
                 data: {
@@ -140,15 +140,16 @@ class VentasRepository {
             }
         }
     }
-    createItemDespachoTrasladoOt(idDDT, {idOt}) {
+    createItemDespachoTrasladoOt(idDDT, itemsDDTot) {
         try {
-            return prisma.item_despacho_traslado_ot.create({
+            const op = itemsDDTot.map(item => prisma.item_despacho_traslado_ot.create({
                 data: {
                     id: idgenerate("DDT-OT"),
-                    idOt: idOt,
+                    idOt: item.idOt,
                     idDespachoTraslado: idDDT
                 }
-            });
+            }));
+            return op
         } catch (error) {
             if (error instanceof prismaError.PrismaClientValidationError) {
                 // Error específico de Prisma por tipo de dato incorrecto
@@ -158,17 +159,18 @@ class VentasRepository {
             }
         }
     }
-    createItemProductoDDT(idDDV, {idProducto, cantidad, unitario}) {
+    createItemProductoDDT(idDDV, itemsProductoDDT) {
         try {
-            return prisma.item_producto_documento_despacho_traslado.create({
+            const op = itemsProductoDDT.map(item => prisma.item_producto_documento_despacho_traslado.create({
                 data: {
                     id: idgenerate("DDT-PROD"),
-                    idProducto,
+                    idProducto: item.idProducto,
                     idDocumentoVenta: idDDV,
-                    cantidad,
-                    unitario
+                    cantidad: item.cantidad,
+                    unitario: item.unitario
                 }
-            });
+            }));
+            return op
         } catch (error) {
             if (error instanceof prismaError.PrismaClientValidationError) {
                 // Error específico de Prisma por tipo de dato incorrecto
