@@ -292,4 +292,3 @@ class VentasService {
 
 export default new VentasService()
 
-1
