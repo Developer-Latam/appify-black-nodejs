@@ -12,5 +12,3 @@ router.post('/ventas/DD', createDDController)
 export default router
 
 
-
-

@@ -42,12 +42,12 @@ class VentasService {
     async createDD(data) {
         try {
             const { documento_despacho } = data;
+            if (!documento_despacho) {
+                throw new CustomError(400, "Bad Request", "El documento de despacho es obligatorio.");
+            }
             // Validar que solo uno de los campos venta o traslado sea true
             if ((documento_despacho.venta && documento_despacho.traslado) || (!documento_despacho.venta && !documento_despacho.traslado)) {
                 throw new CustomError(400, "Bad Request", "Debe especificar solo uno de los campos 'venta' o 'traslado' como true en el documento de despacho.");
-            }
-            if (!documento_despacho) {
-                throw new CustomError(400, "Bad Request", "El documento de despacho es obligatorio.");
             }
             const idDD = idgenerate("DD");
             const operations = [];

@@ -91,17 +91,14 @@ class UserService {
                 throw new CustomError(401, "Authentication error", {detail: "Invalid credentials"})
             }
             // Si la contraseña es correcta, continúas con la lógica para determinar si es superusuario o subusuario y setear permisos
-            if (user.length === 1) {
-                const user = user[0];
                 // 0 = subusuario
                 // 1 = superusuario
                 if (user.ref_superusuario === 0) {
                     const permisos = await UserRepository.getUserPermissions(user.id);
-                    return { login: true, userType: "subusuario", permisos: await this.formatPermissions(permisos) };
+                    return { login: true, userType: "subusuario",data: user, permisos: await this.formatPermissions(permisos) };
                 } else {
-                    return { login: true, userType: "superusuario", permisos: "all" };
+                    return { login: true, userType: "superusuario",data: user, permisos: "all" };
                 }
-            }
         } catch (error) {
             throw error;
         }
