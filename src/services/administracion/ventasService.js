@@ -2,7 +2,46 @@ import ventasRepository from "../../persistence/repositorys/administracion/venta
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import executeTransactions from "../../persistence/transactions/executeTransaction.js";
+import clientesRepository from "../../persistence/repositorys/comercial/clientesRepository.js";
+import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 class VentasService {
+    async getAllFV(){
+        try {
+            const facturas = await ventasRepository.getAllFV()
+            if(!facturas || facturas.length === 0){
+                throw new CustomError(404, "Not Found", "No se encontraron facturas de venta");
+            }
+            // Obtener el conteo de facturas
+            const conteoFacturas = facturas.length;
+            console.log(conteoFacturas)
+            // Iterar sobre cada factura
+        const formattedResult = facturas.map(async factura => {
+            // Obtener el nombre del cliente y del vendedor
+            const cliente = await clientesRepository.findClienteById_razonsocial(factura.idCliente)
+            const vendedor = await userRepository.findUserByID_nombre_apellido(factura.idVendedor);
+            // Calcular el bruto total y el neto total
+            const brutoTotal = factura.bruto_servicio + factura.bruto_producto;
+            const netoTotal = factura.neto_servicio + factura.neto_producto;
+            // Devolver los datos formateados
+            return {
+                documento_venta_id: factura.documento_venta_id,
+                fecha: factura.fecha,
+                factura_venta_id: factura.factura_venta_id,
+                tipo_documento: factura.tipo_documento,
+                factura_numero_documento: factura.factura_numero_documento,
+                cliente: cliente ? cliente : 'Cliente no encontrado',
+                vendedor: vendedor ? `${vendedor.nombre} ${vendedor.apellido}` : 'Vendedor no encontrado',
+                bruto_total: brutoTotal,
+                neto_total: netoTotal
+            };
+        });
+        // Esperar a que se resuelvan todas las promesas
+        const finalResult = await Promise.all(formattedResult);
+        return finalResult;
+        } catch (error) {
+            throw error
+        }
+    }
     async createFV(data) {
         try {
             const {

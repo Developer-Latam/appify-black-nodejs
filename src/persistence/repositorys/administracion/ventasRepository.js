@@ -180,7 +180,39 @@ class VentasRepository {
             }
         }
     }
-    
+    async getAllFV(){
+        try {
+            const facturasConItemsYDocumentoVenta = await prisma.$queryRaw`SELECT 
+            dv.id AS documento_venta_id,
+            fv.idCliente,
+            fv.idVendedor,
+            fv.fecha,
+            fv.id AS factura_venta_id,
+            fv.tipo_documento,
+            fv.numero_documento AS factura_numero_documento,
+            isfv.bruto AS bruto_servicio,
+            isfv.neto AS neto_servicio,
+            ipfv.bruto AS bruto_producto,
+            ipfv.neto AS neto_producto
+        FROM 
+            factura_venta fv
+        JOIN 
+            documento_venta dv ON fv.idDoc = dv.id
+        LEFT JOIN 
+            item_servicio_factura_venta isfv ON fv.id = isfv.idFactura
+        LEFT JOIN 
+            item_producto_factura_venta ipfv ON fv.id = ipfv.idFactura;
+        `;
+            return facturasConItemsYDocumentoVenta;
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
     createFV (idFV,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
             try {
                 return prisma.factura_venta.create({

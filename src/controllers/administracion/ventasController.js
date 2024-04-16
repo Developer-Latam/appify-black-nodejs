@@ -15,6 +15,14 @@ export const createFVController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+export const getAllFVController = async (req, res) => {
+    try {
+        const result = await ventasService.getAllFV();
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
 export const createFVEController = async (req, res) => {
     try {
         const data = {

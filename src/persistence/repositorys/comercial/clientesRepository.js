@@ -11,6 +11,15 @@ class ClientesRepository {
             where: { id: id }
         });
     }
+    async findClienteById_razonsocial(id) {
+        const cliente = await prisma.clientes.findUnique({
+            where: { id: id },
+            select: {
+                razon_social: true
+            }
+        });
+        return cliente ? cliente.razon_social : null; 
+    }
     // Funcion para checkear que no exista el mismo servicio
     async clienteExistsByName(nameCliente) {
         // const [response] = await connectionDB.execute('SELECT * FROM proveedores WHERE rut = ?', [rutProveedor]);
