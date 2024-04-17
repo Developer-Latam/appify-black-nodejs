@@ -69,7 +69,7 @@ router.get('/obtenerCondicionesCpago/:id', getCondicionesCondicionPagoById);
 router.get('/todasCuentasBanco/:id', getAllCuentasBancoByUserId);
 
 // Ruta para obtener todos los cobros por ID de usuario
-router.get('/todasCuentasBancoConciliacion/:id', getAllCuentasBancoConciliacionByUserId);
+// router.get('/todasCuentasBancoConciliacion/:id', getAllCuentasBancoConciliacionByUserId);
 
 // Ruta para obtener todos los cobros por ID de usuario
 router.get('/todasCategoriaCuenta/:id', getAllCategoriasCuentaByUserId);
