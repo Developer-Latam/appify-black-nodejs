@@ -95,4 +95,12 @@ export const createDDController = async (req, res) => {
     }
 }
 
-
+export const getNCODbyIdDocController = async (req, res) => {
+    try {
+        const {ncodDVID} = req.params
+        const result = await ventasService.getFVoFVEbyIdDoc(ncodDVID);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}

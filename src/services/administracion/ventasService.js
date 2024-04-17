@@ -32,7 +32,15 @@ class VentasService {
             throw error
         }
     }
-    
+    async getNCoDbyIdDoc(DVID){
+        try {
+            const notas = await ventasRepository.getNCoDbyIdDoc(DVID)
+            console.log("RECIBIDO SERVICE", notas)
+            return notas;
+        } catch (error) {
+            throw error
+        }
+    }
     async getFVoFVEbyIdDoc(fvDVID, fveDVID) {
         try {
             let detalles;

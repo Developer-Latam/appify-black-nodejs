@@ -293,6 +293,19 @@ class VentasRepository {
             }
         }
     }
+    async getNCoDbyIdDoc(DVID) {
+        try {
+            const DV = await prisma.$queryRaw``;
+            return DV;
+        }catch{
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
     async getFVEDetailsbyDV(fveDVID) {
         try {
             const DV = await prisma.$queryRaw`SELECT

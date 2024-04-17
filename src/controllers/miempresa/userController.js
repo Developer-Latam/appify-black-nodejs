@@ -82,11 +82,15 @@ export const setpassForSubUser = async (req, res, next) => {
     const { userId, password, passwordConfirm } = req.body;
     const validationResult = validatePassword(password, passwordConfirm)
     if (!validationResult.isValid){
-        ResponseHandler.HandleError(res, validationResult.message)
+        return res.status(400).json({ 
+            status: 400,
+            message: 'Bad Request',
+            error: validationResult.message
+        });
     }
     try {
         const passwordHashed = createHash(password)
-        await userService.createPasswordForSubUser(userId, passwordHashed);
+        const result = await userService.createPasswordForSubUser(userId, passwordHashed);
         ResponseHandler.Ok(res, { message: result });
     } catch (error) {
         ResponseHandler.HandleError(res, error);
