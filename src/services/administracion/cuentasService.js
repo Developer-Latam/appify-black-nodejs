@@ -43,7 +43,7 @@ class cuentasService {
 
             const CondicionPago = await cuentasRepository.createCondicionPago({ ...condicion_pago, id: id });
 
-            const CondicionesCondicionPago = await cuentasRepository.createCondicionesCondicionPago({ ...condiciones_condicion_pago, id: idCPago });
+            const CondicionesCondicionPago = await cuentasRepository.createCondicionesCondicionPago({ ...condiciones_condicion_pago, id: idCPago, idCondicion : id });
 
             return [CondicionPago, CondicionesCondicionPago];
         } catch (error) {
@@ -62,9 +62,6 @@ class cuentasService {
         return cuentasRepository.findCuentaBancoConciliacionById(id);
     }
 
-    async getCobrosByUserId(id) {
-        return cuentasRepository.findCuentaBancoById(id);
-    }
 
     async getCategoriaCuentaById(id) {
         return cuentasRepository.findCategoriaCuentaById(id);
