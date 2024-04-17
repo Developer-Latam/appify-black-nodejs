@@ -27,6 +27,30 @@ class UserRepository {
             throw error;
         }
     }
+    async findUserByID_nombre_apellido(id) {
+        try {
+            const user = await prisma.subusuarios.findUnique({
+                where: {
+                    id: id
+                },
+                select: {
+                    nombre: true,  
+                    apellido: true
+                }
+            });
+            if(!user){
+                throw new CustomError(404, "User not found", {email, message: "No user found with provided email and password."})
+            }
+            return user ? user : null;
+        } catch (error) {
+            // Propagando errores de la base de datos o errores personalizados
+            if (!(error instanceof CustomError)) {
+                // Transformando errores no capturados a errores personalizados
+                throw new CustomError(500, "Internal server error", { error: error.message });
+            }
+            throw error;
+        }
+    }
     //Trae los diferentes permisos segun el id de usuario
     async getUserPermissions(userId) {
         try {

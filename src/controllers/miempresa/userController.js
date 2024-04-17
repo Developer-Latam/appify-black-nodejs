@@ -11,7 +11,6 @@ export const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
     try {
         const result = await userService.login(email, password);
-        console.log(result)
         ResponseHandler.Ok(res, result)
     } catch (error) {
         ResponseHandler.HandleError(res, error)

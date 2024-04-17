@@ -23,7 +23,7 @@ export const sendEmail = async (email, userId) => {
     try {
         const token = jwt.sign({userId}, process.env.JWT_TOKEN_SECRET, {expiresIn: '24h'});
         // Construir el link con el token como parametro
-        const linkDeConfiguracion = `http://localhost:8080/config-password?token=${token}`;
+        const linkDeConfiguracion = `http://localhost:8080/user/config-password?token=${token}`;
         // Genera el contenido HTML con el enlace incluido
         const htmlContent = getConfigPasswordTemplateHTML(linkDeConfiguracion);
         createPasswordMessage.to = email;
