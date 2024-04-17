@@ -83,8 +83,8 @@ class cuentasRepository {
     }
 
     async findCondicionesCondicionPagoById(id) {
-        return prisma.condiciones_condicion_pago.findUnique({
-            where: { id: id }
+        return prisma.condiciones_condicion_pago.findFirst({
+            where: { idCondicion: id }
         });
     }
 
