@@ -97,8 +97,17 @@ export const createDDController = async (req, res) => {
 
 export const getNCODbyIdDocController = async (req, res) => {
     try {
-        const {ncodDVID} = req.params
-        const result = await ventasService.getFVoFVEbyIdDoc(ncodDVID);
+        const {DVID} = req.params
+        const result = await ventasService.getNCoDbyIdDoc(DVID);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
+export const getItemsNCODbyIdNCODController = async (req, res) => {
+    try {
+        const {NCOD} = req.params
+        const result = await ventasService.getItemsByNCOD(NCOD);
         ResponseHandler.Ok(res, result)
     } catch (error) {
         ResponseHandler.HandleError(res,error)

@@ -41,6 +41,18 @@ class VentasService {
             throw error
         }
     }
+    async getItemsByNCOD(NCOD){
+        try {
+            // const notas = await ventasRepository.notaFV_NCOD(NCOD)
+            // return notas;
+            // const notas = await ventasRepository.notaFVE_NCOD(NCOD)
+            // return notas;
+            const notas = await ventasRepository.notaDEncod_NCOD(NCOD)
+            return notas;
+        } catch (error) {
+            throw error
+        }
+    }
     async getFVoFVEbyIdDoc(fvDVID, fveDVID) {
         try {
             let detalles;
