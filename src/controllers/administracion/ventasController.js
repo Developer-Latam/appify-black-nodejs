@@ -23,6 +23,15 @@ export const getAllFVController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+export const getFVbyIdDocController = async (req, res) => {
+    try {
+        const { fvDVID } = req.params
+        const result = await ventasService.getFVoFVEbyIdDoc(fvDVID, false);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
 export const createFVEController = async (req, res) => {
     try {
         const data = {
@@ -37,7 +46,15 @@ export const createFVEController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
-
+export const getFVEbyIdDocController = async (req, res) => {
+    try {
+        const {fveDVID} = req.params
+        const result = await ventasService.getFVoFVEbyIdDoc(false,fveDVID);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
 export const createNCoDConItemsController = async (req, res) => {
     try {
         const data = {

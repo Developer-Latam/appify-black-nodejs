@@ -13,31 +13,98 @@ class VentasService {
             }
             // Obtener el conteo de facturas
             const conteoFacturas = facturas.length;
-            console.log(conteoFacturas)
             // Iterar sobre cada factura
-        const formattedResult = facturas.map(async factura => {
-            // Obtener el nombre del cliente y del vendedor
-            const cliente = await clientesRepository.findClienteById_razonsocial(factura.idCliente)
-            const vendedor = await userRepository.findUserByID_nombre_apellido(factura.idVendedor);
-            // Calcular el bruto total y el neto total
-            const brutoTotal = factura.bruto_servicio + factura.bruto_producto;
-            const netoTotal = factura.neto_servicio + factura.neto_producto;
-            // Devolver los datos formateados
-            return {
-                documento_venta_id: factura.documento_venta_id,
-                fecha: factura.fecha,
-                factura_venta_id: factura.factura_venta_id,
-                tipo_documento: factura.tipo_documento,
-                factura_numero_documento: factura.factura_numero_documento,
-                cliente: cliente ? cliente : 'Cliente no encontrado',
-                vendedor: vendedor ? `${vendedor.nombre} ${vendedor.apellido}` : 'Vendedor no encontrado',
-                bruto_total: brutoTotal,
-                neto_total: netoTotal
-            };
+            const formattedResult = facturas.map(async factura => {
+                // Obtener el nombre del cliente y del vendedor
+                const cliente = await clientesRepository.findClienteById_razonsocial(factura.ClienteID)
+                const vendedor = await userRepository.findUserByID_nombre_apellido(factura.VendedorID);
+                // Devolver los datos formateados
+                return {
+                    ...factura,
+                    cliente: cliente ? cliente : 'Cliente no encontrado',
+                    vendedor: vendedor ? `${vendedor.nombre} ${vendedor.apellido}` : 'Vendedor no encontrado',
+                };
         });
         // Esperar a que se resuelvan todas las promesas
         const finalResult = await Promise.all(formattedResult);
         return finalResult;
+        } catch (error) {
+            throw error
+        }
+    }
+    
+    async getFVoFVEbyIdDoc(fvDVID, fveDVID) {
+        try {
+            let detalles;
+            if (fvDVID){
+                detalles = await ventasRepository.getFVDetailsbyDV(fvDVID)
+            } else if (fveDVID){
+                detalles = await ventasRepository.getFVEDetailsbyDV(fveDVID)
+            }
+            // Reestructurando los datos para agruparlos en un solo objeto
+            // Verifica si la consulta devolvió algún detalle
+            if (detalles.length > 0) {
+                // mapas para mantener servicios y productos únicos
+                const uniqueServices = new Map();
+                const uniqueProducts = new Map();
+                // Prepara el objeto resultado con la información básica de la factura y documento de venta
+                const resultado = {
+                    DocumentoVentaID: detalles[0].DocumentoVentaID,
+                    Usuario: detalles[0].Usuario,
+                    NumeroDocumentoDV: detalles[0].NumeroDocumentoDV,
+                    FacturaVenta_FacturaVentaExenta: {
+                        FacturaID: detalles[0].FacturaVentaID,
+                        ClienteID: detalles[0].ClienteID,
+                        VendedorID: detalles[0].VendedorID,
+                        FechaFactura: detalles[0].FechaFactura,
+                        TipoDocumento: detalles[0].TipoDocumento,
+                        NumeroDocumentoFV_FVE: detalles[0].NumeroDocumentoFV,
+                        CondicionPago: detalles[0].CondicionPago,
+                        CentroBeneficio: detalles[0].CentroBeneficio,
+                        Observacion: detalles[0].Observacion,
+                        NotaInterna: detalles[0].NotaInterna,
+                        Servicios: [], // Inicializa un array vacío para servicios
+                        Productos: [] // Inicializa un array vacío para productos
+                    }
+                };
+                // Itera sobre cada detalle retornado de la consulta
+                detalles.forEach(detalle => {
+                    // Verifica si el item de servicio es único y no ha sido añadido aún
+                    if (detalle.ItemServicioID && !uniqueServices.has(detalle.ItemServicioID)) {
+                        // Agrega el servicio al mapa si es único
+                        uniqueServices.set(detalle.ItemServicioID, {
+                            IdServicio: detalle.idServicio,
+                            CodigoServicio: detalle.CodigoServicio,
+                            CantidadServicio: detalle.CantidadServicio,
+                            PrecioUnitarioServicio: detalle.PrecioUnitarioServicio,
+                            BrutoServicio: detalle.BrutoServicio,
+                            NetoServicio: detalle.NetoServicio,
+                            BonificacionServicio: detalle.BonificacionServicio,
+                            NotasServicio: detalle.NotasServicio
+                        });
+                    }
+                    // Verifica si el item de producto es único y no ha sido añadido aún
+                    if (detalle.ItemProductoID && !uniqueProducts.has(detalle.ItemProductoID)) {
+                        // Agrega el producto al mapa si es único
+                        uniqueProducts.set(detalle.ItemProductoID, {
+                            IdProducto: detalle.idProducto,
+                            CodigoProducto: detalle.CodigoProducto,
+                            CantidadProducto: detalle.CantidadProducto,
+                            PrecioUnitarioProducto: detalle.PrecioUnitarioProducto,
+                            BrutoProducto: detalle.BrutoProducto,
+                            NetoProducto: detalle.NetoProducto,
+                            BonificacionProducto: detalle.BonificacionProducto,
+                            NotasProducto: detalle.NotasProducto
+                        });
+                    }
+                });
+            // Convierte los mapas de servicios y productos en arrays y los asigna al resultado
+            resultado.FacturaVenta_FacturaVentaExenta.Servicios = Array.from(uniqueServices.values());
+            resultado.FacturaVenta_FacturaVentaExenta.Productos = Array.from(uniqueProducts.values());
+            return resultado;
+            } else {
+                throw new CustomError(404, "Not Found", "No se encontraron detalles para el documento de venta solicitado")
+            }
         } catch (error) {
             throw error
         }

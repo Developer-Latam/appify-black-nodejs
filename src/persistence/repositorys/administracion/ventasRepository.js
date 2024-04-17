@@ -182,29 +182,158 @@ class VentasRepository {
     }
     async getAllFV(){
         try {
-            const facturasConItemsYDocumentoVenta = await prisma.$queryRaw`SELECT 
-            dv.id AS documento_venta_id,
-            fv.idCliente,
-            fv.idVendedor,
-            fv.fecha,
-            fv.id AS factura_venta_id,
-            fv.tipo_documento,
-            fv.numero_documento AS factura_numero_documento,
-            isfv.bruto AS bruto_servicio,
-            isfv.neto AS neto_servicio,
-            ipfv.bruto AS bruto_producto,
-            ipfv.neto AS neto_producto
-        FROM 
+            const facturasConItemsYDocumentoVenta = await prisma.$queryRaw`SELECT
+            dv.id AS DocumentoVentaID,
+            fv.idCliente AS ClienteID,
+            fv.idVendedor AS VendedorID,
+            fv.fecha AS FechaFactura,
+            SUM(isv.bruto) AS TotalBrutoServicio,
+            SUM(isv.neto) AS TotalNetoServicio,
+            SUM(ipv.bruto) AS TotalBrutoProducto,
+            SUM(ipv.neto) AS TotalNetoProducto
+        FROM
             factura_venta fv
-        JOIN 
-            documento_venta dv ON fv.idDoc = dv.id
-        LEFT JOIN 
-            item_servicio_factura_venta isfv ON fv.id = isfv.idFactura
-        LEFT JOIN 
-            item_producto_factura_venta ipfv ON fv.id = ipfv.idFactura;
+            INNER JOIN documento_venta dv ON fv.idDoc = dv.id
+            LEFT JOIN item_servicio_factura_venta isv ON fv.id = isv.idFactura
+            LEFT JOIN item_producto_factura_venta ipv ON fv.id = ipv.idFactura
+        GROUP BY
+            fv.id, dv.id, fv.idCliente, fv.idVendedor, fv.fecha
+        ORDER BY
+            fv.fecha;
         `;
             return facturasConItemsYDocumentoVenta;
         } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    async getAllFVE(){
+        try {
+            const facturasExentasConItemsYDocumentoVenta = await prisma.$queryRaw`SELECT
+            dv.id AS DocumentoVentaID,
+            fve.idCliente AS ClienteID,
+            fve.idVendedor AS VendedorID,
+            fve.fecha AS FechaFactura,
+            SUM(isve.bruto) AS TotalBrutoServicio,
+            SUM(isve.neto) AS TotalNetoServicio,
+            SUM(ipve.bruto) AS TotalBrutoProducto,
+            SUM(ipve.neto) AS TotalNetoProducto
+        FROM
+            factura_venta_excenta fve
+            INNER JOIN documento_venta dv ON fve.idDoc = dv.id
+            LEFT JOIN item_servicio_factura_venta_excenta isve ON fve.id = isve.idFactura
+            LEFT JOIN item_producto_factura_venta_excenta ipve ON fve.id = ipve.idFactura
+        GROUP BY
+            fve.id, dv.id, fve.idCliente, fve.idVendedor, fve.fecha
+        ORDER BY
+            fve.fecha;
+        `;
+            return facturasExentasConItemsYDocumentoVenta;
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    async getFVDetailsbyDV(fvDVID) {
+        try {
+            const DV = await prisma.$queryRaw`SELECT
+            dv.id AS DocumentoVentaID,
+            dv.user AS Usuario,
+            dv.numero_documento AS NumeroDocumentoDV,
+            fv.id AS FacturaVentaID,
+            fv.idCliente AS ClienteID,
+            fv.idVendedor AS VendedorID,
+            fv.fecha AS FechaFactura,
+            fv.tipo_documento AS TipoDocumento,
+            fv.numero_documento AS NumeroDocumentoFV,
+            fv.condicion_de_pago AS CondicionPago,
+            fv.centro_beneficio AS CentroBeneficio,
+            fv.observacion AS Observacion,
+            fv.nota_interna AS NotaInterna,
+            isv.id AS ItemServicioID,
+            isv.idServicio,
+            isv.codigo AS CodigoServicio,
+            isv.cantidad AS CantidadServicio,
+            isv.unitario AS PrecioUnitarioServicio,
+            isv.bruto AS BrutoServicio,
+            isv.neto AS NetoServicio,
+            isv.bonificacion AS BonificacionServicio,
+            isv.notas AS NotasServicio,
+            ipv.id AS ItemProductoID,
+            ipv.idProducto,
+            ipv.codigo AS CodigoProducto,
+            ipv.cantidad AS CantidadProducto,
+            ipv.unitario AS PrecioUnitarioProducto,
+            ipv.bruto AS BrutoProducto,
+            ipv.neto AS NetoProducto,
+            ipv.bonificacion AS BonificacionProducto,
+            ipv.notas AS NotasProducto
+            FROM
+                documento_venta dv
+                INNER JOIN factura_venta fv ON dv.id = fv.idDoc
+                LEFT JOIN item_servicio_factura_venta isv ON fv.id = isv.idFactura
+                LEFT JOIN item_producto_factura_venta ipv ON fv.id = ipv.idFactura
+            WHERE
+                dv.id = ${fvDVID};`;
+            return DV;
+        }catch{
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
+            }
+        }
+    }
+    async getFVEDetailsbyDV(fveDVID) {
+        try {
+            const DV = await prisma.$queryRaw`SELECT
+            dv.id AS DocumentoVentaID,
+            dv.user AS Usuario,
+            dv.numero_documento AS NumeroDocumentoDV,
+            fv.id AS FacturaVentaID,
+            fv.idCliente AS ClienteID,
+            fv.idVendedor AS VendedorID,
+            fv.fecha AS FechaFactura,
+            fv.tipo_documento AS TipoDocumento,
+            fv.numero_documento AS NumeroDocumentoFV,
+            fv.condicion_de_pago AS CondicionPago,
+            fv.centro_beneficio AS CentroBeneficio,
+            fv.observacion AS Observacion,
+            fv.nota_interna AS NotaInterna,
+            isv.id AS ItemServicioID,
+            isv.idServicio,
+            isv.codigo AS CodigoServicio,
+            isv.cantidad AS CantidadServicio,
+            isv.unitario AS PrecioUnitarioServicio,
+            isv.neto AS NetoServicio,
+            isv.bonificacion AS BonificacionServicio,
+            isv.notas AS NotasServicio,
+            ipv.id AS ItemProductoID,
+            ipv.idProducto,
+            ipv.codigo AS CodigoProducto,
+            ipv.cantidad AS CantidadProducto,
+            ipv.unitario AS PrecioUnitarioProducto,
+            ipv.neto AS NetoProducto,
+            ipv.bonificacion AS BonificacionProducto,
+            ipv.notas AS NotasProducto
+        FROM
+            documento_venta dv
+            INNER JOIN factura_venta_excenta fv ON dv.id = fv.idDoc
+            LEFT JOIN item_servicio_factura_venta_excenta isv ON fv.id = isv.idFactura
+            LEFT JOIN item_producto_factura_venta_excenta ipv ON fv.id = ipv.idFactura
+        WHERE
+            dv.id = ${fveDVID};`;
+            return DV;
+        }catch{
             if (error instanceof prismaError.PrismaClientValidationError) {
                 // Error específico de Prisma por tipo de dato incorrecto
                 throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
