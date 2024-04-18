@@ -23,7 +23,8 @@ import {
     updateCuentaTipoDoc,
     updateBanco,
     updateCondicionPago,
-    updateCondicionesCondicionPago
+    updateCondicionesCondicionPago,
+    getCondicionAndCondicionesByCondicionId
 
 } from '../../controllers/administracion/cuentasController.js';
 const router = Router();
@@ -64,6 +65,9 @@ router.get('/obtenerCondicionPago/:id', getCondicionPagoById);
 // Ruta para obtener condiciones de condicion de pago con el id de condicion de pago.
 router.get('/obtenerCondicionesCpago/:id', getCondicionesCondicionPagoById);
 
+
+// Ruta pra obtener la condicion con condiciones de pago con e id de condicion de pago
+router.get('/obtenerConCondicionesP/:id', getCondicionAndCondicionesByCondicionId)
 //Quizas estaria bueno hacer una ruta para btener la condicion de pago con sus condiciones, depende de como s eplanteee el front.
 
 // Ruta para obtener todas las cuentas por ID de usuario
