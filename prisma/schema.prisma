@@ -172,8 +172,9 @@ model direccion_de_prestacion_proyecto {
 }
 
 model documento_compra {
-  id   String @id @db.VarChar(100)
-  user String @db.VarChar(100)
+  id               String @id @db.VarChar(100)
+  user             String @db.VarChar(100)
+  numero_documento String @db.VarChar(100)
 
   @@index([user], map: "usuarios")
 }
