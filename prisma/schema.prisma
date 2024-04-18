@@ -172,8 +172,9 @@ model direccion_de_prestacion_proyecto {
 }
 
 model documento_compra {
-  id   String @id @db.VarChar(100)
-  user String @db.VarChar(100)
+  id               String @id @db.VarChar(100)
+  user             String @db.VarChar(100)
+  numero_documento String @db.VarChar(100)
 
   @@index([user], map: "usuarios")
 }
@@ -239,12 +240,9 @@ model factura_compra {
   id                String   @id @db.VarChar(100)
   factura           Boolean
   fact_excenta      Boolean
-  boleta            Boolean
-  voucher_compra    Boolean
-  boleta_honorarios Boolean
   idDocCompra       String   @db.VarChar(100)
   idProvedoor       String   @db.VarChar(100)
-  numero_documento  Int
+  numero_documento  String   @db.VarChar(100)
   fecha             DateTime @db.Date
   condicion_de_pago String   @db.VarChar(100)
   cuenta            String   @db.VarChar(100)
