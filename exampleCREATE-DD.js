@@ -67,3 +67,51 @@
 
 
     
+    //-------LAS QUE YA TENEMOS---------                                
+    documento_compra
+    factura_compra
+        //factura_compra_exenta
+    //----notas de credito debito
+    notas_de_credito_debito_compras
+        //nota_factura_compra
+        //nota_factura_compra_excenta
+        //nota_credito_nota_NC_compra
+        //item_servicio_nota_credito ---- cambio nombre
+        item_servicio_nota_CD
+        //item_producto_nota_credito ---- cambio nombre 
+        item_producto_nota_CD
+        //item_servicio_nota_credito_NC_compra
+        //item_producto_nota_credito_NC_compra
+    item_servicio_factura_compra
+    item_producto_factura_compra
+    //item_servicio_factura_compra_excenta
+    //item_producto_factura_compra_excenta
+
+
+    //LAS QUE TENEMOS EN VENTAS
+        // documento_venta,
+        // factura_venta,
+        // factura_venta_excenta,
+        // //NOTA DE CREDITO O DEBITO
+        // notas_de_credito_debito,
+        // nota_factura_venta,
+        // nota_factura_venta_excenta,
+        // nota_credito_nota_NC,
+
+        // item_servicio_nota_credito,
+        // item_producto_nota_credito,
+
+        // item_servicio_nota_credito_NC,
+        // item_producto_nota_credito_NC,
+
+        // item_servicio_factura_venta,
+        // item_producto_factura_venta,
+        
+        // item_servicio_factura_venta_excenta,
+        // item_producto_factura_venta_excenta
+
+    
+    
+
+
+

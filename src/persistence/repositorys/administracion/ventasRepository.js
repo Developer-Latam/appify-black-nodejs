@@ -4,22 +4,22 @@ import { idgenerate } from "../../../utils/id/idGenerate.js";
 
 class VentasRepository {
     createDocVentas (idDV, {user}){
-            try {
-                return prisma.documento_venta.create({
-                    data: {
-                        id: idDV,
-                        user,
-                        numero_documento: "numero que viene de SII"
-                    }
-                })
-            } catch (error) {
-                if (error instanceof prismaError.PrismaClientValidationError) {
-                    // Error específico de Prisma por tipo de dato incorrecto
-                    throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-                } else {
-                    throw new CustomError(500, "Internal server error", {error: error.message})
+        try {
+            return prisma.documento_venta.create({
+                data: {
+                    id: idDV,
+                    user,
+                    numero_documento: "numero que viene de SII"
                 }
+            })
+        } catch (error) {
+            if (error instanceof prismaError.PrismaClientValidationError) {
+                // Error específico de Prisma por tipo de dato incorrecto
+                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
+            } else {
+                throw new CustomError(500, "Internal server error", {error: error.message})
             }
+        }
     }
     async getAllDV() {
         return await prisma.documento_venta.findMany();
