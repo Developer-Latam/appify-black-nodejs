@@ -21,6 +21,34 @@ class VentasRepository {
                 }
             }
     }
+    async getAllDV() {
+        return await prisma.documento_venta.findMany();
+    }
+    async getAllDD() {
+        return await prisma.documento_despacho.findMany();
+    }
+    async getDVByUser(user) {
+        try {
+            return await prisma.documento_venta.findMany({
+                where: {
+                    user: user
+                }
+            });
+        } catch (error) {
+            throw new CustomError(500, "Internal server error", {error: error.message})
+        }
+    }
+    async getDDByUser(user) {
+        try {
+            return await prisma.documento_despacho.findMany({
+                where: {
+                    user: user
+                }
+            });
+        } catch (error) {
+            throw new CustomError(500, "Internal server error", {error: error.message})
+        }
+    }
     createDD (idDD, {user, venta, traslado}){
         try {
             return prisma.documento_despacho.create({
@@ -297,7 +325,7 @@ class VentasRepository {
             notas_de_credito_debito ncd
             INNER JOIN nota_credito_nota_NC nc ON ncd.id = nc.idNotadeCD
         WHERE
-            nc.numero_documento = ${NCOD};`;
+            nc.idNotadeCD = ${NCOD};`;
             return notaDEncod_NCOD;
         } catch (error) {
             if (error instanceof prismaError.PrismaClientValidationError) {

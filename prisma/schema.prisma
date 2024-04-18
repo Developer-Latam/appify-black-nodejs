@@ -236,7 +236,7 @@ model documento_venta {
 }
 
 model factura_compra {
-  id                Int      @id @default(autoincrement())
+  id                String   @id @db.VarChar(100)
   factura           Boolean
   fact_excenta      Boolean
   boleta            Boolean
@@ -1001,16 +1001,6 @@ model cobranzas {
   @@index([empresa], map: "empresa")
 }
 
-model condicion_de_pago {
-  id           Int     @id @default(autoincrement())
-  user         String  @db.VarChar(100)
-  nombre       String  @db.VarChar(100)
-  interes      Float?  @db.Float
-  cuenta_cobro String? @db.VarChar(100)
-
-  @@index([user], map: "usuarios")
-}
-
 model e_commerce {
   id                  Int     @id @default(autoincrement())
   user                String  @db.VarChar(100)
@@ -1194,7 +1184,7 @@ model item_servicio_proyecto {
 }
 
 model CuentasBancarias {
-  cuenta_id        String   @id @db.VarChar(100)
+  id               String   @id @db.VarChar(100)
   conciliacion_id  String   @db.VarChar(100)
   account_id       String?  @db.VarChar(255)
   tipo             String?  @db.VarChar(255)
@@ -1209,11 +1199,11 @@ model CuentasBancarias {
 }
 
 model link_fintoc_bancos {
-  conciliacion_id String @id @db.VarChar(100)
-  link_id_banco   String @db.VarChar(150)
-  link_token      String @db.VarChar(150)
-  holder_id       String @db.VarChar(100)
-  user            String @db.VarChar(100)
+  id            String @id @db.VarChar(100)
+  link_id_banco String @db.VarChar(150)
+  link_token    String @db.VarChar(150)
+  holder_id     String @db.VarChar(100)
+  user          String @db.VarChar(100)
 
   @@index([user], map: "usuarios")
 }
@@ -1247,7 +1237,7 @@ model movimientos_cuenta {
 }
 
 model nota_credito_nota_NC {
-  id               Int    @id @default(autoincrement())
+  id               String @id @db.VarChar(100)
   idNotadeCD       String @db.VarChar(100)
   numero_documento String @db.VarChar(100)
 

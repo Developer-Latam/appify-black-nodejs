@@ -35,19 +35,64 @@ class VentasService {
     async getNCoDbyIdDoc(DVID){
         try {
             const notas = await ventasRepository.getNCoDbyIdDoc(DVID)
-            console.log("RECIBIDO SERVICE", notas)
             return notas;
         } catch (error) {
             throw error
         }
     }
-    async getItemsByNCOD(NCOD){
+    async getAllDocVenta(){
         try {
-            // const notas = await ventasRepository.notaFV_NCOD(NCOD)
-            // return notas;
-            // const notas = await ventasRepository.notaFVE_NCOD(NCOD)
-            // return notas;
-            const notas = await ventasRepository.notaDEncod_NCOD(NCOD)
+            return await ventasRepository.getAllDV();
+        } catch (error) {
+            throw error
+        }
+    }
+    async getAllDocDespacho(){
+        try {
+            return await ventasRepository.getAllDD();
+        } catch (error) {
+            throw error
+        }
+    }
+    async getDVByUser(user){
+        try {
+            if (!user) {
+                throw new CustomError(400, "Bad Request", "El usuario no puede estar vacío");
+            }
+            return await ventasRepository.getDVByUser(user);
+        } catch (error) {
+            throw error
+        }
+    }
+    async getDDByUser(user){
+        try {
+            if (!user) {
+                throw new CustomError(400, "Bad Request", "El usuario no puede estar vacío");
+            }
+            return await ventasRepository.getDDByUser(user);
+        } catch (error) {
+            throw error
+        }
+    }
+    async getItemsByNCOD(NCOD, tipoNota){
+        try {
+            if(!NCOD){
+                throw new CustomError(400, "Bad Request", 'Tiene que proporcionar un ID de nota-credito/debito');
+            }
+            let notas;
+            switch (tipoNota) {
+                case 'FV':
+                    notas = await ventasRepository.notaFV_NCOD(NCOD);
+                    break;
+                case 'FVE':
+                    notas = await ventasRepository.notaFVE_NCOD(NCOD);
+                    break;
+                case 'NC':
+                    notas = await ventasRepository.notaDEncod_NCOD(NCOD);
+                    break;
+                default:
+                    throw new CustomError(400, "Bad Request", 'Tipo de nota no válido');
+            }
             return notas;
         } catch (error) {
             throw error

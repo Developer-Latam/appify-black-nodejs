@@ -106,9 +106,43 @@ export const getNCODbyIdDocController = async (req, res) => {
 }
 export const getItemsNCODbyIdNCODController = async (req, res) => {
     try {
-        const {NCOD} = req.params
-        const result = await ventasService.getItemsByNCOD(NCOD);
+        const {NCOD, tipoNota} = req.params
+        const result = await ventasService.getItemsByNCOD(NCOD, tipoNota);
         ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
+export const getAllDocumentosVentaController  = async (req, res) => {
+    try {
+        const documentos = await ventasService.getAllDocVenta();
+        ResponseHandler.Ok(res, documentos)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
+export const getDocumentosVentaByUserController  = async (req, res) => {
+    try {
+        const {user} = req.params
+        const documentos = await ventasService.getDVByUser(user);
+        ResponseHandler.Ok(res, documentos)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
+export const getAllDocumentosDespachoController  = async (req, res) => {
+    try {
+        const documentosDespacho = await ventasService.getAllDocDespacho();
+        ResponseHandler.Ok(res, documentosDespacho)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
+export const getDocumentosDespachoByUserController  = async (req, res) => {
+    try {
+        const {user} = req.params
+        const documentosDespacho = await ventasService.getDDByUser(user);
+        ResponseHandler.Ok(res, documentosDespacho)
     } catch (error) {
         ResponseHandler.HandleError(res,error)
     }
