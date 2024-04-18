@@ -1,9 +1,12 @@
 import ProjectPrestacionRepository from "../../persistence/repositorys/comercial/projectPrestacionRepository.js";
+import { idgenerate } from "../../utils/id/idGenerate.js";
 
 class ProjectPrestacionService {
     async createProjectPrestacion(data) {
 
-        return ProjectPrestacionRepository.createProjectPrestacion({ ...data });
+        const id = idgenerate('Direccion-prestacion')
+
+        return ProjectPrestacionRepository.createProjectPrestacion({ ...data, id :id});
     }
 
     async getProjectPrestacionById(id) {

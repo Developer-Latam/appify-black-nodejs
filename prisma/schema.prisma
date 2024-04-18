@@ -159,7 +159,7 @@ model cuentas_banco {
 }
 
 model direccion_de_prestacion_proyecto {
-  id         Int     @id @default(autoincrement())
+  id         String  @id @db.VarChar(100)
   proyecto   String  @db.VarChar(100)
   punto      String? @db.VarChar(100)
   atencion_a String? @db.VarChar(200)
@@ -169,6 +169,7 @@ model direccion_de_prestacion_proyecto {
   duracion   String? @db.VarChar(100)
 
   @@index([proyecto], map: "proyectos")
+  @@index([punto], map: "puntos_de_despacho_por_cliente")
 }
 
 model documento_compra {
