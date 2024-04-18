@@ -1,0 +1,55 @@
+{
+    "project": {
+      "proyecto": {
+        "id": "project-3e399fbe-5a6f-45f6-ab5b-7e169a87d5a7",
+        "user": "usuario123",
+        "vendedor": "vendedor123",
+        "cliente": "cliente123",
+        "numero_proyecto": "PROY-001",
+        "contacto": "Contacto Cliente",
+        "comision": 0.05,
+        "nombre_etiqueta": "Etiqueta Proyecto",
+        "condicion_de_pago": "Pago al contado",
+        "boton_de_pago": true,
+        "plazo_de_entrega_dias": 10,
+        "plazo_de_entrega": "2024-04-30T00:00:00.000Z",
+        "nota_interna": "Nota interna del proyecto",
+        "estado": "En proceso"
+      },
+      "direccion": {
+        "id": "Direccion-prestacion-65530589-6474-4a55-8c7f-b2a3a56accd7",
+        "proyecto": "project-3e399fbe-5a6f-45f6-ab5b-7e169a87d5a7",
+        "punto": "Punto de prestación",
+        "atencion_a": "Atención a nombre",
+        "direccion": "Dirección del punto",
+        "comuna": "Comuna del punto",
+        "ciudad": "Ciudad del punto",
+        "duracion": "8 horas"
+      },
+      "servicios": [
+        {
+          "id": "item-service-project-441f2632-10cb-4e92-8cba-dcabeb036974",
+          "idProyecto": "project-3e399fbe-5a6f-45f6-ab5b-7e169a87d5a7",
+          "idServicio": "servicio123",
+          "cantidad": 2,
+          "porcentaje_descuento": 0.1,
+          "nombre_impuesto": "IVA",
+          "impuesto": 0.19,
+          "precio": 10000,
+          "total": 20000
+        },
+        {
+          "id": "item-service-project-7ee548fe-837a-4c18-934d-f6c12302f639",
+          "idProyecto": "project-3e399fbe-5a6f-45f6-ab5b-7e169a87d5a7",
+          "idServicio": "servicio456",
+          "cantidad": 3,
+          "porcentaje_descuento": 0.05,
+          "nombre_impuesto": "IVA",
+          "impuesto": 0.19,
+          "precio": 15000,
+          "total": 45000
+        }
+      ],
+      "productos": []
+    }
+  }
