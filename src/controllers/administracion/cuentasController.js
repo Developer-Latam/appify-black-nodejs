@@ -123,6 +123,16 @@ export const getCondicionesCondicionPagoById = async (req, res) => {
     }
 };
 
+export const getCondicionAndCondicionesByCondicionId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const response = await cuentasService.getCondicionAndCondicionesByCondicionId(id);
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(404).json({ message: err.message });
+    }
+};
+
 
 export const getAllCuentasBancoByUserId = async (req, res) => {
     try {

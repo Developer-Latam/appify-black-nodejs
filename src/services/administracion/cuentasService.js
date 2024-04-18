@@ -28,7 +28,7 @@ class cuentasService {
     }
 
     async createBanco(data) {
-        const id = idgenerate("Banco-");
+        const id = idgenerate("Banco");
         
         return  cuentasRepository.createBanco({ ...data, id: id });
     }
@@ -77,6 +77,14 @@ class cuentasService {
 
     async getCondicionesCondicionPagoById(id) {
         return cuentasRepository.findCondicionesCondicionPagoById(id);
+    }
+
+    async getCondicionAndCondicionesByCondicionId(id) {
+
+        const condicion = await this.getCondicionPagoById(id);
+        const condiciones = await this.getCondicionesCondicionPagoById(condicion.id)
+
+        return [condicion, condiciones];
     }
 
     async getAllCuentasBancoByUserId(id) {
