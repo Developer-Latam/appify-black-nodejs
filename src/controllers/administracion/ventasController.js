@@ -147,3 +147,10 @@ export const getDocumentosDespachoByUserController  = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+
+
+
+
+
+
+
