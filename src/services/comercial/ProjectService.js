@@ -4,6 +4,10 @@ import { idgenerate } from "../../utils/id/idGenerate.js";
 import projectPrestacionService from "../../services/comercial/projectPrestacionService.js";
 import projectAgendamientoService from "../../services/comercial/projectAgendamientoService.js";
 import itemsProdServProjectService from "../../services/comercial/itemsProdServProyectosService.js";
+import clientesService from "../../services/comercial/clientesService.js";
+import userService from "../miempresa/userService.js";
+import ProductService from "../miempresa/ProductService.js";
+import ServiceService from "../miempresa/ServiceService.js";
 
 
 class ProjectService {
@@ -72,6 +76,69 @@ class ProjectService {
 
     async getProjectsByUserId(userId) {
         return ProjectRepository.findAllProjectsByUserId(userId);
+    }
+
+    async getAllDataProjects(userId){
+        const projects = await this.getProjectsByUserId(userId);
+
+        const formattedProjects = [];
+
+        for (const project of projects) {
+            const cliente = await clientesService.getClienteById(project.cliente)
+            const vendedor = await userService.getSubUserById(project.vendedor)
+            const itemproductos = await itemsProdServProjectService.getProductsItemByprojectId(project.id)
+            const itemservicios = await itemsProdServProjectService.getServiceItemByProjectId(project.id)
+             // Obtener los nombres de los productos
+            const productos = await Promise.all(itemproductos.map(async (itemProducto) => {
+                const producto = await ProductService.getProductById(itemProducto.idProducto);
+                return {
+                    ...itemProducto,
+                    nombre: producto.nombre
+                };
+            }));
+
+            // Obtener los nombres de los servicios
+            const servicios = await Promise.all(itemservicios.map(async (itemServicio) => {
+                const servicio = await ServiceService.getServiceById(itemServicio.idServicio);
+                return {
+                    ...itemServicio,
+                    nombre: servicio.nombre
+                };
+            }));
+
+            // Calcular la suma de los netos de los productos
+            const netoProductos = productos.reduce((total, product) => total + product.precio, 0);
+            
+            // Calcular la suma de los netos de los servicios
+            const netoServicios = servicios.reduce((total, service) => total + service.precio, 0);
+            
+            // Calcular la suma de los totales de los productos
+            const totalProductos = productos.reduce((total, product) => total + product.total, 0);
+            
+            // Calcular la suma de los totales de los servicios
+            const totalServicios = servicios.reduce((total, service) => total + service.total, 0);
+            
+            const formattedProject = {
+                id: project.id,
+                nombre: project.nombre,
+                estado: project.estado,
+                fecha: project.fecha,
+                cliente: cliente.nombre,
+                vendedor: `${vendedor.nombre} ${vendedor.apellido}`,
+                productos_servicios: {
+                    productos: productos,
+                    servicios: servicios
+                },
+                neto: netoProductos + netoServicios,
+                total: totalProductos + totalServicios
+            };
+
+                formattedProjects.push(formattedProject);
+        }
+
+        return formattedProjects;
+        
+
     }
 
     async updateProject(id, updateData) {

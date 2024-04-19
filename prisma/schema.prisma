@@ -239,19 +239,19 @@ model documento_venta {
 
 model factura_compra {
   id                String   @id @db.VarChar(100)
-  factura           Boolean
-  fact_excenta      Boolean
-  idDocCompra       String   @db.VarChar(100)
-  idProvedoor       String   @db.VarChar(100)
-  numero_documento  String   @db.VarChar(100)
+  usuario           String   @db.VarChar(100)
+  proveedor         String   @db.VarChar(100)
+  tipo_documento    String   @db.VarChar(100)
+  numero_documento  Int
   fecha             DateTime @db.Date
   condicion_de_pago String   @db.VarChar(100)
   cuenta            String   @db.VarChar(100)
   notas             String?  @db.Text
 
-  @@index([idDocCompra], map: "documento_compra")
-  @@index([idProvedoor], map: "proveedores")
+  @@index([proveedor], map: "proveedores")
   @@index([condicion_de_pago], map: "condicion_pago")
+  @@index([cuenta], map: "cuentas_banco")
+  @@index([usuario], map: "usuarios")
 }
 
 model factura_venta {
@@ -1449,4 +1449,22 @@ model nota_factura_compra_excenta {
 
   @@index([idFacturaCompra], map: "factura_compra_excenta")
   @@index([idNotadeCD], map: "notas_de_credito_debito_compras")
+}
+
+model factura_compra_excenta {
+  id                String    @id @db.VarChar(100)
+  idDoc             String    @db.VarChar(100)
+  idProveedor       String    @db.VarChar(100)
+  tipo_documento    String    @db.VarChar(100)
+  numero_documento  String    @db.VarChar(100)
+  fecha             DateTime? @db.Date
+  idVendedor        String    @db.VarChar(100)
+  condicion_de_pago String    @db.VarChar(100)
+  centro_beneficio  String    @db.VarChar(100)
+  observacion       String?   @db.Text
+  nota_interna      String?   @db.Text
+
+  @@index([condicion_de_pago], map: "condicion_pago")
+  @@index([idDoc], map: "documento_compra")
+  @@index([idProveedor], map: "proveedores")
 }
