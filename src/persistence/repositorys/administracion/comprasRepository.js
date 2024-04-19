@@ -29,13 +29,11 @@ class comprasRepository {
             handlePrismaError(error)
         }
     }
-    createFC (idFC,idDC,{factura, fact_excenta, idProvedoor,numero_documento, fecha, condicion_de_pago, cuenta, notas}){
+    createFC (idFC,idDC,{ idProvedoor,numero_documento, fecha, condicion_de_pago, cuenta, notas}){
         try {
             return prisma.factura_compra.create({
                 data: {
                     id: idFC,
-                    factura,
-                    fact_excenta,
                     idDocCompra: idDC,
                     idProvedoor,
                     //numero que viene de SII

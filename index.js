@@ -25,6 +25,7 @@ import transportistaRouter from './src/routes/administracion/transportistaRouter
 import cobrosRouter from './src/routes/administracion/cobrosRouter.js'
 import pagosRouter from './src/routes/administracion/pagosRouter.js'
 import cuentasRouter from './src/routes/administracion/cuentasRouter.js'
+import comprasRouter from './src/routes/administracion/comprasRouter.js'
 import cors from 'cors';
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
@@ -78,6 +79,7 @@ app.use('/conciliacion', conciliacionrouter)
 
 // Routers a Administracion
 app.use('/administracion', ventasRouter)
+app.use('/administracion', comprasRouter)
 app.use('/transportista', transportistaRouter)
 app.use('/cobros', cobrosRouter)
 app.use('/pagos', pagosRouter)
