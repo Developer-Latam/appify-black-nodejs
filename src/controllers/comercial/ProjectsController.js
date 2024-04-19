@@ -25,8 +25,8 @@ export const getProjectById = async (req, res) => {
 
 export const getProjectsByUserId = async (req, res) => {
     try {
-        const { id } = req.params;
-        const projects = await ProjectService.getProjectsByUserId(id);
+        const { userId } = req.params;
+        const projects = await ProjectService.getProjectsByUserId(userId);
         res.status(200).json({ data: projects });
     } catch (err) {
         res.status(400).json({ message: err.message });

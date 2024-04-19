@@ -80,14 +80,19 @@ class ProjectService {
 
     async getAllDataProjects(userId){
         const projects = await this.getProjectsByUserId(userId);
+        
 
         const formattedProjects = [];
 
         for (const project of projects) {
             const cliente = await clientesService.getClienteById(project.cliente)
+            
             const vendedor = await userService.getSubUserById(project.vendedor)
+            
             const itemproductos = await itemsProdServProjectService.getProductsItemByprojectId(project.id)
+            
             const itemservicios = await itemsProdServProjectService.getServiceItemByProjectId(project.id)
+            
              // Obtener los nombres de los productos
             const productos = await Promise.all(itemproductos.map(async (itemProducto) => {
                 const producto = await ProductService.getProductById(itemProducto.idProducto);
