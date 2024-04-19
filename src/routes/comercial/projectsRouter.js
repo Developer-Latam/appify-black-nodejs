@@ -4,7 +4,8 @@ import {
     getProjectsByUserId,
     updateProject,
     deleteProject,
-    createProjectAll
+    createProjectAll,
+    getAllDataProjectsbyUserId
 } from '../../controllers/comercial/ProjectsController.js';
 import { 
     createProjectPrestacion,
@@ -35,6 +36,10 @@ router.get('/project/:idProyecto', getProjectById);
 // Buscar proyectos
 
 router.get('/projects/:id', getProjectsByUserId);
+
+// Obtener todos los proyectos y data de proyectos por userid
+
+router.get('/alldata/:id', getAllDataProjectsbyUserId);
 
 // Actualizar un proyecto
 

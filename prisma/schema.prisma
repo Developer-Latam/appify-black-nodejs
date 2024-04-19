@@ -239,7 +239,7 @@ model documento_venta {
 
 model factura_compra {
   id                String   @id @db.VarChar(100)
-  usuario           String   @db.VarChar(100)
+  idDocCompra       String   @db.VarChar(100)
   proveedor         String   @db.VarChar(100)
   tipo_documento    String   @db.VarChar(100)
   numero_documento  Int
@@ -251,7 +251,7 @@ model factura_compra {
   @@index([proveedor], map: "proveedores")
   @@index([condicion_de_pago], map: "condicion_pago")
   @@index([cuenta], map: "cuentas_banco")
-  @@index([usuario], map: "usuarios")
+  @@index([idDocCompra], map: "documento_compra")
 }
 
 model factura_venta {
