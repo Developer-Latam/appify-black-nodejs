@@ -324,6 +324,7 @@ model item_producto {
 
   @@index([idOrdenCompra], map: "orden_compra")
   @@index([idProducto], map: "productos")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model item_producto_documento_despacho_traslado {
@@ -395,6 +396,7 @@ model item_producto_factura_venta {
 
   @@index([idFactura], map: "factura_venta")
   @@index([idProducto], map: "productos")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model item_producto_factura_venta_excenta {
@@ -411,6 +413,7 @@ model item_producto_factura_venta_excenta {
 
   @@index([idFactura], map: "factura_venta_excenta")
   @@index([idProducto], map: "productos")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model item_producto_factura_voucher_venta {
@@ -427,22 +430,7 @@ model item_producto_factura_voucher_venta {
 
   @@index([idProducto], map: "productos")
   @@index([idFactura], map: "voucher_venta")
-}
-
-model item_producto_nota_CD {
-  id         String @id @db.VarChar(100)
-  idProducto String @db.VarChar(100)
-  idNotaCD   String @db.VarChar(100)
-  cantidad   Int
-  unitario   Int
-  cuenta     String @db.VarChar(100)
-  neto       Float  @db.Float
-  subtotal   Float  @db.Float
-  iva        Float  @db.Float
-  total      Float  @db.Float
-
-  @@index([idNotaCD], map: "notas_de_credito_debito_compras")
-  @@index([idProducto], map: "productos")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model item_receta_productos {
@@ -519,6 +507,7 @@ model item_servicio_factura_venta {
 
   @@index([idFactura], map: "factura_venta")
   @@index([idServicio], map: "servicios")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model item_servicio_factura_venta_excenta {
@@ -535,22 +524,7 @@ model item_servicio_factura_venta_excenta {
 
   @@index([idFactura], map: "factura_venta_excenta")
   @@index([idServicio], map: "servicios")
-}
-
-model item_servicio_nota_CD {
-  id         String @id @db.VarChar(100)
-  idServicio String @db.VarChar(100)
-  idNotaCD   String @db.VarChar(100)
-  cantidad   Int
-  unitario   Int
-  cuenta     String @db.VarChar(100)
-  neto       Float  @db.Float
-  subtotal   Float  @db.Float
-  iva        Float  @db.Float
-  total      Float  @db.Float
-
-  @@index([idNotaCD], map: "notas_de_credito_debito_compras")
-  @@index([idServicio], map: "servicios")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model item_servicio_voucher_venta {
@@ -567,6 +541,7 @@ model item_servicio_voucher_venta {
 
   @@index([idServicio], map: "servicios")
   @@index([idFactura], map: "voucher_venta")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model item_servicios {
@@ -583,6 +558,7 @@ model item_servicios {
 
   @@index([idOrdenCompra], map: "orden_compra")
   @@index([idServicio], map: "servicios")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model listas_de_precio {
@@ -1258,6 +1234,7 @@ model item_producto_nota_credito {
 
   @@index([idNotaCredito], map: "notas_de_credito_debito")
   @@index([idProducto], map: "productos")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model item_producto_nota_credito_NC {
@@ -1275,6 +1252,7 @@ model item_producto_nota_credito_NC {
 
   @@index([idNotaCredito], map: "nota_credito_nota_NC")
   @@index([idProducto], map: "productos")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model item_servicio_nota_credito {
@@ -1292,6 +1270,7 @@ model item_servicio_nota_credito {
 
   @@index([idNotaCredito], map: "notas_de_credito_debito")
   @@index([idServicio], map: "servicios")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model item_servicio_nota_credito_NC {
@@ -1309,6 +1288,7 @@ model item_servicio_nota_credito_NC {
 
   @@index([idNotaCredito], map: "nota_credito_nota_NC")
   @@index([idServicio], map: "servicios")
+  @@index([cuenta], map: "cuentas_banco")
 }
 
 model cobros_factura_venta {
@@ -1373,4 +1353,100 @@ model condicion_pago {
   cuenta_cobro String? @db.VarChar(100)
 
   @@index([user], map: "usuarios")
+}
+
+model item_producto_nota_credito_NC_compra {
+  id            Int     @id @default(autoincrement())
+  idProducto    String  @db.VarChar(100)
+  idNotaCredito String  @db.VarChar(100)
+  codigo        String? @db.VarChar(100)
+  cantidad      Int
+  unitario      Int
+  bruto         Float   @db.Float
+  neto          Float   @db.Float
+  cuenta        String? @db.VarChar(100)
+  bonificacion  Float?  @db.Float
+  notas         String? @db.Text
+
+  @@index([cuenta], map: "cuentas_banco")
+  @@index([idNotaCredito], map: "nota_credito_nota_NC_compra")
+  @@index([idProducto], map: "productos")
+}
+
+model item_producto_nota_credito_compra {
+  id         String @id @db.VarChar(100)
+  idProducto String @db.VarChar(100)
+  idNotaCD   String @db.VarChar(100)
+  cantidad   Int
+  unitario   Float  @db.Float
+  cuenta     String @db.VarChar(100)
+  neto       Float  @db.Float
+  subtotal   Float  @db.Float
+  iva        Float  @db.Float
+  total      Float  @db.Float
+
+  @@index([cuenta], map: "cuentas_banco")
+  @@index([idNotaCD], map: "notas_de_credito_debito_compras")
+  @@index([idProducto], map: "productos")
+}
+
+model item_servicio_nota_credito_NC_compra {
+  id            Int     @id @default(autoincrement())
+  idServicio    String  @db.VarChar(100)
+  idNotaCredito String  @db.VarChar(100)
+  codigo        String? @db.VarChar(100)
+  cantidad      Int
+  unitario      Int
+  bruto         Float   @db.Float
+  neto          Float   @db.Float
+  cuenta        String? @db.VarChar(100)
+  bonificacion  Float?  @db.Float
+  notas         String? @db.Text
+
+  @@index([cuenta], map: "cuentas_banco")
+  @@index([idNotaCredito], map: "nota_credito_nota_NC_compra")
+  @@index([idServicio], map: "servicios")
+}
+
+model item_servicio_nota_credito_compra {
+  id         String @id @db.VarChar(100)
+  idServicio String @db.VarChar(100)
+  idNotaCD   String @db.VarChar(100)
+  cantidad   Int
+  unitario   Float  @db.Float
+  cuenta     String @db.VarChar(100)
+  neto       Float  @db.Float
+  subtotal   Float  @db.Float
+  iva        Float  @db.Float
+  total      Float  @db.Float
+
+  @@index([cuenta], map: "cuentas_banco")
+  @@index([idNotaCD], map: "notas_de_credito_debito_compras")
+  @@index([idServicio], map: "servicios")
+}
+
+model nota_credito_nota_NC_compra {
+  id               Int    @id @default(autoincrement())
+  idNotadeCD       String @db.VarChar(100)
+  numero_documento String @db.VarChar(100)
+
+  @@index([idNotadeCD], map: "notas_de_credito_debito_compras")
+}
+
+model nota_factura_compra {
+  id              Int    @id @default(autoincrement())
+  idFacturaCompra String @db.VarChar(100)
+  idNotadeCD      String @db.VarChar(100)
+
+  @@index([idFacturaCompra], map: "factura_compra")
+  @@index([idNotadeCD], map: "notas_de_credito_debito_compras")
+}
+
+model nota_factura_compra_excenta {
+  id              Int    @id @default(autoincrement())
+  idFacturaCompra String @db.VarChar(100)
+  idNotadeCD      String @db.VarChar(100)
+
+  @@index([idFacturaCompra], map: "factura_compra_excenta")
+  @@index([idNotadeCD], map: "notas_de_credito_debito_compras")
 }
