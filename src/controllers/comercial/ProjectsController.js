@@ -1,9 +1,9 @@
 import ProjectService from "../../services/comercial/ProjectService.js";
 
-export const createProject = async (req, res) => {
+export const createProjectAll = async (req, res) => {
     try {
         const data = req.body;
-        const response = await ProjectService.createProject(data);
+        const response = await ProjectService.createProjectAll(data);
         res.status(200).json({ project: response });
     } catch (err) {
         res.status(400).json({ message: err.message });

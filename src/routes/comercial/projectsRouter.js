@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { 
-    createProject,
     getProjectById,
     getProjectsByUserId,
     updateProject,
-    deleteProject
+    deleteProject,
+    createProjectAll
 } from '../../controllers/comercial/ProjectsController.js';
 import { 
     createProjectPrestacion,
@@ -22,9 +22,11 @@ import {
 
 const router = Router();
 
-// Crear un proyecto
+/* Crear un proyecto con todas las variables posibles, el proyecto, agendamiento si tiene o no
+si tiene direccion de prestacion o no, si tiene un producto o varios o no, si tiene un servicio o varios o no
+*/
 
-router.post('/project', createProject);
+router.post('/crearProject', createProjectAll);
 
 // Buscar un proyecto
 
