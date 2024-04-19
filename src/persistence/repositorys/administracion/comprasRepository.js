@@ -29,13 +29,14 @@ class comprasRepository {
             handlePrismaError(error)
         }
     }
-    createFC (idFC,idDC,{ idProvedoor,numero_documento, fecha, condicion_de_pago, cuenta, notas}){
+    createFC (idFC,idDC,{ proveedor,tipo_documento,numero_documento, fecha, condicion_de_pago, cuenta, notas}){
         try {
             return prisma.factura_compra.create({
                 data: {
                     id: idFC,
                     idDocCompra: idDC,
-                    idProvedoor,
+                    proveedor,
+                    tipo_documento,
                     //numero que viene de SII
                     numero_documento,
                     fecha,
@@ -191,13 +192,13 @@ class comprasRepository {
             handlePrismaError(error)
         }
     }
-    createFCE (idFCE,idDC,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
+    createFCE (idFCE,idDC,{idProveedor, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
         try {
             return prisma.factura_compra_excenta.create({
                 data: {
                     id: idFCE,
                     idDoc: idDC,
-                    idCliente,
+                    idProveedor,
                     tipo_documento,
                     //numero que viene de SII
                     numero_documento,

@@ -24,7 +24,7 @@ model bancos {
   nombre String @db.VarChar(100)
   codigo String @db.VarChar(100)
 
-  @@index([user], map: "usuario")
+  @@index([user], map: "usuarios")
 }
 
 model categoria_cuenta {
@@ -239,10 +239,10 @@ model documento_venta {
 
 model factura_compra {
   id                String   @id @db.VarChar(100)
-  usuario           String   @db.VarChar(100)
+  idDocCompra       String   @db.VarChar(100)
   proveedor         String   @db.VarChar(100)
   tipo_documento    String   @db.VarChar(100)
-  numero_documento  Int
+  numero_documento  String   @db.VarChar(100)
   fecha             DateTime @db.Date
   condicion_de_pago String   @db.VarChar(100)
   cuenta            String   @db.VarChar(100)
@@ -251,7 +251,7 @@ model factura_compra {
   @@index([proveedor], map: "proveedores")
   @@index([condicion_de_pago], map: "condicion_pago")
   @@index([cuenta], map: "cuentas_banco")
-  @@index([usuario], map: "usuarios")
+  @@index([idDocCompra], map: "documento_compra")
 }
 
 model factura_venta {
@@ -372,7 +372,7 @@ model item_producto_documento_venta {
 model item_producto_factura_compra {
   id              String @id @db.VarChar(100)
   idProducto      String @db.VarChar(100)
-  idFacturaCompra Int
+  idFacturaCompra String @db.VarChar(100)
   cantidad        Int
   unitario        Int
   cuenta          String @db.VarChar(100)
@@ -481,7 +481,7 @@ model item_servicio_documento_venta {
 model item_servicio_factura_compra {
   id              String @id @db.VarChar(100)
   idServicio      String @db.VarChar(100)
-  idFacturaCompra Int
+  idFacturaCompra String @db.VarChar(100)
   cantidad        Int
   unitario        Int
   cuenta          String @db.VarChar(100)
@@ -850,18 +850,6 @@ model subusuarios {
   @@index([user], map: "usuarios")
 }
 
-model transportista {
-  id                       String  @id @db.VarChar(100)
-  iduser                   String  @db.VarChar(100)
-  nombre_transportista     String  @db.VarChar(50)
-  nombre_conducor          String  @db.VarChar(50)
-  numero_placa             String? @db.VarChar(50)
-  numero_doc_conductor     String  @db.VarChar(50)
-  numero_doc_transportista String  @db.VarChar(50)
-
-  @@index([iduser], map: "user")
-}
-
 model usuarios {
   id                  String    @id @db.VarChar(100)
   nombre              String    @db.VarChar(100)
@@ -947,7 +935,7 @@ model administracion_por_clasificar {
 
 model administracion_por_cobrar {
   id                                      Int     @id @default(autoincrement())
-  empresa                                 Int
+  empresa                                 String  @db.VarChar(100)
   cuenta_facturas_por_cobrar              String? @db.VarChar(100)
   cuenta_documentos_en_cartera_por_cobrar String? @db.VarChar(100)
 
@@ -1467,4 +1455,50 @@ model factura_compra_excenta {
   @@index([condicion_de_pago], map: "condicion_pago")
   @@index([idDoc], map: "documento_compra")
   @@index([idProveedor], map: "proveedores")
+}
+
+model item_producto_factura_compra_excenta {
+  id           Int     @id @default(autoincrement())
+  idProducto   String? @db.VarChar(100)
+  idFactura    String  @db.VarChar(100)
+  codigo       String? @db.VarChar(100)
+  cantidad     Int
+  unitario     Int
+  neto         Float   @db.Float
+  cuenta       String? @db.VarChar(100)
+  bonificacion Float?  @db.Float
+  notas        String? @db.Text
+
+  @@index([cuenta], map: "cuentas_banco")
+  @@index([idFactura], map: "factura_compra_excenta")
+  @@index([idProducto], map: "servicios")
+}
+
+model item_servicio_factura_compra_excenta {
+  id           Int     @id @default(autoincrement())
+  idServicio   String  @db.VarChar(100)
+  idFactura    String  @db.VarChar(100)
+  codigo       String? @db.VarChar(100)
+  cantidad     Int
+  unitario     Int
+  neto         Float   @db.Float
+  cuenta       String? @db.VarChar(100)
+  bonificacion Float?  @db.Float
+  notas        String? @db.Text
+
+  @@index([cuenta], map: "cuentas_banco")
+  @@index([idFactura], map: "factura_compra_excenta")
+  @@index([idServicio], map: "servicios")
+}
+
+model transportista {
+  id                       String  @id @db.VarChar(100)
+  iduser                   String  @db.VarChar(100)
+  nombre_transportista     String  @db.VarChar(50)
+  nombre_conducor          String  @db.VarChar(50)
+  numero_placa             String? @db.VarChar(50)
+  numero_doc_conductor     String  @db.VarChar(50)
+  numero_doc_transportista String  @db.VarChar(50)
+
+  @@index([iduser], map: "usuarios")
 }
