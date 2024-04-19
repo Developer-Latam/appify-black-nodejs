@@ -1356,7 +1356,7 @@ model condicion_pago {
 }
 
 model item_producto_nota_credito_NC_compra {
-  id            Int     @id @default(autoincrement())
+  id            String  @id @db.VarChar(100)
   idProducto    String  @db.VarChar(100)
   idNotaCredito String  @db.VarChar(100)
   codigo        String? @db.VarChar(100)
@@ -1391,7 +1391,7 @@ model item_producto_nota_credito_compra {
 }
 
 model item_servicio_nota_credito_NC_compra {
-  id            Int     @id @default(autoincrement())
+  id            String  @id @db.VarChar(100)
   idServicio    String  @db.VarChar(100)
   idNotaCredito String  @db.VarChar(100)
   codigo        String? @db.VarChar(100)
@@ -1426,7 +1426,7 @@ model item_servicio_nota_credito_compra {
 }
 
 model nota_credito_nota_NC_compra {
-  id               Int    @id @default(autoincrement())
+  id               String @id @db.VarChar(100)
   idNotadeCD       String @db.VarChar(100)
   numero_documento String @db.VarChar(100)
 
@@ -1434,7 +1434,7 @@ model nota_credito_nota_NC_compra {
 }
 
 model nota_factura_compra {
-  id              Int    @id @default(autoincrement())
+  id              String @id @db.VarChar(100)
   idFacturaCompra String @db.VarChar(100)
   idNotadeCD      String @db.VarChar(100)
 
@@ -1443,7 +1443,7 @@ model nota_factura_compra {
 }
 
 model nota_factura_compra_excenta {
-  id              Int    @id @default(autoincrement())
+  id              String @id @db.VarChar(100)
   idFacturaCompra String @db.VarChar(100)
   idNotadeCD      String @db.VarChar(100)
 
