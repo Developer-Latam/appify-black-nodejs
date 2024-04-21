@@ -148,8 +148,8 @@ class ComprasService {
             }
             let operations = [comprasRepository.createNCoD_Compras(idNCoD, notas_de_credito_debito_compras)];
             const items = [
-                { item: nota_factura_compra, repository: comprasRepository.createNotaFC, idProperty: "idFacturaVenta" },//hay que cambiar esto
-                { item: nota_factura_compra_excenta, repository: comprasRepository.createNotaFCE, idProperty: "idFacturaVentaExcenta" },//hay que cambiar esto
+                { item: nota_factura_compra, repository: comprasRepository.createNotaFC, idProperty: "idFacturaCompra" },
+                { item: nota_factura_compra_excenta, repository: comprasRepository.createNotaFCE, idProperty: "idFacturaCompraExenta" },
                 { item: nota_credito_nota_NC_compra, repository: comprasRepository.createNotaNC}
             ];
             for (const { item, repository, idProperty } of items) {

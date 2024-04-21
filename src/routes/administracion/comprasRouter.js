@@ -8,10 +8,11 @@ import {
 } from "../../controllers/administracion/comprasController.js";
 const router = Router()
 
-//listoooo 
-router.post('/compras/FC', createFCController)
 
+router.post('/compras/FC', createFCController)
 router.post('/compras/FCE', createFCEController)
+//listoooo 
+
 
 router.post('/compras/NCOD', createNCoDConItemsController)
 

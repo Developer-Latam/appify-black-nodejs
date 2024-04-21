@@ -119,7 +119,7 @@ class comprasRepository {
         try {
             return prisma.nota_factura_compra.create({
                 data: {
-                    idFacturaVenta: idFC,
+                    idFacturaCompra: idFC,
                     idNotadeCD: idNCoD,
                 }
             })
@@ -132,7 +132,7 @@ class comprasRepository {
             return prisma.nota_factura_compra_excenta.create({
                 data: {
                     //NUMERO DE LA FACTURA DE COMPRA EXCENTA
-                    idFacturaCompraExcenta: idFCE,
+                    idFacturaCompraExenta: idFCE,
                     idNotadeCD: idNCoD,
                 }
             })

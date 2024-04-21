@@ -1200,7 +1200,7 @@ model movimientos_cuenta {
 }
 
 model nota_credito_nota_NC {
-  id               String @id @db.VarChar(100)
+  id               Int    @id @default(autoincrement())
   idNotadeCD       String @db.VarChar(100)
   numero_documento String @db.VarChar(100)
 
@@ -1414,15 +1414,15 @@ model item_servicio_nota_credito_compra {
 }
 
 model nota_credito_nota_NC_compra {
-  id               String @id @db.VarChar(100)
-  idNotadeCD       String @db.VarChar(100)
-  numero_documento String @db.VarChar(100)
+  id                Int    @id @default(autoincrement())
+  idNotadeCD        String @db.VarChar(100)
+  idNotadeCD_anular String @db.VarChar(100)
 
   @@index([idNotadeCD], map: "notas_de_credito_debito_compras")
 }
 
 model nota_factura_compra {
-  id              String @id @db.VarChar(100)
+  id              Int    @id @default(autoincrement())
   idFacturaCompra String @db.VarChar(100)
   idNotadeCD      String @db.VarChar(100)
 
@@ -1431,11 +1431,11 @@ model nota_factura_compra {
 }
 
 model nota_factura_compra_excenta {
-  id              String @id @db.VarChar(100)
-  idFacturaCompra String @db.VarChar(100)
-  idNotadeCD      String @db.VarChar(100)
+  id                    Int    @id @default(autoincrement())
+  idFacturaCompraExenta String @db.VarChar(100)
+  idNotadeCD            String @db.VarChar(100)
 
-  @@index([idFacturaCompra], map: "factura_compra_excenta")
+  @@index([idFacturaCompraExenta], map: "factura_compra_excenta")
   @@index([idNotadeCD], map: "notas_de_credito_debito_compras")
 }
 
