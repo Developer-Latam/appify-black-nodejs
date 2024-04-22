@@ -1,5 +1,6 @@
 import cobrosRepository from "../../persistence/repositorys/administracion/cobrosRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
+import ventasService from "./ventasService.js";
 
 class cobrosService {
 
@@ -122,7 +123,7 @@ class cobrosService {
             try {
                 const result = await func(id);
                 // Si la función no arroja error y devuelve algo, retornamos el resultado
-                return result;
+                return [result,{nombre : func.name}];
             } catch (error) {
                 // Si hay un error, continuamos con la siguiente función
                 console.error(`Error al intentar ejecutar la función ${func.name}:`, error.message);
@@ -208,6 +209,47 @@ class cobrosService {
     async getCobrosByUserId(userId) {
         return cobrosRepository.findAllCobrosByUserId(userId);
     }
+    
+    async getAllCobrosDataByUserId(userId) {
+        let cobros = await this.getCobrosByUserId(userId);
+    
+        // Verificar si cobros es un array o no
+        if (!Array.isArray(cobros)) {
+            cobros = [cobros]; // Convertir a un array para facilitar la iteración
+        }
+    
+        const formattedCobros = [];
+    
+        for (const cobro of cobros) {
+            const factura = await this.getCobrosAllById(cobro.id);
+    
+            switch (factura.nombre) {
+                case "getCobroNCById":
+                    const dataNC = factura.cobroNC;
+                    const notacredito = await cobrosRepository.findNCById(dataNC.idNotaCredito);
+                    const notaCompletaNC = await ventasService.getNCoDbyIdDoc(notacredito.idDoc);
+                    formattedCobros.push([cobro, notaCompletaNC]);
+                    break;
+    
+                case "getCobroFVEById":
+                    const dataFVE = factura.cobroFVE;
+                    const facturaventae = await cobrosRepository.findFVEById(dataFVE.idFacturaVentaExcenta);
+                    const facturaFVEcompleta = await ventasService.getFVoFVEbyIdDoc(facturaventae.idDoc);
+                    formattedCobros.push([cobro, facturaFVEcompleta]);
+                    break;
+    
+                case "getCobroFVById":
+                    const dataFV = factura.cobroFV;
+                    const facturaventa = await cobrosRepository.findNCById(dataFV.idFacturaVenta);
+                    const facturaFVcompleta = await ventasService.getFVoFVEbyIdDoc(facturaventa.idDoc);
+                    formattedCobros.push([cobro, facturaFVcompleta]);
+                    break;
+            }
+        }
+    
+        return formattedCobros;
+    }
+    
 
     async updateCobro(id, updateData) {
         return cobrosRepository.updateCobro(id, updateData);

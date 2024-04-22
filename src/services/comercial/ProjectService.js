@@ -33,6 +33,7 @@ class ProjectService {
         } = data;
     
         const proyecto = await this.createProject(proyectos);
+
         let direccion, agendamiento, servicios = [], productos = [];
     
         if (direccion_de_prestacion_proyecto) {
@@ -83,6 +84,7 @@ class ProjectService {
         
 
         const formattedProjects = [];
+        
 
         for (const project of projects) {
             const cliente = await clientesService.getClienteById(project.cliente)

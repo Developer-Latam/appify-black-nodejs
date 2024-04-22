@@ -44,6 +44,23 @@ class cobrosRepository {
             where: { idCobro: id }
         });
     }
+    async findNCById(id){
+        return prisma.notas_de_credito_debito.findUnique({
+            where : { id : id }
+        })
+    }
+
+    async findFVById(id){
+        return prisma.factura_venta.findUnique({
+            where : { id : id }
+        })
+    }
+
+    async findFVEById(id){
+        return prisma.factura_venta_excenta.findUnique({
+            where : { id : id }
+        })
+    }
 
     async findCobroNCByCobroId(id) {
         return prisma.cobros_factura_nota_credito.findFirst({

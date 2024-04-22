@@ -28,9 +28,15 @@ class pagosRepository {
         });
     }
 
-    async findPagosFCByCobroId(id) {
+    async findPagosFCByPagoId(id) {
         return prisma.pagos_factura_compra.findFirst({
             where: { idPago: id }
+        });
+    }
+
+    async findPagosFCEByPagoId(id) {
+        return prisma.pagos_factura_compra_excenta.findFirst({
+            where: { idPago : id }
         });
     }
 

@@ -87,7 +87,8 @@ class pagosService {
     async getPagosAllById(id) {
         const functionsToTry = [
             this.getPagosNCById,
-            this.getPagosFCById
+            this.getPagosFCById,
+            this.getPagosFCEById
         ];
     
         for (const func of functionsToTry) {
@@ -129,6 +130,30 @@ class pagosService {
         }
     }
 
+    async getPagosFCEById(id) {
+        try {
+            // Buscar el cobro
+            const pago = await pagosRepository.findPagosById(id);
+    
+            if (!pago) {
+                throw new Error(`No se encontró ningún pago con el ID ${id}`);
+            }
+    
+            // Buscar el cobro de factura de venta utilizando el ID del cobro
+            const pagoFCE = await pagosRepository.findPagosFCEByPagoId(id);
+    
+            if (!pagoFCE) {
+                throw new Error(`No se encontró ningún pago de factura de compra excenta para el pago con ID ${id}`);
+            }
+    
+            // Devolver un objeto que contiene ambos resultados
+            return { pago, pagoFCE };
+        } catch (error) {
+            console.error("Error al buscar el pago y pago de factura de compra excenta:", error.message);
+            throw error;
+        }
+    }
+
     
 
     async getPagosNCById(id) {
@@ -158,6 +183,18 @@ class pagosService {
     async getPagosByUserId(userId) {
         return pagosRepository.findAllPagosByUserId(userId);
     }
+    /*
+    async getAllDataPagosByUserId(userId) {
+        const pagos = await this.getPagosByUserId(userId);
+
+        const formattedPagos = [];
+
+        for (const pago of pagos) {
+            const factura = this.getPagosAllById(pago.id);
+
+        }
+
+    }*/
 
     async updatePagos(id, updateData) {
         return pagosRepository.updatePagos(id, updateData);
