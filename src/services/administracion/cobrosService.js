@@ -1,4 +1,5 @@
 import cobrosRepository from "../../persistence/repositorys/administracion/cobrosRepository.js";
+import ventasRepository from "../../persistence/repositorys/administracion/ventasRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import ventasService from "./ventasService.js";
 
@@ -158,6 +159,18 @@ class cobrosService {
         }
     }
 
+    async findCobroFVByCobroId(id){
+        return cobrosRepository.findCobroFVByCobroId(id)
+    }
+
+    async findCobroFVEByCobroId(id){
+        return cobrosRepository.findCobroFVEByCobroId(id)
+    }
+
+    async findCobroNCByCobroId(id){
+        return cobrosRepository.findCobroNCByCobroId(id)
+    }
+
     async getCobroFVEById(id) {
         try {
             // Buscar el cobro
@@ -211,44 +224,82 @@ class cobrosService {
     }
     
     async getAllCobrosDataByUserId(userId) {
-        let cobros = await this.getCobrosByUserId(userId);
+        try {
+            let cobros = await this.getCobrosByUserId(userId);
+            console.log(cobros)
     
-        // Verificar si cobros es un array o no
-        if (!Array.isArray(cobros)) {
-            cobros = [cobros]; // Convertir a un array para facilitar la iteración
-        }
+            // Verificar si cobros es un array o no
+            /*
+            if (!Array.isArray(cobros)) {
+                cobros = [cobros]; // Convertir a un array para facilitar la iteración
+            }*/
     
-        const formattedCobros = [];
+            const formattedCobros = [];
     
-        for (const cobro of cobros) {
-            const factura = await this.getCobrosAllById(cobro.id);
+            for (const cobro of cobros) {
+                const functionsToTry = [
+                    this.findCobroFVByCobroId,
+                    this.findCobroFVEByCobroId,
+                    this.findCobroNCByCobroId
+                ];
     
-            switch (factura.nombre) {
-                case "getCobroNCById":
-                    const dataNC = factura.cobroNC;
-                    const notacredito = await cobrosRepository.findNCById(dataNC.idNotaCredito);
-                    const notaCompletaNC = await ventasService.getNCoDbyIdDoc(notacredito.idDoc);
-                    formattedCobros.push([cobro, notaCompletaNC]);
-                    break;
+                let result = null;
     
-                case "getCobroFVEById":
-                    const dataFVE = factura.cobroFVE;
-                    const facturaventae = await cobrosRepository.findFVEById(dataFVE.idFacturaVentaExcenta);
-                    const facturaFVEcompleta = await ventasService.getFVoFVEbyIdDoc(facturaventae.idDoc);
-                    formattedCobros.push([cobro, facturaFVEcompleta]);
-                    break;
+                for (const func of functionsToTry) {
+                    try {
+                        const resultado = await func(cobro.id);
+                        console.log(`El resultado de ${func.name} es:`, resultado);
     
-                case "getCobroFVById":
-                    const dataFV = factura.cobroFV;
-                    const facturaventa = await cobrosRepository.findNCById(dataFV.idFacturaVenta);
-                    const facturaFVcompleta = await ventasService.getFVoFVEbyIdDoc(facturaventa.idDoc);
-                    formattedCobros.push([cobro, facturaFVcompleta]);
-                    break;
+                        if (resultado) {
+                            result = {
+                                resultado,
+                                clave: func.name
+                            };
+                            break; // Si se encuentra un resultado válido, se sale del bucle
+                        }
+                    } catch (error) {
+                        // Si hay un error, continuamos con la siguiente función
+                        console.error(`Error al intentar ejecutar la función ${func.name}:`, error.message);
+                    }
+                }
+    
+                if (result) {
+                    switch (result.clave) {
+                        case "findCobroNCByCobroId":
+                            const idNotaCredito = result.resultado.idNotaCredito;
+                            const notacredito = await cobrosRepository.findNCById(idNotaCredito);
+                            const notaCompletaNC = await ventasService.getNCoDbyIdDoc(notacredito.idDoc);
+                            formattedCobros.push({ cobro, factura: notaCompletaNC });
+                            break;
+    
+                        case "findCobroFVEByCobroId":
+                            const idFacturaVentaE = result.resultado.idFacturaVentaExcenta;
+                            
+                            const facturaventae = await cobrosRepository.findFVEById(idFacturaVentaE);
+                            
+                            const facturaFVEcompleta = await ventasRepository.getFVEDetailsbyDV(facturaventae.idDoc);
+                            
+                            formattedCobros.push({ cobro, factura: facturaFVEcompleta });
+                            break;
+    
+                        case "findCobroFVByCobroId":
+                            const idFacturaVenta = result.resultado.idFacturaVenta;
+                            const facturaventa = await cobrosRepository.findFVById(idFacturaVenta);
+                            const facturaFVcompleta = await ventasService.getFVoFVEbyIdDoc(facturaventa.idDoc);
+                            formattedCobros.push({ cobro, factura: facturaFVcompleta });
+                            break;
+                    }
+                }
             }
-        }
     
-        return formattedCobros;
+            return formattedCobros;
+        } catch (error) {
+            console.error("Error al obtener los cobros:", error.message);
+            throw error;
+        }
     }
+    
+    
     
 
     async updateCobro(id, updateData) {

@@ -1,3 +1,4 @@
+import comprasRepository from "../../persistence/repositorys/administracion/comprasRepository.js";
 import pagosRepository from "../../persistence/repositorys/administracion/pagosRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 
@@ -106,6 +107,18 @@ class pagosService {
         throw new Error('No se encontró ningún pago para el ID proporcionado');
     }
 
+    async findPagosFCByPagoId(id) {
+        return pagosRepository.findPagosFCByPagoId(id);
+    }
+
+    async findPagosFCEByPagoId(id) {
+        return pagosRepository.findPagosFCEByPagoId(id);
+    }
+
+    async findPagosNCByPagoId(id) {
+        return pagosRepository.findPagosNCByPagoId(id);
+    }
+
     async getPagosFCById(id) {
         try {
             // Buscar el cobro
@@ -180,21 +193,85 @@ class pagosService {
         }
     }
 
-    async getPagosByUserId(userId) {
-        return pagosRepository.findAllPagosByUserId(userId);
-    }
-    /*
-    async getAllDataPagosByUserId(userId) {
-        const pagos = await this.getPagosByUserId(userId);
-
-        const formattedPagos = [];
-
-        for (const pago of pagos) {
-            const factura = this.getPagosAllById(pago.id);
-
+    async getAllPagosDataByUserId(userId) {
+        try {
+            let pagos = await this.getAllPagosByUserId(userId);
+            console.log(pagos)
+    
+            // Verificar si cobros es un array o no
+            /*
+            if (!Array.isArray(cobros)) {
+                cobros = [cobros]; // Convertir a un array para facilitar la iteración
+            }*/
+    
+            const formattedCobros = [];
+    
+            for (const pago of pagos) {
+                const functionsToTry = [
+                    this.findPagosFCByPagoId,
+                    this.findPagosFCEByPagoId,
+                    this.findPagosNCByPagoId
+                ];
+    
+                let result = null;
+    
+                for (const func of functionsToTry) {
+                    try {
+                        const resultado = await func(pago.id);
+                        console.log(`El resultado de ${func.name} es:`, resultado);
+    
+                        if (resultado) {
+                            result = {
+                                resultado,
+                                clave: func.name
+                            };
+                            break; // Si se encuentra un resultado válido, se sale del bucle
+                        }
+                    } catch (error) {
+                        // Si hay un error, continuamos con la siguiente función
+                        console.error(`Error al intentar ejecutar la función ${func.name}:`, error.message);
+                    }
+                }
+    
+                if (result) {
+                    switch (result.clave) {
+                        case "findPagosNCByPagoId":
+                            const idNotaCredito = result.resultado.idNotaCredito;
+                            const notacredito = await pagosRepository.findFCNCById(idNotaCredito);
+                            const notaCompletaNC = await comprasRepository.getNCODDetailsbyDC(notacredito.idDoc);
+                            formattedCobros.push({ pago, factura: notaCompletaNC });
+                            break;
+    
+                        case "findPagosFCEByPagoId":
+                            const idFacturaCompraE = result.resultado.idFacturaCompraE;
+                            
+                            const facturacomprae = await pagosRepository.findFCEById(idFacturaCompraE);
+                            
+                            const facturaFCEcompleta = await comprasRepository.getFCEDetailsbyDC(facturacomprae.idDoc);
+                            
+                            formattedCobros.push({ pago, factura: facturaFCEcompleta });
+                            break;
+    
+                        case "findPagosFCByPagoId":
+                            const idFacturaCompra = result.resultado.idFacturaCompra;
+                            const facturacompra = await pagosRepository.findFCById(idFacturaCompra);
+                            const facturaFCcompleta = await comprasRepository.getFCDetailsbyDC(facturacompra.idDoc);
+                            formattedCobros.push({ pago, factura: facturaFCcompleta });
+                            break;
+                    }
+                }
+            }
+    
+            return formattedCobros;
+        } catch (error) {
+            console.error("Error al obtener los cobros:", error.message);
+            throw error;
         }
+    }
 
-    }*/
+    async getAllPagosByUserId(id){
+        return pagosRepository.findAllPagosByUserId(id)
+    }
 
     async updatePagos(id, updateData) {
         return pagosRepository.updatePagos(id, updateData);

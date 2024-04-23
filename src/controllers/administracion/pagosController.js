@@ -26,12 +26,23 @@ export const getPagosAllById = async (req, res) => {
 export const getAllPagosByUserId = async (req, res) => {
     try {
         const { id } = req.params;
-        const pagos = await pagosService.getPagosByUserId(id);
+        const pagos = await pagosService.getAllPagosByUserId(id);
         res.status(200).json({ data: pagos });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 };
+
+export const getAllPagosDataByUserId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const pagos = await pagosService.getAllPagosDataByUserId(id);
+        res.status(200).json({ data: pagos });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
 
 export const updatePago = async (req, res) => {
     try {
