@@ -9,6 +9,7 @@ import {
     updateCobroNC,
     deleteCobroFV,
     deleteCobroFVE,
+    getAllCobrosDataByUserId,
     deleteCobroNC
 } from '../../controllers/administracion/cobrosController.js';
 const router = Router();
@@ -21,6 +22,9 @@ router.get('/obtener/:id', getCobrosAllById);
 
 // Ruta para obtener todos los cobros por ID de usuario
 router.get('/todos/:id', getAllCobrosByUserId);
+
+// Ruta para obtener todos los cobros por ID de usuario
+router.get('/alldata/:id', getAllCobrosDataByUserId);
 
 // Ruta para actualizar la tabla de cobro
 router.put('/actualizarCobro/:id', updateCobro);

@@ -33,6 +33,16 @@ export const getAllCobrosByUserId = async (req, res) => {
     }
 };
 
+export const getAllCobrosDataByUserId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const cobros = await cobrosService.getAllCobrosDataByUserId(id);
+        res.status(200).json({ data: cobros });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
 export const updateCobro = async (req, res) => {
     try {
         const { id } = req.params;
