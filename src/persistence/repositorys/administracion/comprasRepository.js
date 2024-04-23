@@ -83,7 +83,6 @@ class comprasRepository {
         try {
             const op = itemsServicio.map(item => prisma.item_servicio_factura_compra.create({
                 data: {
-                    id: idgenerate("FC-SERVICE"),
                     idServicio: item.idServicio,
                     idFacturaCompra: idFC,
                     cantidad: item.cantidad,
@@ -102,7 +101,6 @@ class comprasRepository {
         try {
             const operations = itemsProducto.map(item => prisma.item_producto_factura_compra.create({
                 data: {
-                    id: idgenerate("FC-PRODUCT"),
                     idProducto: item.idProducto,
                     idFacturaCompra: idFC,
                     cantidad: item.cantidad,
@@ -140,14 +138,14 @@ class comprasRepository {
             handlePrismaError(error)
         }
     }
-    createNotaNC({numero_documento, idNotadeCD}) {
+    createNotaNC(idNotadeCD_anular, idNCoD) {
         try {
             return prisma.nota_credito_nota_NC_compra.create({
                 data: {
+                    //referencia a la nota de credito hecha
+                    idNotadeCD: idNCoD,
                     //id de la nota de credito a anular
-                    idNotadeCD,
-                    //numero que viene del sii
-                    numero_documento,
+                    idNotadeCD_anular,
                 }
             })
         } catch (error) {
@@ -259,15 +257,14 @@ class comprasRepository {
             const op = itemsServicioNCoD.map(item => prisma.item_servicio_nota_credito_compra.create({
                 data: {
                     idServicio: item.idServicio,
-                    idNotaCredito: idNCoD,
-                    codigo: item.codigo,
+                    idNotaCD: idNCoD,
                     cantidad: item.cantidad,
                     unitario: item.unitario,
-                    bruto: item.bruto,
-                    neto: item.neto,
                     cuenta: item.cuenta,
-                    bonificacion: item.bonificacion,
-                    notas: item.notas,
+                    neto: item.neto,
+                    subtotal: item.subtotal,
+                    iva: item.iva,
+                    total: item.total,
                 }
             }));
             return op
@@ -280,15 +277,14 @@ class comprasRepository {
             const operations = itemsProductoNCoD.map(item => prisma.item_producto_nota_credito_compra.create({
                 data: {
                     idProducto: item.idProducto,
-                    idNotaCredito: idNCoD,
-                    codigo: item.codigo,
+                    idNotaCD: idNCoD,
                     cantidad: item.cantidad,
                     unitario: item.unitario,
-                    bruto: item.bruto,
-                    neto: item.neto,
                     cuenta: item.cuenta,
-                    bonificacion: item.bonificacion,
-                    notas: item.notas,
+                    neto: item.neto,
+                    subtotal: item.subtotal,
+                    iva: item.iva,
+                    total: item.total,
                 }
             }));
             return operations
@@ -335,6 +331,98 @@ class comprasRepository {
             }));
             return operations
         } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    async getFCDetailsbyDC(fcDCID) {
+        try {
+            const DC = await prisma.$queryRaw`SELECT
+            dc.id AS DocumentoCompraID,
+            dc.user AS Usuario,
+            dc.numero_documento AS NumeroDocumentoDC,
+            fc.id AS FacturaCompraID,
+            fc.idDocCompra AS idDocCompraAsociado,
+            fc.proveedor AS ProveedorIDAsociado,
+            fc.fecha AS FechaFactura,
+            fc.tipo_documento AS TipoDocumento,
+            fc.numero_documento AS NumeroDocumento,
+            fc.condicion_de_pago AS CondicionPago,
+            fc.cuenta AS CuentaAsociada,
+            fc.notas AS Notas,
+            isc.id AS ItemServicioID,
+            isc.idServicio AS IdServicioAsociado,
+            isc.idFacturaCompra AS FacturaCompraAsociada,
+            isc.cantidad AS CantidadServicio,
+            isc.unitario AS PrecioUnitarioServicio,
+            isc.cuenta AS Cuenta,
+            isc.neto AS NetoServicio,
+            isc.subtotal AS Subtotal,
+            ipc.id AS ItemProductoID,
+            ipc.idProducto AS idProductoAsociado,
+            ipc.idFacturaCompra AS idFacturaCompraAsociada,
+            ipc.cantidad AS CantidadProducto,
+            ipc.unitario AS PrecioUnitarioProducto,
+            ipc.cuenta AS CuentaAsociada
+            FROM
+                documento_compra dc
+                INNER JOIN factura_compra fc ON dc.id = fc.idDocCompra
+                LEFT JOIN item_servicio_factura_compra isc ON fc.id = isc.idFacturaCompra
+                LEFT JOIN item_producto_factura_compra ipc ON fc.id = ipc.idFacturaCompra
+            WHERE
+                dc.id = ${fcDCID};`;
+            return DC;
+        }catch(error){
+            handlePrismaError(error)
+        }
+    }
+    async getFCEDetailsbyDC(fceDCID) {
+        try {
+            const DC = await prisma.$queryRaw`SELECT
+            dc.id AS DocumentoCompraID,
+            dc.user AS Usuario,
+            dc.numero_documento AS NumeroDocumentoDC,
+            fce.id AS FacturaCompraID,
+            fce.idDoc AS idDocCompraAsociado,
+            fce.idProveedor AS ProveedorIDAsociado,
+            fce.tipo_documento AS TipoDocumento,
+            fce.numero_documento AS NumeroDocumento,
+            fce.fecha AS FechaFactura,
+            fce.idVendedor AS idVendedorAsociado,
+            fce.condicion_de_pago AS CondicionPago,
+            fce.centro_beneficio AS CentroBeneficio,
+            fce.observacion AS Observacion,
+            fce.nota_interna AS nota_interna,
+            isc.id AS ItemServicioID,
+            isc.idServicio AS IdServicioAsociado,
+            isc.idFactura AS FacturaCompraExentaAsociada,
+            isc.codigo AS CodigoServicio,
+            isc.cantidad AS CantidadServicio,
+            isc.unitario AS PrecioUnitarioServicio,
+            isc.neto AS NetoServicio,
+            isc.cuenta AS Cuenta,
+            isc.bonificacion AS Bonificacion,
+            isc.notas AS Notas,
+            
+            ipc.id AS ItemProductoID,
+            ipc.idProducto AS IdProductoAsociado,
+            ipc.idFactura AS FacturaCompraExentaAsociada,
+            ipc.codigo AS CodigoServicio,
+            ipc.cantidad AS CantidadServicio,
+            ipc.unitario AS PrecioUnitarioServicio,
+            ipc.neto AS NetoServicio,
+            ipc.cuenta AS Cuenta,
+            ipc.bonificacion AS Bonificacion,
+            ipc.notas AS Notas
+            FROM
+                documento_compra dc
+                INNER JOIN factura_compra_excenta fce ON dc.id = fce.idDoc
+                LEFT JOIN item_servicio_factura_compra_excenta isc ON fce.id = isc.idFactura
+                LEFT JOIN item_producto_factura_compra_excenta ipc ON fce.id = ipc.idFactura
+            WHERE
+                dc.id = ${fceDCID};`;
+            return DC;
+        }catch(error){
+            console.log(error)
             handlePrismaError(error)
         }
     }

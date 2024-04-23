@@ -410,7 +410,7 @@ class VentasRepository {
             WHERE
                 dv.id = ${fvDVID};`;
             return DV;
-        }catch{
+        }catch(error){
             if (error instanceof prismaError.PrismaClientValidationError) {
                 // Error específico de Prisma por tipo de dato incorrecto
                 throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
@@ -476,7 +476,7 @@ class VentasRepository {
         WHERE
             dv.id = ${fveDVID};`;
             return DV;
-        }catch{
+        }catch(error){
             if (error instanceof prismaError.PrismaClientValidationError) {
                 // Error específico de Prisma por tipo de dato incorrecto
                 throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');

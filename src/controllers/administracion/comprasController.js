@@ -67,3 +67,21 @@ export const getDocumentosCompraByUserController  = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+export const getFCbyIdDocController = async (req, res) => {
+    try {
+        const { fcDCID } = req.params
+        const result = await comprasService.getFCoFCEbyIdDoc(fcDCID, false);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
+export const getFCEbyIdDocController = async (req, res) => {
+    try {
+        const { fceDCID } = req.params
+        const result = await comprasService.getFCoFCEbyIdDoc(false, fceDCID);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}

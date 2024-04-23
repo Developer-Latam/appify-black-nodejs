@@ -1344,7 +1344,7 @@ model condicion_pago {
 }
 
 model item_producto_nota_credito_NC_compra {
-  id            String  @id @db.VarChar(100)
+  id            Int     @id @default(autoincrement())
   idProducto    String  @db.VarChar(100)
   idNotaCredito String  @db.VarChar(100)
   codigo        String? @db.VarChar(100)
@@ -1379,7 +1379,7 @@ model item_producto_nota_credito_compra {
 }
 
 model item_servicio_nota_credito_NC_compra {
-  id            String  @id @db.VarChar(100)
+  id            Int     @id @default(autoincrement())
   idServicio    String  @db.VarChar(100)
   idNotaCredito String  @db.VarChar(100)
   codigo        String? @db.VarChar(100)
@@ -1473,6 +1473,18 @@ model item_producto_factura_compra_excenta {
   @@index([idProducto], map: "productos")
 }
 
+model transportista {
+  id                       String  @id @db.VarChar(100)
+  iduser                   String  @db.VarChar(100)
+  nombre_transportista     String  @db.VarChar(50)
+  nombre_conducor          String  @db.VarChar(50)
+  numero_placa             String? @db.VarChar(50)
+  numero_doc_conductor     String  @db.VarChar(50)
+  numero_doc_transportista String  @db.VarChar(50)
+
+  @@index([iduser], map: "usuarios")
+}
+
 model item_servicio_factura_compra_excenta {
   id           Int     @id @default(autoincrement())
   idServicio   String  @db.VarChar(100)
@@ -1485,20 +1497,9 @@ model item_servicio_factura_compra_excenta {
   bonificacion Float?  @db.Float
   notas        String? @db.Text
 
+  @@index([idFactura], map: "factura_venta_excenta")
   @@index([idServicio], map: "servicios")
   @@index([idFactura], map: "factura_venta_excenta")
-}
-
-model transportista {
-  id                       String  @id @db.VarChar(100)
-  iduser                   String  @db.VarChar(100)
-  nombre_transportista     String  @db.VarChar(50)
-  nombre_conducor          String  @db.VarChar(50)
-  numero_placa             String? @db.VarChar(50)
-  numero_doc_conductor     String  @db.VarChar(50)
-  numero_doc_transportista String  @db.VarChar(50)
-
-  @@index([iduser], map: "usuarios")
 }
 
 model pagos_factura_compra_excenta {

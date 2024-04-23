@@ -150,7 +150,7 @@ class ComprasService {
             const items = [
                 { item: nota_factura_compra, repository: comprasRepository.createNotaFC, idProperty: "idFacturaCompra" },
                 { item: nota_factura_compra_excenta, repository: comprasRepository.createNotaFCE, idProperty: "idFacturaCompraExenta" },
-                { item: nota_credito_nota_NC_compra, repository: comprasRepository.createNotaNC}
+                { item: nota_credito_nota_NC_compra, repository: comprasRepository.createNotaNC, idProperty: "idNotadeCD_anular"}
             ];
             for (const { item, repository, idProperty } of items) {
             if (item) {
@@ -211,7 +211,7 @@ class ComprasService {
                     idFC = await comprasRepository.getFCidByIdDoc(notas_de_credito_debito_compras.idDoc);
                 }
                 if(item_servicio_factura_compra_excenta || item_producto_factura_compra_excenta){
-                    idFCE = await ventasRepository.getFCEidByIdDoc(notas_de_credito_debito_compras.idDoc)
+                    idFCE = await comprasRepository.getFCEidByIdDoc(notas_de_credito_debito_compras.idDoc)
                 }
                 const itemsFC_FCE = [
                     { item: item_servicio_factura_compra, repository: comprasRepository.createItemServicioFC, id: idFC },
@@ -234,6 +234,77 @@ class ComprasService {
             throw error;
         }
     }
+    async getFCoFCEbyIdDoc(fcDCID, fceDCID) {
+        try {
+            let detalles;
+            let isFCE = false; // Flag para determinar el tipo de factura
+            if (fcDCID) {
+                detalles = await comprasRepository.getFCDetailsbyDC(fcDCID);
+            } else if (fceDCID) {
+                detalles = await comprasRepository.getFCEDetailsbyDC(fceDCID);
+                isFCE = true; // Cambia el flag si son detalles de factura exenta
+            }
+            if (detalles.length > 0) {
+                const uniqueServices = new Map();
+                const uniqueProducts = new Map();
+                const resultado = {
+                    DocumentoCompraID: detalles[0].DocumentoCompraID,
+                    Usuario: detalles[0].Usuario,
+                    NumeroDocumentoDC: detalles[0].NumeroDocumentoDC,
+                    FacturaCompra_FacturaCompraExenta: {
+                        FacturaID: detalles[0].FacturaCompraID,
+                        idDocCompraAsociado: detalles[0].idDocCompraAsociado,
+                        ProveedorIDAsociado: detalles[0].ProveedorIDAsociado,
+                        FechaFactura: detalles[0].FechaFactura,
+                        TipoDocumento: detalles[0].TipoDocumento,
+                        NumeroDocumentoFC_FCE: detalles[0].NumeroDocumento,
+                        CondicionPago: detalles[0].CondicionPago,
+                        CuentaAsociada: detalles[0].CuentaAsociada,
+                        Notas: detalles[0].Notas,
+                        Servicios: [],
+                        Productos: []
+                    }
+                };
+                detalles.forEach(detalle => {
+                    if (detalle.ItemServicioID && !uniqueServices.has(detalle.ItemServicioID)) {
+                        uniqueServices.set(detalle.ItemServicioID, {
+                            IdServicioAsociado: detalle.IdServicioAsociado,
+                            idFacturaAsociada: detalle.FacturaCompraAsociada || detalle.FacturaCompraExentaAsociada,
+                            CodigoServicio: detalle.CodigoServicio,
+                            CantidadServicio: detalle.CantidadServicio,
+                            PrecioUnitarioServicio: detalle.PrecioUnitarioServicio,
+                            Cuenta: detalle.Cuenta,
+                            NetoServicio: detalle.NetoServicio,
+                            Subtotal: detalle.Subtotal,
+                            Bonificacion: detalle.Bonificacion,
+                            Notas: detalle.Notas
+                        });
+                    }
+                    if (detalle.ItemProductoID && !uniqueProducts.has(detalle.ItemProductoID)) {
+                        uniqueProducts.set(detalle.ItemProductoID, {
+                            idProductoAsociado: detalle.idProductoAsociado,
+                            idFacturaAsociada: detalle.FacturaCompraAsociada || detalle.FacturaCompraExentaAsociada,
+                            CodigoServicio: detalle.CodigoServicio,
+                            CantidadProducto: detalle.CantidadProducto,
+                            PrecioUnitarioProducto: detalle.PrecioUnitarioProducto,
+                            Cuenta: detalle.Cuenta,
+                            NetoServicio: detalle.NetoServicio,
+                            Bonificacion: detalle.Bonificacion,
+                            Notas: detalle.Notas
+                        });
+                    }
+                });
+                resultado.FacturaCompra_FacturaCompraExenta.Servicios = Array.from(uniqueServices.values());
+                resultado.FacturaCompra_FacturaCompraExenta.Productos = Array.from(uniqueProducts.values());
+                return resultado;
+            } else {
+                throw new CustomError(404, "Not Found", "No se encontraron detalles para el documento de compra solicitado");
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+    
 }
 
 
