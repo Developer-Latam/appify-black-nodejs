@@ -304,7 +304,147 @@ class ComprasService {
             throw error;
         }
     }
-    
+    async getNCoDbyIdDoc(DCID){
+        try {
+            const notas = await comprasRepository.getNCODDetailsbyDC(DCID);
+            if (notas.length === 0) {
+                throw new CustomError(404, "Not found", `No se encontraron datos para el ID proporcionado: ${DCID}`)
+            }
+            let resultado = [];
+            notas.forEach(nota => {
+                // Validación para campos específicos esenciales.
+                if (!nota.DocumentoCompraID || !nota.NotadeCreditoODebitoID) {
+                    throw new CustomError(400, "Bad Request", 'Falta información crítica en uno de los elementos');
+                }
+                // Añadiendo dos objetos separados en el resultado
+                resultado.push({
+                    DocumentoCompra: {
+                        DocumentoCompraID: nota.DocumentoCompraID,
+                        Usuario: nota.Usuario,
+                        NumeroDocumentoDC: nota.NumeroDocumentoDC
+                    }
+                });
+                resultado.push({
+                    NotaDeCredito: {
+                        NotadeCreditoODebitoID: nota.NotadeCreditoODebitoID,
+                        DocumentoCompraAsociado: nota.DocumentoCompraAsociado,
+                        ProveedorIDAsociado: nota.ProveedorIDAsociado,
+                        VendedorID: nota.VendedorID,
+                        TipoCredito: nota.TipoCredito,
+                        TipoDebito: nota.TipoDebito,
+                        AnulaDoc: nota.AnulaDoc,
+                        CorrigeMonto: nota.CorrigeMonto,
+                        NumeroDocumentoSII: nota.NumeroDocumentoSII,
+                        TipoNota: nota.TipoNota,
+                        FechaNCoD: nota.FechaNCoD,
+                        MotivoReferencia: nota.MotivoReferencia,
+                        CentroBeneficio: nota.CentroBeneficio,
+                        Observacion: nota.Observacion,
+                        NotaInterna: nota.NotaInterna
+                    }
+                });
+            });
+            return resultado;
+        } catch (error) {
+            throw error;
+        }
+    }
+    async  getItemsByNCOD(NCOD, tipoNota) {
+        try {
+            if (!NCOD) {
+                throw new CustomError(400, "Bad Request", 'Tiene que proporcionar un ID de nota-crédito/débito');
+            }
+            let notas;
+            let data;
+            switch (tipoNota) {
+                case 'FC':
+                    data = await comprasRepository.notaFC_NCOD(NCOD);
+                    break;
+                case 'FCE':
+                    data = await comprasRepository.notaFCE_NCOD(NCOD);
+                    break;
+                case 'NC':
+                    data = await comprasRepository.notaDEncod_NCOD(NCOD);
+                    break;
+                default:
+                    throw new CustomError(400, "Bad Request", 'Tipo de nota no válido');
+            }
+            if (data.length === 0) {
+                throw new CustomError(404, "Not found", 'No se encontraron datos para el ID de nota-crédito/débito proporcionado');
+            }
+            notas = data.map(item => {
+                let notaDeCreditoDebito, DocumentoAsociado;
+                switch (tipoNota) {
+                    case 'FC':
+                        notaDeCreditoDebito = {
+                            NotaFacturaCompraID: item.NotaFacturaCompraID,
+                            FacturaCompraAsociada: item.FacturaCompraAsociada,
+                            NotaDeCreditoAsociadaID: item.NotaDeCreditoAsociadaID
+                        };
+                        DocumentoAsociado = {
+                            FacturaCompraID: item.FacturaCompraID,
+                            DocumentoCompraID: item.DocumentoCompraID,
+                            ProveedorID: item.ProveedorID,
+                            TipoDocumento: item.TipoDocumento,
+                            NumeroDocumentoSII: item.NumeroDocumentoSII,
+                            FechaFactura: item.FechaFactura,
+                            CondicionPago: item.CondicionPago,
+                            Cuenta: item.Cuenta,
+                            Notas: item.Notas
+                        };
+                        break;
+                    case 'FCE':
+                        notaDeCreditoDebito = {
+                            NotaID: item.NotaID,
+                            FCEAsociada: item.FCEAsociada,
+                            NotaDeCreditoAsociadaID: item.NotaDeCreditoAsociadaID
+                        };
+                        DocumentoAsociado = {
+                            FCEID: item.FCEID,
+                            DocumentoCompraID: item.DocumentoCompraID,
+                            ProveedorID: item.ProveedorID,
+                            TipoDocumento: item.TipoDocumento,
+                            NumeroDocumentoSII: item.NumeroDocumentoSII,
+                            FechaFactura: item.FechaFactura,
+                            VendedorID: item.VendedorID,
+                            CondicionPago: item.CondicionPago,
+                            CentroBeneficio: item.CentroBeneficio,
+                            Observacion: item.Observacion,
+                            NotaInterna: item.NotaInterna
+                        };
+                        break;
+                    case 'NC':
+                        notaDeCreditoDebito = {
+                            NotaID: item.NotaID,
+                            NCAsociada: item.NCAsociada,
+                            NotaDeCreditoAsociadaID: item.NotaDeCreditoAsociadaID
+                        };
+                        DocumentoAsociado = {
+                            NCoDID: item.NCoDID,
+                            DocumentoCompraID: item.DocumentoCompraID,
+                            ProveedorID: item.ProveedorID,
+                            vendedorID: item.vendedorID,
+                            TipoCredito: item.TipoCredito,
+                            TipoDebito: item.TipoDebito,
+                            AnulaDoc: item.AnulaDoc,
+                            CorrigeMonto: item.CorrigeMonto,
+                            NumeroDocumentoSII: item.NumeroDocumentoSII,
+                            TipoNota: item.TipoNota,
+                            FechaFactura: item.FechaFactura,
+                            MotivoReferencia: item.MotivoReferencia,
+                            CentroBeneficio: item.CentroBeneficio,
+                            Observacion: item.Observacion,
+                            NotaInterna: item.NotaInterna
+                        };
+                        break;
+                }
+                return { notaDeCreditoDebito, DocumentoAsociado };
+            });
+            return notas;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 
