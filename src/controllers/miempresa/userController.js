@@ -9,6 +9,10 @@ import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 //Realiza el login del usuario
 export const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
+     // Validación básica
+    if (!email || !password) {
+        throw new CustomError(400, "Bad Request", { detail: "Email and password are required." });
+    }
     try {
         const result = await userService.login(email, password);
         ResponseHandler.Ok(res, result)

@@ -21,7 +21,7 @@ const createPasswordMessage = {
 //Realiza el envio de email
 export const sendEmail = async (email, userId) => {
     try {
-        const token = jwt.sign({userId}, process.env.JWT_TOKEN_SECRET, {expiresIn: '24h'});
+        const token = jwt.sign({userId}, process.env.SECRET_KEY_MAIL, {expiresIn: '24h'});
         // Construir el link con el token como parametro
         const linkDeConfiguracion = `http://localhost:8080/user/config-password?token=${token}`;
         // Genera el contenido HTML con el enlace incluido
@@ -31,7 +31,6 @@ export const sendEmail = async (email, userId) => {
         const response = await transporterGmail.sendMail(createPasswordMessage);
         return `Te llegara un mail a ${response.accepted}`
     } catch (error) {
-        console.error(error);
         throw new Error('Error al enviar el correo.');
     }
 }
