@@ -619,6 +619,7 @@ model notas_de_credito_debito_compras {
   anula_doc           Boolean
   corrige_monto       Boolean
   numero_documento    String    @db.VarChar(100)
+  tipo_nota           String    @db.VarChar(100)
   fecha               DateTime? @db.Date
   motivo_referencia   String?   @db.VarChar(40)
   centro_de_beneficio String    @db.VarChar(50)
@@ -626,8 +627,8 @@ model notas_de_credito_debito_compras {
   nota_interna        String?   @db.Text
 
   @@index([idVendedor], map: "subusuarios")
-  @@index([idDoc], map: "factura_compra")
   @@index([idProveedor], map: "proveedores")
+  @@index([idDoc], map: "documento_compra")
 }
 
 model orden_compra {
@@ -1499,7 +1500,6 @@ model item_servicio_factura_compra_excenta {
 
   @@index([idFactura], map: "factura_venta_excenta")
   @@index([idServicio], map: "servicios")
-  @@index([idFactura], map: "factura_venta_excenta")
 }
 
 model pagos_factura_compra_excenta {

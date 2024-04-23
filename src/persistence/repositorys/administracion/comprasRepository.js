@@ -152,7 +152,7 @@ class comprasRepository {
             handlePrismaError(error)
         }
     }
-    createNCoD_Compras (idNCoD,{idDoc,idProveedor,idVendedor,tipo_credito, tipo_debito, numero_documento,fecha,motivo_referencia,centro_de_beneficio, observacion, nota_interna, anula_doc, corrige_monto}){
+    createNCoD_Compras (idNCoD,{idDoc,idProveedor,idVendedor,tipo_credito, tipo_debito, numero_documento,tipo_nota,fecha,motivo_referencia,centro_de_beneficio, observacion, nota_interna, anula_doc, corrige_monto}){
         try {
             return prisma.notas_de_credito_debito_compras.create({
                 data: {
@@ -167,6 +167,7 @@ class comprasRepository {
                     corrige_monto,
                     //numero que viene de SII
                     numero_documento,
+                    tipo_nota,
                     fecha,
                     motivo_referencia,
                     centro_de_beneficio,
@@ -423,6 +424,120 @@ class comprasRepository {
             return DC;
         }catch(error){
             console.log(error)
+            handlePrismaError(error)
+        }
+    }
+    async getNCODDetailsbyDC(DCID) {
+        try {
+            const NCOD = await prisma.$queryRaw`SELECT
+            dc.id AS DocumentoCompraID,
+            dc.user AS Usuario,
+            dc.numero_documento AS NumeroDocumentoDC,
+            nc.id AS NotadeCreditoODebitoID,
+            nc.idDoc AS DocumentoCompraAsociado,
+            nc.idProveedor AS ProveedorIDAsociado,
+            nc.idVendedor AS VendedorID,
+            nc.tipo_credito AS TipoCredito,
+            nc.tipo_debito AS TipoDebito,
+            nc.anula_doc AS AnulaDoc,
+            nc.corrige_monto AS CorrigeMonto,
+            nc.numero_documento AS NumeroDocumentoSII,
+            nc.tipo_nota AS tipoNota,
+            nc.fecha AS FechaNCoD,
+            nc.motivo_referencia AS MotivoReferencia,
+            nc.centro_de_beneficio AS CentroBeneficio,
+            nc.observacion AS Observacion,
+            nc.nota_interna AS NotaInterna
+        FROM
+            documento_compra dc
+            INNER JOIN notas_de_credito_debito_compras nc ON dc.id = nc.idDoc
+        WHERE
+            dc.id = ${DCID};`;
+            return NCOD;
+        }catch(error){
+            handlePrismaError(error)
+        }
+    }
+    async notaFC_NCOD(NCOD){
+        try {
+            const notaFC_NCOD = await prisma.$queryRaw`SELECT
+            nfc.id AS NotaFacturaCompraID,
+            nfc.idFacturaCompra AS FacturaCompraAsociada,
+            nfc.idNotadeCD AS NotaDeCreditoAsociadaID,
+            fc.id AS FacturaCompraID,
+            fc.idDocCompra AS DocumentoCompraID,
+            fc.proveedor AS ProveedorID,
+            fc.tipo_documento AS TipoDocumento,
+            fc.numero_documento AS NumeroDocumentoSII,
+            fc.fecha AS FechaFactura,
+            fc.condicion_de_pago AS CondicionPago,
+            fc.cuenta AS Cuenta,
+            fc.notas AS Notas
+        FROM
+            nota_factura_compra nfc
+            INNER JOIN factura_compra fc ON nfc.idFacturaCompra = fc.id
+        WHERE
+            nfc.idNotadeCD = ${NCOD};`;
+            return notaFC_NCOD;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    async notaFCE_NCOD(NCOD){
+        try {
+            const notaFCE_NCOD = await prisma.$queryRaw`SELECT
+            nfc.id AS NotaID,
+            nfc.idFacturaCompraExenta AS FCEAsociada,
+            nfc.idNotadeCD AS NotaDeCreditoAsociadaID,
+            fc.id AS FCEID,
+            fc.idDoc AS DocumentoCompraID,
+            fc.idProveedor AS ProveedorID,
+            fc.tipo_documento AS TipoDocumento,
+            fc.numero_documento AS NumeroDocumentoSII,
+            fc.fecha AS FechaFactura,
+            fc.idVendedor AS VendedorID,
+            fc.condicion_de_pago AS CondicionPago,
+            fc.centro_beneficio AS CentroBeneficio,
+            fc.observacion AS Observacion,
+            fc.nota_interna AS NotaInterna
+        FROM
+            nota_factura_compra_excenta nfc
+            INNER JOIN factura_compra_excenta fc ON nfc.idFacturaCompraExenta = fc.id
+        WHERE
+            nfc.idNotadeCD = ${NCOD};`;
+            return notaFCE_NCOD;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    async notaDEncod_NCOD(NCOD){
+        try {
+            const notaDEncod_NCOD = await prisma.$queryRaw`SELECT
+            ncnc.id AS NotaID,
+            ncnc.idNotadeCD AS NCAsociada,
+            ncnc.idNotadeCD_anular AS NotaDeCreditoAsociadaID,
+            nc.id AS NCoDID,
+            nc.idDoc AS DocumentoCompraID,
+            nc.idProveedor AS ProveedorID,
+            nc.idVendedor AS vendedorID,
+            nc.tipo_credito AS TipoCredito,
+            nc.tipo_debito AS TipoDebito,
+            nc.anula_doc AS AnulaDoc,
+            nc.corrige_monto AS CorrigeMonto,
+            nc.numero_documento AS NumeroDocumentoSII,
+            nc.tipo_nota AS TipoNota,
+            nc.fecha AS FechaFactura,
+            nc.motivo_referencia AS MotivoReferencia,
+            nc.centro_de_beneficio AS CentroBeneficio,
+            nc.observacion AS Observacion,
+            nc.nota_interna AS NotaInterna
+        FROM
+            nota_credito_nota_NC_compra ncnc
+            INNER JOIN notas_de_credito_debito_compras nc ON ncnc.idNotadeCD = nc.id
+        WHERE
+            ncnc.idNotadeCD = ${NCOD};`;
+            return notaDEncod_NCOD;
+        } catch (error) {
             handlePrismaError(error)
         }
     }

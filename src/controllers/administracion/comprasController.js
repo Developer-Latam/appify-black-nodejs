@@ -85,3 +85,21 @@ export const getFCEbyIdDocController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+export const getNCODbyIdDocController = async (req, res) => {
+    try {
+        const {DCID} = req.params
+        const result = await comprasService.getNCoDbyIdDoc(DCID);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
+export const getItemsNCODbyIdNCODController = async (req, res) => {
+    try {
+        const {NCOD, tipoNota} = req.params
+        const result = await comprasService.getItemsByNCOD(NCOD, tipoNota);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
