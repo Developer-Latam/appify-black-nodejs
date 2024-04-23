@@ -1327,11 +1327,11 @@ model pagos_factura_compra {
 
 model pagos_factura_nota_credito {
   id            String @id @db.VarChar(100)
-  idCobro       String @db.VarChar(100)
+  idPago        String @db.VarChar(100)
   idNotaCredito String @db.VarChar(100)
 
-  @@index([idCobro], map: "cobros")
   @@index([idNotaCredito], map: "notas_de_credito_debito_compras")
+  @@index([idPago], map: "pagos")
 }
 
 model condicion_pago {

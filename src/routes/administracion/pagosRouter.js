@@ -7,7 +7,8 @@ import {
     updatePagoFC,
     updatePagoNC,
     deletePagoFC,
-    deletePagoNC
+    deletePagoNC,
+    getAllPagosDataByUserId
     
 } from '../../controllers/administracion/pagosController.js';
 const router = Router();
@@ -17,6 +18,9 @@ router.post('/crear', createPagosAll);
 
 // Ruta para obtener un pago cualquiera con su ID
 router.get('/obtener/:id', getPagosAllById);
+
+// Ruta para obtener todos los datos de pago por userId
+router.get('/alldata/:id', getAllPagosDataByUserId);
 
 // Ruta para obtener todos los pagos por ID de usuario
 router.get('/todos/:id', getAllPagosByUserId);

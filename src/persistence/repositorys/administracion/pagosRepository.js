@@ -40,11 +40,27 @@ class pagosRepository {
         });
     }
 
-    
+    async findFCById(id) {
+        return prisma.factura_compra.findUnique({
+            where: { id: id }
+        });
+    }
 
-    async findPagosNCByCobroId(id) {
+    async findFCEById(id) {
+        return prisma.factura_compra_excenta.findUnique({
+            where: { id: id }
+        });
+    }
+
+    async findFCNCById(id) {
+        return prisma.notas_de_credito_debito_compras.findUnique({
+            where: { id: id }
+        });
+    }
+
+    async findPagosNCByPagoId(id) {
         return prisma.pagos_factura_nota_credito.findFirst({
-            where: { idCobro: id }
+            where: { idPago: id }
         });
     }
 
