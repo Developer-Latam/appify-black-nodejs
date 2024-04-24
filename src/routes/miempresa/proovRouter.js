@@ -1,12 +1,24 @@
 import { Router } from "express";
-import { createProveedorController, updateProveedorController,getProveedoresByUserId } from "../../controllers/miempresa/proveedorController.js";
+import { createProveedorController,
+    updateProveedorController,
+    getProveedoresByUserId,
+    getAllProveedoresActController,
+    getAllProveedoresInactController,
+    getProveedorByIdController
+} from "../../controllers/miempresa/proveedorController.js";
 
 
 const router = Router()
 
 router.post('/createProv', createProveedorController)
+//trae los proveedores inactivos y activos por user id
+router.get('/allProvAct', getAllProveedoresActController)
+router.get('/allProvInact', getAllProveedoresInactController)
+
 router.put('/updProv/:id', updateProveedorController)
 router.get('/todos/:id', getProveedoresByUserId)
 
+//trae un proveedor por us id
+router.get('/:idProv', getProveedorByIdController)
 
 export default router

@@ -6,6 +6,7 @@ import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 import { isValidPassword } from "../../utils/password/hashPass.js";
 import jwt from "jsonwebtoken"
 import "dotenv/config"
+import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 //Clase que interactua con el Repository y se encarga de la logica de negocio
 class UserService {
     //Me trae un sub usuario por su id
@@ -16,6 +17,56 @@ class UserService {
                 throw new CustomError(404, "El usuario no existe", { id: subUserId });
             }
             return subUser;
+        } catch (error) {
+            throw error;
+        }
+    }
+    async getAllUsersActivos() {
+        try {
+            const users = await UserRepository.getAllUsersActivos();
+            if (!users) {
+                throw new CustomError(404, "No se encontraron usuarios");
+            }
+            return users;
+        } catch (error) {
+            throw error;
+        }
+    }
+    async getAllUsersInactivos() {
+        try {
+            const users = await UserRepository.getAllUsersInactivos();
+            if (!users) {
+                throw new CustomError(404, "No se encontraron usuarios");
+            }
+            return users;
+        } catch (error) {
+            throw error;
+        }
+    }
+    //Me trae un sub usuario por su id
+    async getDataUser(subUserId) {
+        if (!subUserId) {
+            throw new CustomError(400,"Bad Request", "El ID del subusuario no puede estar vacío");
+        }
+        try {
+            const permisos = await UserRepository.getUserPermissions(subUserId);
+            if (!permisos) {
+                throw new CustomError(404, "El usuario no tiene permisos", { id: subUserId });
+            }
+            const newPermisos = await this.formatPermissions(permisos);
+            const userdata = await userRepository.findsubUserById(subUserId)
+            if (!userdata) {
+                throw new CustomError(404, "Subusuario no encontrado", { id: subUserId });
+            }
+            const user = {
+                nombre: userdata.nombre,
+                apellido: userdata.apellido,
+                email: userdata.email,
+                celular: userdata.celular,
+                fecha_de_nacimiento: userdata.fecha_de_nacimiento,
+                cargo: userdata.cargo
+            }
+            return [user,newPermisos];
         } catch (error) {
             throw error;
         }

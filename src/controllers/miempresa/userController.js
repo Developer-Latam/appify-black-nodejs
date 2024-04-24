@@ -100,9 +100,37 @@ export const setpassForSubUser = async (req, res, next) => {
         ResponseHandler.HandleError(res, error);
     }
 }
-
+export const getDataUserController = async (req, res, next) => {
+    try {
+        const {id} = req.params
+        const result = await userService.getDataUser(id);
+        ResponseHandler.Ok(res, result);
+    } catch (error) {
+        ResponseHandler.HandleError(res, error);
+    }
+}
+export const getAllUsersActController = async (req, res, next) => {
+    try {
+        const result = await userService.getAllUsersActivos();
+        ResponseHandler.Ok(res, result);
+    } catch (error) {
+        ResponseHandler.HandleError(res, error);
+    }
+}
+export const getAllUsersInactController = async (req, res, next) => {
+    try {
+        const result = await userService.getAllUsersInactivos();
+        ResponseHandler.Ok(res, result);
+    } catch (error) {
+        ResponseHandler.HandleError(res, error);
+    }
+}
 // ENDPOINT PARA REALIZAR TEST DE FUNCION:
 //Realiza el registro del usuario 
 export const testController = async (req, res, next) => {
-    
+    try {
+        
+    } catch (error) {
+        ResponseHandler.HandleError(res, error);
+    }
 }

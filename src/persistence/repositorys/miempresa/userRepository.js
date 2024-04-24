@@ -3,6 +3,7 @@ import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../../utils/id/idGenerate.js";
 import executeTransactions from "../../transactions/executeTransaction.js";
 import { prisma } from "../../../utils/dependencys/injection.js";
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
 
 //Clase que interactua con la db mediante las querys a las diferentes tablas
 class UserRepository {
@@ -147,7 +148,7 @@ class UserRepository {
             ref_superusuario: 1,
             checkeado: 1,
             password: passwordHash,
-            estado: "true",
+            activo: true,
         };
         // Preparando las operaciones para la transacción
         const operations = [
@@ -179,7 +180,7 @@ class UserRepository {
                 ref_superusuario:0,
                 checkeado:0,
                 password: null,
-                estado: "true",
+                activo
             }
         });
     }
@@ -196,6 +197,42 @@ class UserRepository {
             throw new CustomError(500, 'Error interno del servidor al buscar subusuario', { detail: error.message, id });
         }
     }
+    async getAllUsersActivos() {
+        try {
+            const subusuarios = await prisma.subusuarios.findMany({
+                select: {
+                    id: true,
+                    nombre: true,
+                    cargo: true,
+                    email: true
+                },
+                where: {
+                    activo: true
+                }
+            });
+            return subusuarios;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    async getAllUsersInactivos() {
+        try {
+            const subusuarios = await prisma.subusuarios.findMany({
+                select: {
+                    id: true,
+                    nombre: true,
+                    cargo: true,
+                    email: true
+                },
+                where: {
+                    activo: false
+                }
+            });
+            return subusuarios;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
     //Realiza un update a la password del subUser
     async resetPasswordSubUser(id, passwordHashed) {
         try {
@@ -204,6 +241,7 @@ class UserRepository {
                 data: {
                     password: passwordHashed,
                     checkeado: 1,
+                    activo: true
                 }
             });
             return "Contraseña de sub user actualizada";

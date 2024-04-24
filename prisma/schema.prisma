@@ -846,7 +846,7 @@ model subusuarios {
   ref_superusuario    Int?      @db.TinyInt
   checkeado           Int       @default(0)
   password            String?   @default("hola1234") @db.VarChar(255)
-  estado              String    @db.VarChar(30)
+  activo              Boolean?  @default(false)
 
   @@index([user], map: "usuarios")
 }
@@ -1229,7 +1229,7 @@ model item_producto_nota_credito {
 model item_producto_nota_credito_NC {
   id            Int     @id @default(autoincrement())
   idProducto    String  @db.VarChar(100)
-  idNotaCredito String  @db.VarChar(100)
+  idNotaCredito Int
   codigo        String? @db.VarChar(100)
   cantidad      Int
   unitario      Int
@@ -1265,7 +1265,7 @@ model item_servicio_nota_credito {
 model item_servicio_nota_credito_NC {
   id            Int     @id @default(autoincrement())
   idServicio    String  @db.VarChar(100)
-  idNotaCredito String  @db.VarChar(100)
+  idNotaCredito Int
   codigo        String? @db.VarChar(100)
   cantidad      Int
   unitario      Int
