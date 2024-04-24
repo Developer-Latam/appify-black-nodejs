@@ -12,6 +12,7 @@ class UserService {
     //Me trae un sub usuario por su id
     async getSubUserById(subUserId) {
         try {
+            
             const subUser = await UserRepository.findsubUserById(subUserId);
             if (!subUser) {
                 throw new CustomError(404, "El usuario no existe", { id: subUserId });

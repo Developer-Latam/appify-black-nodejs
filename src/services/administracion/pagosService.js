@@ -12,6 +12,8 @@ class pagosService {
                 pagoFunction = this.createPagosFC;
             } else if (data.pagos_factura_nota_credito) {
                 pagoFunction = this.createPagosNC;
+            } else if (data.pagos_factura_compra_excenta) {
+                pagoFunction = this.createPagosFCE;
             } else {
                 throw new Error('Tipo de pago no válido en los datos recibidos');
             }
@@ -56,6 +58,34 @@ class pagosService {
         }
     }
 
+
+    async createPagosFCE(data) {
+        try {
+            // Generar IDs para el cobro y el cobro de factura de venta
+            const pagoId = idgenerate("Pago");
+            const pagoFCEId = idgenerate("Pago-FCE");
+
+            // Extraer datos del objeto data
+            const { pagos, pagos_factura_compra_excenta } = data;
+    
+            // Crear el registro de cobro
+            const pago = await pagosRepository.createPagos({ ...pagos, id: pagoId });
+    
+            // Agregar el ID del cobro al objeto de datos para el cobro de factura de venta
+            const cobroFCEData = { ...pagos_factura_compra_excenta, id: pagoFCEId, idPago: pagoId };
+    
+            // Crear el registro de cobro de factura de venta
+            const pagoFCE = await pagosRepository.createPagosFCE(cobroFCEData);
+    
+            // Devolver ambos registros como un arreglo
+            return [pago, pagoFCE];
+        } catch (error) {
+            // Manejar cualquier error que pueda ocurrir
+            console.error("Error al crear pago y pago de factura de compra:", error);
+            throw error; // Relanzar el error para que pueda ser manejado por el código que llama a esta función
+        }
+    }
+
     
 
     async createPagosNC(data) {
@@ -71,7 +101,7 @@ class pagosService {
             const pago = await pagosRepository.createPagos({ ...pagos, id: pagoId });
     
             // Agregar el ID del cobro al objeto de datos para el cobro de factura de venta
-            const pagoNCData = { ...pagos_factura_nota_credito, id: pagoNCId, idCobro: pagoId };
+            const pagoNCData = { ...pagos_factura_nota_credito, id: pagoNCId, idPago: pagoId };
     
             // Crear el registro de cobro de factura de venta
             const pagoNC = await pagosRepository.createPagosNC(pagoNCData);
