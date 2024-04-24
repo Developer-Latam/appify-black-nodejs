@@ -43,3 +43,30 @@ export const updateProveedorController = async (req, res, next) => {
         ResponseHandler.HandleError(res, error)
     }
 }
+export const getAllProveedoresActController = async (req, res, next) => {
+    try {
+        const {userId} = req.body
+        const result = await proveedorService.getAllProvAct(userId)
+        ResponseHandler.Ok(res, result);
+    } catch (error) {
+        ResponseHandler.HandleError(res, error)
+    }
+}
+export const getAllProveedoresInactController = async (req, res, next) => {
+    try {
+        const {userId} = req.body
+        const result = await proveedorService.getAllProvInact(userId)
+        ResponseHandler.Ok(res, result);
+    } catch (error) {
+        ResponseHandler.HandleError(res, error)
+    }
+}
+export const getProveedorByIdController = async (req, res, next) => {
+    try {
+        const { idProv } = req.params;
+        const result = await proveedorService.getProveedorById(idProv)
+        ResponseHandler.Ok(res, result);
+    } catch (error) {
+        ResponseHandler.HandleError(res, error)
+    }
+}

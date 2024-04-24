@@ -1,5 +1,6 @@
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 import { prisma } from "../../../utils/dependencys/injection.js";
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
 //Clase que interactua con la db, se encarga de las querys sql
 class proveedorRepository {
     //Creacion de un proveedor
@@ -45,16 +46,16 @@ class proveedorRepository {
         return proveedor !== null;
     }
     //Trae el proveedor mediante el ID
-    async getProveedorById(id){
+    async getProveedorById(idProv){
         try {
             const proveedor = await prisma.proveedores.findUnique({
                 where: {
-                    id: id,
+                    id: idProv,
                 },
             })
             return proveedor
         } catch (error) {
-            throw new CustomError(500, 'Error al obtener el proveedor de la base de datos', { detail: error.message });
+            handlePrismaError(error)
         }
     }
     //OBTENER TODOS LOS PROVEEDORES POR USER ID PARA LA AGOS   
@@ -79,6 +80,60 @@ class proveedorRepository {
             return proveedorUpdated
         } catch (error) {
             throw new CustomError(500, 'Error al actualizar el proveedor en la base de datos', { detail: error.message });
+        }
+    }
+    async getProveedorByIdExist(idProv) {
+        try {
+            const proveedor = await prisma.proveedores.findUnique({
+                where: {
+                id: idProv 
+                }
+            });
+            return proveedor;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    async getAllProvAct(userId) {
+        try {
+            const proveedores = await prisma.proveedores.findMany({
+                select: {
+                    id: true,
+                    rut: true,
+                    razon_social: true,
+                    telefono: true,
+                    email: true,
+                    cuenta_contable: true
+                },
+                where: {
+                    activo: true,
+                    user: userId
+                }
+            });
+            return proveedores
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    async getAllProvInact(userId) {
+        try {
+            const proveedores = await prisma.proveedores.findMany({
+                select: {
+                    id: true,
+                    rut: true,
+                    razon_social: true,
+                    telefono: true,
+                    email: true,
+                    cuenta_contable: true
+                },
+                where: {
+                    activo: false,
+                    user: userId
+                }
+            });
+            return proveedores
+        } catch (error) {
+            handlePrismaError(error)
         }
     }
 }
