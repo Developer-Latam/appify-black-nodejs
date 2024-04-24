@@ -15,6 +15,12 @@ class pagosRepository {
         });
     }
 
+    async createPagosFCE(data) {
+        return prisma.pagos_factura_compra_excenta.create({
+            data : data
+        });
+    }
+
 
     async createPagosNC(data) {
         return prisma.pagos_factura_nota_credito.create({

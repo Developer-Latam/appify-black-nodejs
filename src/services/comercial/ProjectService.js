@@ -88,8 +88,10 @@ class ProjectService {
 
         for (const project of projects) {
             const cliente = await clientesService.getClienteById(project.cliente)
+            console.log(cliente)
             
             const vendedor = await userService.getSubUserById(project.vendedor)
+            console.log(vendedor)
             
             const itemproductos = await itemsProdServProjectService.getProductsItemByprojectId(project.id)
             
@@ -131,7 +133,7 @@ class ProjectService {
                 estado: project.estado,
                 fecha: project.fecha,
                 cliente: cliente.nombre,
-                vendedor: `${vendedor.nombre} ${vendedor.apellido}`,
+                vendedor:project.vendedor, //`${vendedor.nombre} ${vendedor.apellido}`,
                 productos_servicios: {
                     productos: productos,
                     servicios: servicios
