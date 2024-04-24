@@ -26,6 +26,7 @@ import cobrosRouter from './src/routes/administracion/cobrosRouter.js'
 import pagosRouter from './src/routes/administracion/pagosRouter.js'
 import cuentasRouter from './src/routes/administracion/cuentasRouter.js'
 import comprasRouter from './src/routes/administracion/comprasRouter.js'
+import initRouter from './src/routes/initConfig/initConfigRouter.js'
 import cors from 'cors';
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
@@ -40,7 +41,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 
 // Routers a Mi Empresa
-
+app.use('/init', initRouter)
 app.use('/user',userRouter)
 app.use('/proveedor', proveedorRouter)
 app.use('/listproducts', listrouter)

@@ -928,7 +928,7 @@ model administracion_impuesto {
 
 model administracion_por_clasificar {
   id                                      Int     @id @default(autoincrement())
-  empresa                                 Int
+  empresa                                 String  @db.VarChar(100)
   cuenta_documentos_pendientes_clasificar String? @db.VarChar(100)
 
   @@index([empresa], map: "empresa")
@@ -1345,9 +1345,9 @@ model condicion_pago {
 }
 
 model item_producto_nota_credito_NC_compra {
-  id            Int     @id @default(autoincrement())
+  id            String  @id @db.VarChar(100)
   idProducto    String  @db.VarChar(100)
-  idNotaCredito String  @db.VarChar(100)
+  idNotaCredito Int
   codigo        String? @db.VarChar(100)
   cantidad      Int
   unitario      Int
@@ -1380,9 +1380,9 @@ model item_producto_nota_credito_compra {
 }
 
 model item_servicio_nota_credito_NC_compra {
-  id            Int     @id @default(autoincrement())
+  id            String  @id @db.VarChar(100)
   idServicio    String  @db.VarChar(100)
-  idNotaCredito String  @db.VarChar(100)
+  idNotaCredito Int
   codigo        String? @db.VarChar(100)
   cantidad      Int
   unitario      Int

@@ -3,13 +3,7 @@ import executeTransactions from "../../../persistence/transactions/executeTransa
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 
 class ContabilidadService {
-    async createFE(recibir_doc_libre_DTE_automatico, contrasena_sii, folio_factura_excenta, folio_facura, folio_factura_compra, folio_nota_debito, folio_nota_credito, folio_guia_despacho, folio_boleta_excenta, folio_boleta_fisica, folio_boleta_electronica, set_factura_basica, set_boletas, set_facturas_exportacion, set_facturas_compra) {
-        try {
-            return contabilidadRepository.createFE(recibir_doc_libre_DTE_automatico, contrasena_sii, folio_factura_excenta, folio_facura, folio_factura_compra, folio_nota_debito, folio_nota_credito, folio_guia_despacho, folio_boleta_excenta, folio_boleta_fisica, folio_boleta_electronica, set_factura_basica, set_boletas, set_facturas_exportacion, set_facturas_compra)
-        } catch (error) {
-            throw(error)
-        }
-    }
+    
     async updateFE(id, inputData) {
         try {
             const camposPermitidos = [
@@ -27,13 +21,6 @@ class ContabilidadService {
                 throw new CustomError(400, "No valid fields provided for update")
             }
             return await contabilidadRepository.updateFE(id, dataToUpdate)
-        } catch (error) {
-            throw(error)
-        }
-    }
-    async createCobranza(asunto, mensaje_nivel_1, mensaje_nivel_2, mensaje_nivel_3) {
-        try {
-            return contabilidadRepository.createCobranza(asunto, mensaje_nivel_1, mensaje_nivel_2, mensaje_nivel_3)
         } catch (error) {
             throw(error)
         }
@@ -58,32 +45,7 @@ class ContabilidadService {
             throw(error)
         }
     }
-    async executeOperationsModuloAdministracion(data) {
-        //Preparar los datos para cada operacion
-        // Desestructurar "data" para obtener los datos específicos para cada operación.
-        const {
-            administracion_impuesto,
-            administracion_anticipo,
-            administracion_por_clasificar,
-            administracion_por_cobrar,
-            administracion_por_pagar
-        } = data;
-        //Agrupar las operaciones, pasando los datos a cada funcion
-        const operations = [
-            contabilidadRepository.createModuloAdm(administracion_impuesto),
-            contabilidadRepository.createAdmAnticipo(administracion_anticipo),
-            contabilidadRepository.createAdmPorClasificar(administracion_por_clasificar),
-            contabilidadRepository.createAdmPorCobrar(administracion_por_cobrar),
-            contabilidadRepository.createAdmPorPagar(administracion_por_pagar)
-        ]
-        try {
-            //Ejecutar las operaciones en una transaction
-            const result = await executeTransactions(operations.map( op => op() ))
-            return ("transacciones completas con exito", result)
-        } catch (error) {
-            throw(error)
-        }
-    }
+    
     async UpdateExecuteOperationsModuloAdministracion(data) {
         //Preparar los datos para cada operacion
         // Desestructurar "data" para obtener los datos específicos para cada operación.

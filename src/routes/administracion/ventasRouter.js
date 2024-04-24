@@ -4,8 +4,12 @@ import { createDDController,getDocumentosDespachoByUserController,getAllDocument
 const router = Router()
 
 router.post('/ventas/FV', createFVController)
-router.get('/ventas/FV', getAllFVController)
 router.get('/ventas/FV/:fvDVID', getFVbyIdDocController)
+
+
+//modificar
+router.get('/ventas/FV', getAllFVController)
+
 
 router.post('/ventas/FVE', createFVEController)
 router.get('/ventas/FVE/:fveDVID', getFVEbyIdDocController)
