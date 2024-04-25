@@ -226,7 +226,7 @@ class cobrosService {
     async getAllCobrosDataByUserId(userId) {
         try {
             let cobros = await this.getCobrosByUserId(userId);
-            console.log(cobros)
+            
     
             // Verificar si cobros es un array o no
             /*
@@ -248,7 +248,7 @@ class cobrosService {
                 for (const func of functionsToTry) {
                     try {
                         const resultado = await func(cobro.id);
-                        console.log(`El resultado de ${func.name} es:`, resultado);
+                        
     
                         if (resultado) {
                             result = {
@@ -277,7 +277,7 @@ class cobrosService {
                             
                             const facturaventae = await cobrosRepository.findFVEById(idFacturaVentaE);
                             
-                            const facturaFVEcompleta = await ventasRepository.getFVEDetailsbyDV(facturaventae.idDoc);
+                            const facturaFVEcompleta = await ventasService.getFVoFVEbyIdDoc(false,facturaventae.idDoc);
                             
                             formattedCobros.push({ cobro, factura: facturaFVEcompleta });
                             break;
@@ -285,7 +285,7 @@ class cobrosService {
                         case "findCobroFVByCobroId":
                             const idFacturaVenta = result.resultado.idFacturaVenta;
                             const facturaventa = await cobrosRepository.findFVById(idFacturaVenta);
-                            const facturaFVcompleta = await ventasService.getFVoFVEbyIdDoc(facturaventa.idDoc);
+                            const facturaFVcompleta = await ventasService.getFVoFVEbyIdDoc(facturaventa.idDoc, false);
                             formattedCobros.push({ cobro, factura: facturaFVcompleta });
                             break;
                     }

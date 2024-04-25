@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createDDController,getDocumentosDespachoByUserController,getAllDocumentosDespachoController,getDocumentosVentaByUserController,getAllDocumentosVentaController,getItemsNCODbyIdNCODController,getNCODbyIdDocController,getFVEbyIdDocController,getFVbyIdDocController,getAllFVController, createFVController, createFVEController,createNCoDConItemsController, 
+import { createDDController,getDocumentosDespachoByUserController,getAllDataVentasByUserId,getAllDocumentosDespachoController,getDocumentosVentaByUserController,getAllDocumentosVentaController,getItemsNCODbyIdNCODController,getNCODbyIdDocController,getFVEbyIdDocController,getFVbyIdDocController,getAllFVController, createFVController, createFVEController,createNCoDConItemsController, 
 } from "../../controllers/administracion/ventasController.js";
 const router = Router()
 
@@ -18,6 +18,9 @@ router.get('/ventas/NCOD/:tipoNota/:NCOD', getItemsNCODbyIdNCODController)
 
 router.get('/ventas/DV', getAllDocumentosVentaController);
 router.get('/ventas/DV/:user', getDocumentosVentaByUserController);
+
+// Obtener todos los datos
+router.get('/ventas/alldata/:user', getAllDataVentasByUserId);
 
 
 router.post('/ventas/DD', createDDController)
