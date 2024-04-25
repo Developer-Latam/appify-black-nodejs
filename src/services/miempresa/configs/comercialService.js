@@ -1,5 +1,6 @@
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 import ComercialRepositoy from "../../../persistence/repositorys/miempresa/configs/comercialRepository.js";
+import comercialRepository from "../../../persistence/repositorys/miempresa/configs/comercialRepository.js";
 
 class comercialService {
 
@@ -40,6 +41,13 @@ class comercialService {
                 throw new CustomError(400, "No valid fields provided for update")
             }
             return await ComercialRepositoy.updateParaClientes(id, dataToUpdate)
+        } catch (error) {
+            throw(error)
+        }
+    }
+    async getProyectoYParaClientes(userId) {
+        try {
+            const result = await comercialRepository. 
         } catch (error) {
             throw(error)
         }

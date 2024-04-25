@@ -23,3 +23,12 @@ export const updateParaClientesController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+export const getProyectoYParaClientesController = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const result = await comercialService.getProyectoYParaClientes(userId);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
