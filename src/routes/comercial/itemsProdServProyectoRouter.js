@@ -21,7 +21,7 @@ const router = Router();
 
 router.post('/project/item/prod', createItemProductProject);
 
-// Buscar un item producto
+// Buscar un item producto con su id
 
 router.get('/project/item/prod/:idProyecto', getProductItemById);
 

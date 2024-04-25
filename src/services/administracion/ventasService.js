@@ -98,6 +98,61 @@ class VentasService {
             throw error
         }
     }
+
+    async getFVDetailsbyDV(id) {
+        return ventasRepository.getFVDetailsbyDV(id)
+    }
+
+    async getFVEDetailsbyDV(id) {
+        return ventasRepository.getFVEDetailsbyDV(id)
+    }
+
+
+
+    async getAllDataVentasByUserId(id) {
+        try {
+            let documentos = await this.getDVByUser(id);
+            const formattedVentas = [];
+            
+            for (const documento of documentos) {
+                const functionsToTry = [
+                    { func: this.getFVEDetailsbyDV, key: 'facturaVentaExcenta' },
+                    { func: this.getNCoDbyIdDoc, key: 'NotaCredito' },
+                    { func: this.getFVDetailsbyDV, key: 'facturaVenta' }
+                ];
+                
+                const results = [];
+                for (const { func, key } of functionsToTry) {
+                    try {
+                        const resultado = await func(documento.id);
+                        console.log(`El resultado de ${func.name} es:`, resultado);
+                        if (resultado.length > 0) { // Verificar si el resultado no está vacío
+                            results.push({ key, resultado });
+                        }
+                    } catch (error) {
+                        console.error(`Error al intentar ejecutar la función ${func.name}:`, error.message);
+                    }
+                }
+                
+                if (results.length > 0) { // Verificar si hay resultados antes de agregarlos
+                    const formattedResult = { documento };
+                    for (const { key, resultado } of results) {
+                        formattedResult[key] = resultado;
+                    }
+                    
+                    formattedVentas.push(formattedResult);
+                }
+            }
+            
+            return formattedVentas;
+        } catch (error) {
+            console.error("Error al obtener los datos de ventas:", error.message);
+            throw error;
+        }
+    }
+    
+    
+    
     async getFVoFVEbyIdDoc(fvDVID, fveDVID) {
         try {
             let detalles;

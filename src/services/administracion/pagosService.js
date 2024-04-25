@@ -1,6 +1,7 @@
 import comprasRepository from "../../persistence/repositorys/administracion/comprasRepository.js";
 import pagosRepository from "../../persistence/repositorys/administracion/pagosRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
+import comprasService from "../../services/administracion/comprasService.js"
 
 class pagosService {
 
@@ -234,7 +235,7 @@ class pagosService {
                 cobros = [cobros]; // Convertir a un array para facilitar la iteración
             }*/
     
-            const formattedCobros = [];
+            const formattedPagos = [];
     
             for (const pago of pagos) {
                 const functionsToTry = [
@@ -248,7 +249,7 @@ class pagosService {
                 for (const func of functionsToTry) {
                     try {
                         const resultado = await func(pago.id);
-                        console.log(`El resultado de ${func.name} es:`, resultado);
+                        
     
                         if (resultado) {
                             result = {
@@ -269,7 +270,7 @@ class pagosService {
                             const idNotaCredito = result.resultado.idNotaCredito;
                             const notacredito = await pagosRepository.findFCNCById(idNotaCredito);
                             const notaCompletaNC = await comprasRepository.getNCODDetailsbyDC(notacredito.idDoc);
-                            formattedCobros.push({ pago, factura: notaCompletaNC });
+                            formattedPagos.push({ pago, factura: notaCompletaNC });
                             break;
     
                         case "findPagosFCEByPagoId":
@@ -277,24 +278,24 @@ class pagosService {
                             
                             const facturacomprae = await pagosRepository.findFCEById(idFacturaCompraE);
                             
-                            const facturaFCEcompleta = await comprasRepository.getFCEDetailsbyDC(facturacomprae.idDoc);
+                            const facturaFCEcompleta = await comprasService.getFCoFCEbyIdDoc(false, facturacomprae.idDoc);
                             
-                            formattedCobros.push({ pago, factura: facturaFCEcompleta });
+                            formattedPagos.push({ pago, factura: facturaFCEcompleta });
                             break;
     
                         case "findPagosFCByPagoId":
                             const idFacturaCompra = result.resultado.idFacturaCompra;
                             const facturacompra = await pagosRepository.findFCById(idFacturaCompra);
-                            const facturaFCcompleta = await comprasRepository.getFCDetailsbyDC(facturacompra.idDoc);
-                            formattedCobros.push({ pago, factura: facturaFCcompleta });
+                            const facturaFCcompleta = await comprasService.getFCoFCEbyIdDoc(facturacompra.idDocCompra, false);
+                            formattedPagos.push({ pago, factura: facturaFCcompleta });
                             break;
                     }
                 }
             }
     
-            return formattedCobros;
+            return formattedPagos;
         } catch (error) {
-            console.error("Error al obtener los cobros:", error.message);
+            console.error("Error al obtener los pagos:", error);
             throw error;
         }
     }
