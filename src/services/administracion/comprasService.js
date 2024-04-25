@@ -31,9 +31,9 @@ class ComprasService {
             // Añadiendo una verificación para determinar el tipo de factura
             fc_fce.forEach(factura => {
                 if (factura.id.startsWith('FCE-')) {
-                    tipoFactura = "Factura Compra Excenta";
+                    tipoFactura = "FCE";
                 } else if (factura.id.startsWith('FC-')) {
-                    tipoFactura = "Factura Compra";
+                    tipoFactura = "FC";
                 } else {
                     tipoFactura = "Desconocido";
                 }

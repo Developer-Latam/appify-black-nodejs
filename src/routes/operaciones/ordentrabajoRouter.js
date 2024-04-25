@@ -3,7 +3,8 @@ import {
     createOrdenTrabajo,
     getOrdenTrabajoById,
     getOrdenTrabajoByUserId,
-    updateOrdenTrabajo
+    updateOrdenTrabajo,
+    deleteOrdenTrabajo
 } from '../../controllers/operaciones/ordentrabajoController.js';
 const router = Router();
 
@@ -18,6 +19,9 @@ router.get('/ordenTrabajos/:idUser', getOrdenTrabajoByUserId);
 
 // Ruta para actualizar una orden de trabajo
 router.put('/ordenTrabajo/:id', updateOrdenTrabajo);
+
+// Aca tenes tu ruta para borrar OT wachin
+router.delete('/borrar/:id', deleteOrdenTrabajo);
 
 
 export default router
