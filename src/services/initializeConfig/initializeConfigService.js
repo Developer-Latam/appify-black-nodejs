@@ -4,7 +4,7 @@ import comercialRepository from "../../persistence/repositorys/miempresa/configs
 import contabilidadRepository from "../../persistence/repositorys/miempresa/configs/contabilidadRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 class initConfigService {
-    async createEmpresaAndSistema(data) {
+    async initForNewUser(data) {
         try {
             const { empresa, sistema, empresa_proyecto } = data;
             let operations = [];

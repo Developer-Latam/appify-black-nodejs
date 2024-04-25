@@ -120,7 +120,7 @@ class UserRepository {
         return response;
     }
     //Realiza la creacion de usuario y un sub usuario
-    async createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo) {
+    async createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash) {
         // Datos para el usuario principal
         let userIDsuperUser = idgenerate("super-user")
         let fecha = new Date(fecha_de_nacimiento)
@@ -197,7 +197,7 @@ class UserRepository {
             throw new CustomError(500, 'Error interno del servidor al buscar subusuario', { detail: error.message, id });
         }
     }
-    async getAllUsersActivos() {
+    async getAllUsersActivos(userId) {
         try {
             const subusuarios = await prisma.subusuarios.findMany({
                 select: {
@@ -207,7 +207,8 @@ class UserRepository {
                     email: true
                 },
                 where: {
-                    activo: true
+                    activo: true,
+                    user: userId
                 }
             });
             return subusuarios;
@@ -215,7 +216,7 @@ class UserRepository {
             handlePrismaError(error)
         }
     }
-    async getAllUsersInactivos() {
+    async getAllUsersInactivos(userId) {
         try {
             const subusuarios = await prisma.subusuarios.findMany({
                 select: {
@@ -225,7 +226,8 @@ class UserRepository {
                     email: true
                 },
                 where: {
-                    activo: false
+                    activo: false,
+                    user: userId
                 }
             });
             return subusuarios;

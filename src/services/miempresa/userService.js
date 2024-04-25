@@ -22,10 +22,10 @@ class UserService {
             throw error;
         }
     }
-    async getAllUsersActivos() {
+    async getAllUsersActivos(userId) {
         try {
-            const users = await UserRepository.getAllUsersActivos();
-            if (!users) {
+            const users = await UserRepository.getAllUsersActivos(userId);
+            if (users.length === 0) {
                 throw new CustomError(404, "No se encontraron usuarios");
             }
             return users;
@@ -33,10 +33,10 @@ class UserService {
             throw error;
         }
     }
-    async getAllUsersInactivos() {
+    async getAllUsersInactivos(userId) {
         try {
-            const users = await UserRepository.getAllUsersInactivos();
-            if (!users) {
+            const users = await UserRepository.getAllUsersInactivos(userId);
+            if (users.length === 0) {
                 throw new CustomError(404, "No se encontraron usuarios");
             }
             return users;
@@ -168,12 +168,11 @@ class UserService {
     async signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash,activo) {
         //Verifica si existe, y si no, lo crea
         const userExists = await UserRepository.userExists(email);
-        if (!userExists) {
-            const result = await UserRepository.createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo);
-            return { ok: true, message: 'Usuario y subusuario creados exitosamente', result };
-        } else {
+        if(userExists){
             throw new CustomError(409, 'El usuario ya existe', { email });
         }
+        const result = await UserRepository.createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo);
+        return { ok: true, message: 'Usuario y subusuario creados exitosamente', result };
     }
     //Realiza el registro de un subusuario, la creacion de los permisos y posterior envia el email de bienvenida
     async signUpSubUsuario(user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, permisos) {

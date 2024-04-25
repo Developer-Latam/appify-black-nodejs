@@ -1,25 +1,6 @@
 import ItemSistemaRepository from "../../../persistence/repositorys/miempresa/configs/sistemaRepository.js";
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 class ItemsSistemaService {
-    
-    async createSistema(empresa	, pais, idioma, correo_cobranza, moneda, moneda_secundaria, con_decimales, tasa_venta, tasa_compra, tasa_cambio, tolerancia, registro_entregas_autocompletar) {
-        try {
-            return ItemSistemaRepository.createSistema(empresa, pais, idioma, correo_cobranza, moneda, moneda_secundaria, con_decimales, tasa_venta, tasa_compra, tasa_cambio, tolerancia, registro_entregas_autocompletar)
-        } catch (error) {
-            throw(error)
-        }
-    }
-    async createEmpresa(user, nombre, direccion_matriz, direccion_bodega, prefijo_tel, RUT, giro, pagina_web, prefijo_cel) {
-        try {
-            const empresaExist = await ItemSistemaRepository.getEmpresaByRUT(RUT)
-            if(empresaExist){
-                throw new CustomError(409, "Empresa ya existente con el RUT indicado", {empresaExist})
-            }
-            return ItemSistemaRepository.createEmpresa(user, nombre, direccion_matriz, direccion_bodega, prefijo_tel, RUT, giro, pagina_web, prefijo_cel)
-        } catch (error) {
-            throw(error)
-        }
-    }
     async updateSistema(id, inputData) {
         try {
             const camposPermitidos = [
@@ -63,6 +44,14 @@ class ItemsSistemaService {
             throw(error)
         }
     }
+    async getSistemaYEmpresaByUserId(userId) {
+        try {
+            
+        } catch (error) {
+            throw(error)
+        }
+    }
+    
 }
 
 export default new ItemsSistemaService()

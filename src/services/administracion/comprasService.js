@@ -356,12 +356,20 @@ class ComprasService {
             }
             let notas;
             let data;
+            let dataFCdetails;
+            let dataFCEdetails;
             switch (tipoNota) {
                 case 'FC':
                     data = await comprasRepository.notaFC_NCOD(NCOD);
+                    const idDC = data[0].DocumentoCompraID
+                    const dataFC = await this.getFCoFCEbyIdDoc(idDC, false)
+                    dataFCdetails = dataFC.FacturaCompra_FacturaCompraExenta
                     break;
                 case 'FCE':
                     data = await comprasRepository.notaFCE_NCOD(NCOD);
+                    const idDCe = data[0].DocumentoCompraID
+                    const dataFCE = await this.getFCoFCEbyIdDoc(false, idDCe)
+                    dataFCEdetails = dataFCE.FacturaCompra_FacturaCompraExenta
                     break;
                 case 'NC':
                     data = await comprasRepository.notaDEncod_NCOD(NCOD);
@@ -373,7 +381,7 @@ class ComprasService {
                 throw new CustomError(404, "Not found", 'No se encontraron datos para el ID de nota-crédito/débito proporcionado');
             }
             notas = data.map(item => {
-                let notaDeCreditoDebito, DocumentoAsociado;
+                let notaDeCreditoDebito, DocumentoAsociado, Fdetails;
                 switch (tipoNota) {
                     case 'FC':
                         notaDeCreditoDebito = {
@@ -392,6 +400,8 @@ class ComprasService {
                             Cuenta: item.Cuenta,
                             Notas: item.Notas
                         };
+                        console.log(dataFCdetails)
+                        Fdetails = dataFCdetails
                         break;
                     case 'FCE':
                         notaDeCreditoDebito = {
@@ -412,6 +422,7 @@ class ComprasService {
                             Observacion: item.Observacion,
                             NotaInterna: item.NotaInterna
                         };
+                        Fdetails = dataFCEdetails
                         break;
                     case 'NC':
                         notaDeCreditoDebito = {
@@ -438,7 +449,7 @@ class ComprasService {
                         };
                         break;
                 }
-                return { notaDeCreditoDebito, DocumentoAsociado };
+                return { notaDeCreditoDebito, DocumentoAsociado, Fdetails };
             });
             return notas;
         } catch (error) {

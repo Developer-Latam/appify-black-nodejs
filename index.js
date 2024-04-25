@@ -40,8 +40,10 @@ app.use(express.urlencoded({extended:true}))
 
 app.use(express.json())
 
-// Routers a Mi Empresa
+// CONFIGURACIONES INICIALES PARA UN USUARIO QUE CONTRATA EL SERVICIO
 app.use('/init', initRouter)
+
+// Routers a Mi Empresa
 app.use('/user',userRouter)
 app.use('/proveedor', proveedorRouter)
 app.use('/listproducts', listrouter)

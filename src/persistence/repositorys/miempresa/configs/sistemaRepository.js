@@ -37,12 +37,7 @@ class ItemSistemaRepository {
                 data,
             });
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async deleteSistema(id) {
@@ -86,13 +81,14 @@ class ItemSistemaRepository {
             throw new CustomError(500, "Error process db", {error: error.message})
         }
     }
-    async getEmpresaByUserId(userId) {
+    async getEmpresaYByUserId(userId) {
         try {
             const resultado = await prisma.$queryRaw`
-            SELECT e.*, s.* 
-            FROM empresa e
-            JOIN sistema s ON s.empresa = e.id
-            WHERE e.user = ${userId};`;
+            SELECT empresa.*, sistema.*
+            FROM empresa
+            JOIN sistema ON sistema.empresa = empresa.id
+            WHERE empresa.user = ${user};
+            `;
         return resultado;
         } catch (error) {
             handlePrismaError(error)

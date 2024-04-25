@@ -25,7 +25,7 @@ export const initConfigController = async (req, res) => {
             sistema: req.body.sistema,
             empresa_proyecto: req.body.empresa_proyecto
         };
-        const result = await initConfigService.createEmpresaAndSistema(data);
+        const result = await initConfigService.initForNewUser(data);
         ResponseHandler.Ok(res, result)
     } catch (error) {
         ResponseHandler.HandleError(res, error)
