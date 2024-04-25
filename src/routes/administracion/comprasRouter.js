@@ -34,6 +34,9 @@ router.get('/compras/NCOD/:tipoNota/:NCOD', getItemsNCODbyIdNCODController)
 router.get('/compras/DC', getAllDocumentosComprasController);
 router.get('/compras/DC/:user', getDocumentosCompraByUserController);
 
+
+
+//test
 router.get('/test/:idDocumentoCompra', testController)
 
 

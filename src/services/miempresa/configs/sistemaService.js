@@ -46,7 +46,39 @@ class ItemsSistemaService {
     }
     async getSistemaYEmpresaByUserId(userId) {
         try {
-            
+            const obj = await ItemSistemaRepository.getEmpresaYSistemaByUserId(userId)
+            const response = obj[0]
+             // Separar los datos en dos objetos, uno para empresa y otro para sistema
+            const empresa = {
+                id: response.id,
+                user: response.user,
+                logo: response.logo,
+                nombre: response.nombre,
+                direccion_matriz: response.direccion_matriz,
+                direccion_bodega: response.direccion_bodega,
+                prefijo_tel: response.prefijo_tel,
+                RUT: response.RUT,
+                giro: response.giro,
+                pagina_web: response.pagina_web,
+                prefijo_cel: response.prefijo_cel
+            };
+            const sistema = {
+                id: response.id, // Asegurarse de obtener el ID correcto si sistema también tiene un ID que se sobrescribe
+                empresa: response.empresa,
+                pais: response.pais,
+                idioma: response.idioma,
+                correo_cobranza: response.correo_cobranza,
+                moneda: response.moneda,
+                moneda_secundaria: response.moneda_secundaria,
+                con_decimales: response.con_decimales,
+                tasa_venta: response.tasa_venta,
+                tasa_compra: response.tasa_compra,
+                tasa_cambio: response.tasa_cambio,
+                tolerancia: response.tolerancia,
+                registro_entregas_autocompletar: response.registro_entregas_autocompletar
+            };
+            // Retornar ambos objetos en un objeto estructurado
+            return { empresa, sistema };
         } catch (error) {
             throw(error)
         }
