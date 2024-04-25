@@ -2,6 +2,7 @@ import comprasRepository from "../../persistence/repositorys/administracion/comp
 import pagosRepository from "../../persistence/repositorys/administracion/pagosRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import comprasService from "../../services/administracion/comprasService.js"
+import cobrosService from "./cobrosService.js";
 
 class pagosService {
 
@@ -270,7 +271,8 @@ class pagosService {
                             console.log(idNotaCredito)
                             const notacredito = await pagosRepository.findFCNCById(idNotaCredito);
                             console.log(notacredito)
-                            const notaCompletaNC = await comprasService.getItemsByNCOD(notacredito.id, 'FC');
+                            const averquees = await comprasService.getFCoFCEbyIdDoc(notacredito.idDoc)
+                            const notaCompletaNC = await comprasService.getItemsByNCOD(notacredito.id, averquees.tipo);
                             formattedPagos.push({ pago, factura: notaCompletaNC });
                             break;
     

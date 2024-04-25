@@ -44,7 +44,7 @@ export const updateOrdenTrabajo = async (req, res) => {
 };
 
 // Esta funcion va a quedar comentada por si la usamos enun futuro pero no se deberian borrar las ordenes de trabajo...o si?
-/*
+
 export const deleteOrdenTrabajo = async (req, res) => {
     try {
         const { idCliente } = req.params;
@@ -53,4 +53,4 @@ export const deleteOrdenTrabajo = async (req, res) => {
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
-};*/
+};
