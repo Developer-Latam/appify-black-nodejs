@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { loginUser, 
-    signUpController, 
     signUpSubUsuarioController, 
     updateSubUser,
     configPasswordSubUser,
@@ -15,7 +14,9 @@ const router = Router()
 
 
 router.post('/login', loginUser);
-router.post('/signup', signUpController);
+
+
+
 router.get('/dataUser/:id', getDataUserController)
 router.get('/allUsersActivos', getAllUsersActController)
 router.get('/allUsersInactivos', getAllUsersInactController)

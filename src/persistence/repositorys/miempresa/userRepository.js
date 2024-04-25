@@ -133,7 +133,7 @@ class UserRepository {
             celular,
             fecha_de_nacimiento: fecha_ISO,
             password: passwordHash,
-            activo,
+            activo: true,
         };
         // Datos para el subusuario
         let subUserData = {

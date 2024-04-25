@@ -18,7 +18,7 @@ router.get('/allProvInact', getAllProveedoresInactController)
 router.put('/updProv/:id', updateProveedorController)
 router.get('/todos/:id', getProveedoresByUserId)
 
-//trae un proveedor por us id
+//trae un proveedor por su id
 router.get('/:idProv', getProveedorByIdController)
 
 export default router

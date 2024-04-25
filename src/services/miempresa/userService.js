@@ -169,8 +169,8 @@ class UserService {
         //Verifica si existe, y si no, lo crea
         const userExists = await UserRepository.userExists(email);
         if (!userExists) {
-            await UserRepository.createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo);
-            return { ok: true, message: 'Usuario y subusuario creados exitosamente' };
+            const result = await UserRepository.createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo);
+            return { ok: true, message: 'Usuario y subusuario creados exitosamente', result };
         } else {
             throw new CustomError(409, 'El usuario ya existe', { email });
         }

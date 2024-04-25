@@ -1,26 +1,18 @@
 import { CustomError } from "../../../../utils/httpRes/handlerResponse.js";
 import { prisma, prismaError } from "../../../../utils/dependencys/injection.js";
-class ComercialRepositoy {
-    async createProyecto(valor_impuesto, porcentaje_de_ot, texto_para_compartir_proyecto, cotizacion_descuento_visible, nombre_impuesto) {
+import handlePrismaError from "../../../../utils/httpRes/handlePrismaError.js";
+class ComercialRepository {
+    createProyecto(empresaId, {valor_impuesto, porcentaje_de_ot, texto_para_compartir_proyecto, cotizacion_descuento_visible, nombre_impuesto}) {
         try {
-            return await prisma.empresa_proyecto.create({
+            return prisma.empresa_proyecto.create({
                 data: {
-                    empresa: 1,
-                    valor_impuesto,
-                    logo: "URL SACADA DE FIREBASE", 
-                    porcentaje_de_ot, 
-                    texto_para_compartir_proyecto, 
+                    empresa: empresaId,
                     cotizacion_descuento_visible, 
                     nombre_impuesto
                 }
             });
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async updateProyecto(id, data) {
@@ -45,22 +37,16 @@ class ComercialRepositoy {
             throw new CustomError(500, "Error process db", {error: error.message})
         }
     }
-    async createParaClientes(texto_inferior_firma, mensaje_envio_proyecto, texto_confirmacion_compra) {
+    //{texto_inferior_firma, mensaje_envio_proyecto, texto_confirmacion_compra}
+    createParaClientes(empresaId) {
         try {
-            return await prisma.para_clientes_proyectos.create({
+            return prisma.para_clientes_proyectos.create({
                 data: {
-                    empresa: 1,
-                    texto_inferior_firma,
-                    mensaje_envio_proyecto,
-                    texto_confirmacion_compra
+                    empresa: empresaId,
                 }
             });
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientKnownRequestError) {
-                throw new CustomError(500, "Bad Request, Valor fuera de rango", {error: error.message})
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async updateParaClientes(id, data) {
@@ -81,4 +67,4 @@ class ComercialRepositoy {
 }
 
 
-export default new ComercialRepositoy()
+export default new ComercialRepository()
