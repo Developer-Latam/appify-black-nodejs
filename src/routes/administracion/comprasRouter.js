@@ -8,7 +8,8 @@ import {
     getFCbyIdDocController,
     getFCEbyIdDocController,
     getNCODbyIdDocController,
-    getItemsNCODbyIdNCODController
+    getItemsNCODbyIdNCODController,
+    testController
 } from "../../controllers/administracion/comprasController.js";
 const router = Router()
 
@@ -32,6 +33,8 @@ router.get('/compras/NCOD/:tipoNota/:NCOD', getItemsNCODbyIdNCODController)
 
 router.get('/compras/DC', getAllDocumentosComprasController);
 router.get('/compras/DC/:user', getDocumentosCompraByUserController);
+
+router.get('/test/:idDocumentoCompra', testController)
 
 
 

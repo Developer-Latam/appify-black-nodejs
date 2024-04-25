@@ -1,3 +1,4 @@
+import { response } from "express";
 import { prisma } from "../../../utils/dependencys/injection.js";
 import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js"
 import { idgenerate } from "../../../utils/id/idGenerate.js";
@@ -372,6 +373,43 @@ class comprasRepository {
             WHERE
                 dc.id = ${fcDCID};`;
             return DC;
+        }catch(error){
+            handlePrismaError(error)
+        }
+    }
+    async getFCoFCEbyDC(idDocumentoCompra) {
+        try {
+            const response = await prisma.$queryRaw`
+            (SELECT 
+                'Factura Compra' as tipo, 
+                id, 
+                idDocCompra as idDoc,
+                proveedor, 
+                tipo_documento, 
+                numero_documento, 
+                fecha, 
+                condicion_de_pago,
+                cuenta,
+                notas
+            FROM factura_compra
+            WHERE idDocCompra = ${idDocumentoCompra})
+            
+            UNION ALL
+            
+            (SELECT 
+                'Factura Compra Excenta' as tipo, 
+                id, 
+                idDoc,
+                idProveedor as proveedor,
+                tipo_documento,
+                numero_documento,
+                fecha,
+                condicion_de_pago,
+                centro_beneficio as cuenta,
+                nota_interna as notas
+            FROM factura_compra_excenta
+            WHERE idDoc = ${idDocumentoCompra})`;
+            return response;
         }catch(error){
             handlePrismaError(error)
         }

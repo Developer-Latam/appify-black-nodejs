@@ -103,3 +103,17 @@ export const getItemsNCODbyIdNCODController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+
+
+
+
+//funcion para test
+export const testController = async (req, res) => {
+    try {
+        const {idDocumentoCompra} = req.params
+        const result = await comprasService.getFCoFCEbyDC(idDocumentoCompra);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}

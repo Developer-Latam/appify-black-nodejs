@@ -96,7 +96,7 @@ export const getDataUserController = async (req, res, next) => {
 }
 export const getAllUsersActController = async (req, res, next) => {
     try {
-        const {userId} = req.body
+        const {userId} = req.params
         const result = await userService.getAllUsersActivos(userId);
         ResponseHandler.Ok(res, result);
     } catch (error) {
@@ -105,7 +105,7 @@ export const getAllUsersActController = async (req, res, next) => {
 }
 export const getAllUsersInactController = async (req, res, next) => {
     try {
-        const {userId} = req.body
+        const {userId} = req.params
         const result = await userService.getAllUsersInactivos(userId);
         ResponseHandler.Ok(res, result);
     } catch (error) {

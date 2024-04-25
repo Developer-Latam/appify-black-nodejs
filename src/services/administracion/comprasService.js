@@ -20,6 +20,34 @@ class ComprasService {
             throw error
         }
     }
+    async getFCoFCEbyDC(idDocumentoCompra){
+        try {
+            if (!idDocumentoCompra) {
+                throw new CustomError(400, "Bad Request", "falta el id de su documento de compra");
+            }
+            const fc_fce = await comprasRepository.getFCoFCEbyDC(idDocumentoCompra);
+            const facturas = [];
+            let tipoFactura;
+            // Añadiendo una verificación para determinar el tipo de factura
+            fc_fce.forEach(factura => {
+                if (factura.id.startsWith('FCE-')) {
+                    tipoFactura = "Factura Compra Excenta";
+                } else if (factura.id.startsWith('FC-')) {
+                    tipoFactura = "Factura Compra";
+                } else {
+                    tipoFactura = "Desconocido";
+                }
+                // Creando un objeto para cada factura y agregándolo al array
+                facturas.push({
+                    id: factura.id,
+                    tipo: tipoFactura
+                });
+            });
+            return facturas;
+        } catch (error) {
+            throw error
+        }
+    }
     async createFC(data) {
         try {
             const {
@@ -234,6 +262,7 @@ class ComprasService {
             throw error;
         }
     }
+    
     async getFCoFCEbyIdDoc(fcDCID, fceDCID) {
         try {
             let detalles;
@@ -400,7 +429,6 @@ class ComprasService {
                             Cuenta: item.Cuenta,
                             Notas: item.Notas
                         };
-                        console.log(dataFCdetails)
                         Fdetails = dataFCdetails
                         break;
                     case 'FCE':
