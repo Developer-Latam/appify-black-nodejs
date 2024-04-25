@@ -18,8 +18,8 @@ router.post('/login', loginUser);
 
 
 router.get('/dataUser/:id', getDataUserController)
-router.get('/allUsersActivos', getAllUsersActController)
-router.get('/allUsersInactivos', getAllUsersInactController)
+router.get('/allUsersAct/:idUser', getAllUsersActController)
+router.get('/allUsersInact/:idUser', getAllUsersInactController)
 router.post('/create-subuser', signUpSubUsuarioController)
 router.get('/config-password', configPasswordSubUser)
 router.post('/set-password', setpassForSubUser)
