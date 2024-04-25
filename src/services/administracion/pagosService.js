@@ -210,7 +210,7 @@ class pagosService {
             }
     
             // Buscar el cobro de factura de venta utilizando el ID del cobro
-            const pagoNC = await pagosRepository.findPagosNCByCobroId(id);
+            const pagoNC = await pagosRepository.findPagosNCByPagoId(id);
     
             if (!pagoNC) {
                 throw new Error(`No se encontró ningún pago de nota de credito para el pago con ID ${id}`);
@@ -227,7 +227,6 @@ class pagosService {
     async getAllPagosDataByUserId(userId) {
         try {
             let pagos = await this.getAllPagosByUserId(userId);
-            console.log(pagos)
     
             // Verificar si cobros es un array o no
             /*
@@ -268,8 +267,10 @@ class pagosService {
                     switch (result.clave) {
                         case "findPagosNCByPagoId":
                             const idNotaCredito = result.resultado.idNotaCredito;
+                            console.log(idNotaCredito)
                             const notacredito = await pagosRepository.findFCNCById(idNotaCredito);
-                            const notaCompletaNC = await comprasRepository.getNCODDetailsbyDC(notacredito.idDoc);
+                            console.log(notacredito)
+                            const notaCompletaNC = await comprasService.getItemsByNCOD(notacredito.id, 'FC');
                             formattedPagos.push({ pago, factura: notaCompletaNC });
                             break;
     
