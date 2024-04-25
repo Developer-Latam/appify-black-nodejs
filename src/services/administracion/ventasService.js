@@ -116,9 +116,9 @@ class VentasService {
             
             for (const documento of documentos) {
                 const functionsToTry = [
-                    { func: this.getFVEDetailsbyDV, key: 'facturaVentaExcenta' },
                     { func: this.getNCoDbyIdDoc, key: 'NotaCredito' },
-                    { func: this.getFVDetailsbyDV, key: 'facturaVenta' }
+                    { func: this.getFVDetailsbyDV, key: 'FacturaVenta' },
+                    { func: this.getFVEDetailsbyDV, key: 'FacturaVentaExcenta' }
                 ];
                 
                 const results = [];
@@ -161,6 +161,154 @@ class VentasService {
             } else if (fveDVID){
                 detalles = await ventasRepository.getFVEDetailsbyDV(fveDVID)
             }
+            // Reestructurando los datos para agruparlos en un solo objeto
+            // Verifica si la consulta devolvió algún detalle
+            if (detalles.length > 0) {
+                // mapas para mantener servicios y productos únicos
+                const uniqueServices = new Map();
+                const uniqueProducts = new Map();
+                // Prepara el objeto resultado con la información básica de la factura y documento de venta
+                const resultado = {
+                    DocumentoVentaID: detalles[0].DocumentoVentaID,
+                    Usuario: detalles[0].Usuario,
+                    NumeroDocumentoDV: detalles[0].NumeroDocumentoDV,
+                    FacturaVenta_FacturaVentaExenta: {
+                        FacturaID: detalles[0].FacturaVentaID,
+                        ClienteID: detalles[0].ClienteID,
+                        VendedorID: detalles[0].VendedorID,
+                        FechaFactura: detalles[0].FechaFactura,
+                        TipoDocumento: detalles[0].TipoDocumento,
+                        NumeroDocumentoFV_FVE: detalles[0].NumeroDocumentoFV,
+                        CondicionPago: detalles[0].CondicionPago,
+                        CentroBeneficio: detalles[0].CentroBeneficio,
+                        Observacion: detalles[0].Observacion,
+                        NotaInterna: detalles[0].NotaInterna,
+                        Servicios: [], // Inicializa un array vacío para servicios
+                        Productos: [] // Inicializa un array vacío para productos
+                    }
+                };
+                // Itera sobre cada detalle retornado de la consulta
+                detalles.forEach(detalle => {
+                    // Verifica si el item de servicio es único y no ha sido añadido aún
+                    if (detalle.ItemServicioID && !uniqueServices.has(detalle.ItemServicioID)) {
+                        // Agrega el servicio al mapa si es único
+                        uniqueServices.set(detalle.ItemServicioID, {
+                            IdServicio: detalle.idServicio,
+                            CodigoServicio: detalle.CodigoServicio,
+                            CantidadServicio: detalle.CantidadServicio,
+                            PrecioUnitarioServicio: detalle.PrecioUnitarioServicio,
+                            BrutoServicio: detalle.BrutoServicio,
+                            NetoServicio: detalle.NetoServicio,
+                            BonificacionServicio: detalle.BonificacionServicio,
+                            NotasServicio: detalle.NotasServicio
+                        });
+                    }
+                    // Verifica si el item de producto es único y no ha sido añadido aún
+                    if (detalle.ItemProductoID && !uniqueProducts.has(detalle.ItemProductoID)) {
+                        // Agrega el producto al mapa si es único
+                        uniqueProducts.set(detalle.ItemProductoID, {
+                            IdProducto: detalle.idProducto,
+                            CodigoProducto: detalle.CodigoProducto,
+                            CantidadProducto: detalle.CantidadProducto,
+                            PrecioUnitarioProducto: detalle.PrecioUnitarioProducto,
+                            BrutoProducto: detalle.BrutoProducto,
+                            NetoProducto: detalle.NetoProducto,
+                            BonificacionProducto: detalle.BonificacionProducto,
+                            NotasProducto: detalle.NotasProducto
+                        });
+                    }
+                });
+            // Convierte los mapas de servicios y productos en arrays y los asigna al resultado
+            resultado.FacturaVenta_FacturaVentaExenta.Servicios = Array.from(uniqueServices.values());
+            resultado.FacturaVenta_FacturaVentaExenta.Productos = Array.from(uniqueProducts.values());
+            return resultado;
+            } else {
+                throw new CustomError(404, "Not Found", "No se encontraron detalles para el documento de venta solicitado")
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    // SAMUELIN SAMUELIN VOY A DIVIDIRLA EN DOS A LA DE ARRIBA DE ESTO
+
+    async getFVIdDoc(fvDVID) {
+        try {
+            let detalles = await ventasRepository.getFVDetailsbyDV(fvDVID)
+            
+            // Reestructurando los datos para agruparlos en un solo objeto
+            // Verifica si la consulta devolvió algún detalle
+            if (detalles.length > 0) {
+                // mapas para mantener servicios y productos únicos
+                const uniqueServices = new Map();
+                const uniqueProducts = new Map();
+                // Prepara el objeto resultado con la información básica de la factura y documento de venta
+                const resultado = {
+                    DocumentoVentaID: detalles[0].DocumentoVentaID,
+                    Usuario: detalles[0].Usuario,
+                    NumeroDocumentoDV: detalles[0].NumeroDocumentoDV,
+                    FacturaVenta_FacturaVentaExenta: {
+                        FacturaID: detalles[0].FacturaVentaID,
+                        ClienteID: detalles[0].ClienteID,
+                        VendedorID: detalles[0].VendedorID,
+                        FechaFactura: detalles[0].FechaFactura,
+                        TipoDocumento: detalles[0].TipoDocumento,
+                        NumeroDocumentoFV_FVE: detalles[0].NumeroDocumentoFV,
+                        CondicionPago: detalles[0].CondicionPago,
+                        CentroBeneficio: detalles[0].CentroBeneficio,
+                        Observacion: detalles[0].Observacion,
+                        NotaInterna: detalles[0].NotaInterna,
+                        Servicios: [], // Inicializa un array vacío para servicios
+                        Productos: [] // Inicializa un array vacío para productos
+                    }
+                };
+                // Itera sobre cada detalle retornado de la consulta
+                detalles.forEach(detalle => {
+                    // Verifica si el item de servicio es único y no ha sido añadido aún
+                    if (detalle.ItemServicioID && !uniqueServices.has(detalle.ItemServicioID)) {
+                        // Agrega el servicio al mapa si es único
+                        uniqueServices.set(detalle.ItemServicioID, {
+                            IdServicio: detalle.idServicio,
+                            CodigoServicio: detalle.CodigoServicio,
+                            CantidadServicio: detalle.CantidadServicio,
+                            PrecioUnitarioServicio: detalle.PrecioUnitarioServicio,
+                            BrutoServicio: detalle.BrutoServicio,
+                            NetoServicio: detalle.NetoServicio,
+                            BonificacionServicio: detalle.BonificacionServicio,
+                            NotasServicio: detalle.NotasServicio
+                        });
+                    }
+                    // Verifica si el item de producto es único y no ha sido añadido aún
+                    if (detalle.ItemProductoID && !uniqueProducts.has(detalle.ItemProductoID)) {
+                        // Agrega el producto al mapa si es único
+                        uniqueProducts.set(detalle.ItemProductoID, {
+                            IdProducto: detalle.idProducto,
+                            CodigoProducto: detalle.CodigoProducto,
+                            CantidadProducto: detalle.CantidadProducto,
+                            PrecioUnitarioProducto: detalle.PrecioUnitarioProducto,
+                            BrutoProducto: detalle.BrutoProducto,
+                            NetoProducto: detalle.NetoProducto,
+                            BonificacionProducto: detalle.BonificacionProducto,
+                            NotasProducto: detalle.NotasProducto
+                        });
+                    }
+                });
+            // Convierte los mapas de servicios y productos en arrays y los asigna al resultado
+            resultado.FacturaVenta_FacturaVentaExenta.Servicios = Array.from(uniqueServices.values());
+            resultado.FacturaVenta_FacturaVentaExenta.Productos = Array.from(uniqueProducts.values());
+            return resultado;
+            } else {
+                throw new CustomError(404, "Not Found", "No se encontraron detalles para el documento de venta solicitado")
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async getFVEIdDoc(fveDVID) {
+        try {
+            let detalles = await ventasRepository.getFVEDetailsbyDV(fveDVID)
+            
             // Reestructurando los datos para agruparlos en un solo objeto
             // Verifica si la consulta devolvió algún detalle
             if (detalles.length > 0) {
