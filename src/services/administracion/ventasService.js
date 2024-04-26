@@ -98,7 +98,35 @@ class VentasService {
             throw error
         }
     }
-
+    async getFVoFVEbyDC(idDocumentoVenta){
+        try {
+            if (!idDocumentoVenta) {
+                throw new CustomError(400, "Bad Request", "falta el id de su documento de venta");
+            }
+            const fv_fve = await ventasRepository.getFVoFVEbyDC(idDocumentoVenta);
+            const facturas = [];
+            let tipoFactura;
+            // Añadiendo una verificación para determinar el tipo de factura
+            fv_fve.forEach(factura => {
+                if (factura.id.startsWith('FVE-')) {
+                    tipoFactura = "FVE";
+                } else if (factura.id.startsWith('FV-')) {
+                    tipoFactura = "FV";
+                } else {
+                    tipoFactura = "Desconocido";
+                }
+                // Creando un objeto para cada factura y agregándolo al array
+                facturas.push({
+                    id: factura.id,
+                    tipo: tipoFactura
+                });
+            });
+            console.log(facturas)
+            return facturas;
+        } catch (error) {
+            throw error
+        }
+    }
     async getFVDetailsbyDV(id) {
         return ventasRepository.getFVDetailsbyDV(id)
     }

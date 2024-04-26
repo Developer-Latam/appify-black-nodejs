@@ -159,6 +159,18 @@ export const getDocumentosDespachoByUserController  = async (req, res) => {
 }
 
 
+//CONTROLLER HECHO PARA TEST
+export const testController  = async (req, res) => {
+    try {
+        const {idDocumentoVenta} = req.params
+        const documentosDespacho = await ventasService.getFVoFVEbyDC(idDocumentoVenta);
+        ResponseHandler.Ok(res, documentosDespacho)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
+
+
 
 
 

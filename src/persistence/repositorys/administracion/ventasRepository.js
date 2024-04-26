@@ -931,7 +931,27 @@ class VentasRepository {
             }
         }
     }
-    
+    async getFVoFVEbyDC(idDocumentoVenta) {
+        try {
+            const response = await prisma.$queryRaw`
+            (SELECT 
+                'Factura Venta' as tipo, 
+                id, 
+                idDoc as idDoc
+            FROM factura_venta
+            WHERE idDoc = ${idDocumentoVenta}) 
+            UNION ALL
+            (SELECT 
+                'Factura Venta Excenta' as tipo, 
+                id, 
+                idDoc
+            FROM factura_venta_excenta
+            WHERE idDoc = ${idDocumentoVenta})`;
+            return response;
+        }catch(error){
+            handlePrismaError(error)
+        }
+    }
 }
 
 

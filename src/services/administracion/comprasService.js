@@ -45,7 +45,6 @@ class ComprasService {
             });
             return facturas;
         } catch (error) {
-            console.log(error)
             throw error
         }
     }
