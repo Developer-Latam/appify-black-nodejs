@@ -81,13 +81,13 @@ class ItemSistemaRepository {
             throw new CustomError(500, "Error process db", {error: error.message})
         }
     }
-    async getEmpresaYByUserId(userId) {
+    async getEmpresaYSistemaByUserId(userId) {
         try {
             const resultado = await prisma.$queryRaw`
             SELECT empresa.*, sistema.*
             FROM empresa
             JOIN sistema ON sistema.empresa = empresa.id
-            WHERE empresa.user = ${user};
+            WHERE empresa.user = ${userId};
             `;
         return resultado;
         } catch (error) {

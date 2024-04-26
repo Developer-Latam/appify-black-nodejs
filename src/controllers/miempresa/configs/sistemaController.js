@@ -20,10 +20,10 @@ export const updateEmpresaController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
-export const getSistemaByUserIdController = async (req, res) => {
+export const getSistemaYEmpresaByUserIdController = async (req, res) => {
     try {
         const { userId } = req.params;
-        const result = await ItemsSistemaService.getSistemaByUserId(userId);
+        const result = await ItemsSistemaService.getSistemaYEmpresaByUserId(userId);
         ResponseHandler.Ok(res, result)
     } catch (error) {
         ResponseHandler.HandleError(res,error)

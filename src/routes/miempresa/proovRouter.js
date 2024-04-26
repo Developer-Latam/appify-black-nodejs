@@ -12,8 +12,8 @@ const router = Router()
 
 router.post('/createProv', createProveedorController)
 //trae los proveedores inactivos y activos por user id
-router.get('/allProvAct', getAllProveedoresActController)
-router.get('/allProvInact', getAllProveedoresInactController)
+router.get('/allProvAct/:userId', getAllProveedoresActController)
+router.get('/allProvInact/:userId', getAllProveedoresInactController)
 
 router.put('/updProv/:id', updateProveedorController)
 router.get('/todos/:id', getProveedoresByUserId)

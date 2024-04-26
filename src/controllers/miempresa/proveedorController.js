@@ -45,7 +45,7 @@ export const updateProveedorController = async (req, res, next) => {
 }
 export const getAllProveedoresActController = async (req, res, next) => {
     try {
-        const {userId} = req.body
+        const {userId} = req.params
         const result = await proveedorService.getAllProvAct(userId)
         ResponseHandler.Ok(res, result);
     } catch (error) {
@@ -54,7 +54,7 @@ export const getAllProveedoresActController = async (req, res, next) => {
 }
 export const getAllProveedoresInactController = async (req, res, next) => {
     try {
-        const {userId} = req.body
+        const {userId} = req.params
         const result = await proveedorService.getAllProvInact(userId)
         ResponseHandler.Ok(res, result);
     } catch (error) {
