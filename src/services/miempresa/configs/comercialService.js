@@ -75,6 +75,7 @@ class comercialService {
         }
     }
 }
+console.log("hola")
 
 
 export default new comercialService()
