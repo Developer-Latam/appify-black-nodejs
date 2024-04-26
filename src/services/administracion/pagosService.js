@@ -268,11 +268,11 @@ class pagosService {
                     switch (result.clave) {
                         case "findPagosNCByPagoId":
                             const idNotaCredito = result.resultado.idNotaCredito;
-                            console.log(idNotaCredito)
                             const notacredito = await pagosRepository.findFCNCById(idNotaCredito);
-                            console.log(notacredito)
-                            const averquees = await comprasService.getFCoFCEbyIdDoc(notacredito.idDoc)
-                            const notaCompletaNC = await comprasService.getItemsByNCOD(notacredito.id, averquees.tipo);
+                            const idDocumentoCompra = notacredito.idDoc
+                            const averquees = await comprasService.getFCoFCEbyDC(idDocumentoCompra);
+                            console.log(averquees);
+                            const notaCompletaNC = await comprasService.getItemsByNCOD(notacredito.id, averquees[0].tipo);
                             formattedPagos.push({ pago, factura: notaCompletaNC });
                             break;
     
