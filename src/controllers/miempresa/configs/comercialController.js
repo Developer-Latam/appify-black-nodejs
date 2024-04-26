@@ -25,8 +25,8 @@ export const updateParaClientesController = async (req, res) => {
 }
 export const getProyectoYParaClientesController = async (req, res) => {
     try {
-        const { userId } = req.params;
-        const result = await comercialService.getProyectoYParaClientes(userId);
+        const { empresaId } = req.params;
+        const result = await comercialService.getProyectoYParaClientes(empresaId);
         ResponseHandler.Ok(res, result)
     } catch (error) {
         ResponseHandler.HandleError(res,error)

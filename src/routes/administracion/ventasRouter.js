@@ -1,5 +1,19 @@
 import { Router } from "express";
-import { createDDController,getDocumentosDespachoByUserController,getAllDataVentasByUserId,getAllDocumentosDespachoController,getDocumentosVentaByUserController,getAllDocumentosVentaController,getItemsNCODbyIdNCODController,getNCODbyIdDocController,getFVEbyIdDocController,getFVbyIdDocController,getAllFVController, createFVController, createFVEController,createNCoDConItemsController, 
+import { createDDController,
+    getDocumentosDespachoByUserController,
+    getAllDataVentasByUserId,
+    getAllDocumentosDespachoController,
+    getDocumentosVentaByUserController,
+    getAllDocumentosVentaController,
+    getItemsNCODbyIdNCODController,
+    getNCODbyIdDocController,
+    getFVEbyIdDocController,
+    getFVbyIdDocController,
+    getAllFVController, 
+    createFVController, 
+    createFVEController,
+    createNCoDConItemsController,
+    testController
 } from "../../controllers/administracion/ventasController.js";
 const router = Router()
 
@@ -31,6 +45,11 @@ router.post('/ventas/DD', createDDController)
 
 router.get('/ventas/DD', getAllDocumentosDespachoController);
 router.get('/ventas/DD/:user', getDocumentosDespachoByUserController);
+
+
+
+//RUTA HECHA PARA TEST
+router.get('/ventas/test/:idDocumentoVenta', testController)
 
 export default router
 

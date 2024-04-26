@@ -7,7 +7,8 @@ router.put('/upd/proyecto/:id', updateProyectoController)
 
 router.put('/upd/para-clientes/:id', updateParaClientesController)
 
-router.get('/allcomercial/:userId', getProyectoYParaClientesController)
+router.get('/all/:empresaId', getProyectoYParaClientesController)
+
 
 
 export default router

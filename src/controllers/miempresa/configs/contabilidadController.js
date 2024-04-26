@@ -70,3 +70,12 @@ export const updateAdmModulos = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+export const getItemsByIdEmpresaController = async (req, res) => {
+    try {
+        const {idEmpresa} = req.params
+        const result = await contabilidadService.getItemsByIdEmpresa(idEmpresa);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
