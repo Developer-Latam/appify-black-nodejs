@@ -229,12 +229,6 @@ class pagosService {
         try {
             let pagos = await this.getAllPagosByUserId(userId);
     
-            // Verificar si cobros es un array o no
-            /*
-            if (!Array.isArray(cobros)) {
-                cobros = [cobros]; // Convertir a un array para facilitar la iteración
-            }*/
-    
             const formattedPagos = [];
     
             for (const pago of pagos) {
@@ -260,7 +254,7 @@ class pagosService {
                         }
                     } catch (error) {
                         // Si hay un error, continuamos con la siguiente función
-                        console.error(`Error al intentar ejecutar la función ${func.name}:`, error.message);
+                        
                     }
                 }
     
@@ -271,7 +265,7 @@ class pagosService {
                             const notacredito = await pagosRepository.findFCNCById(idNotaCredito);
                             const idDocumentoCompra = notacredito.idDoc
                             const averquees = await comprasService.getFCoFCEbyDC(idDocumentoCompra);
-                            console.log(averquees);
+    
                             const notaCompletaNC = await comprasService.getItemsByNCOD(notacredito.id, averquees[0].tipo);
                             formattedPagos.push({ pago, factura: notaCompletaNC });
                             break;
