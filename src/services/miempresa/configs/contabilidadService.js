@@ -72,6 +72,15 @@ class ContabilidadService {
             throw(error)
         }
     }
+    async getItemsByIdEmpresa(idEmpresa) {
+        try {
+            const res = await contabilidadRepository.getAllItemsContabilidad(idEmpresa)
+            console.log(res)
+            return res
+        } catch (error) {
+            throw(error)
+        }
+    }
 }
 
 export default new ContabilidadService()

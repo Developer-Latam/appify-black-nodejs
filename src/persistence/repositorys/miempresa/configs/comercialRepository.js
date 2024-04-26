@@ -1,6 +1,7 @@
 import { CustomError } from "../../../../utils/httpRes/handlerResponse.js";
 import { prisma, prismaError } from "../../../../utils/dependencys/injection.js";
 import handlePrismaError from "../../../../utils/httpRes/handlePrismaError.js";
+import { response } from "express";
 class ComercialRepository {
     createProyecto(empresaId, {valor_impuesto, porcentaje_de_ot, texto_para_compartir_proyecto, cotizacion_descuento_visible, nombre_impuesto}) {
         try {
@@ -22,12 +23,7 @@ class ComercialRepository {
                 data,
             });
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async deleteProyecto(id) {
@@ -56,15 +52,35 @@ class ComercialRepository {
                 data,
             });
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
+        }
+    }
+    getProyectoYParaClientes(empresaId) {
+        try {
+            const response = prisma.$queryRaw`SELECT
+            ep.empresa AS EmpresaID,
+            ep.valor_impuesto AS valor_impuesto,
+            ep.logo AS logo,
+            ep.porcentaje_de_ot AS porcentaje_de_ot,
+            ep.texto_para_compartir_proyecto AS texto_para_compartir_proyecto,
+            ep.cotizacion_descuento_visible AS cotizacion_descuento_visible,
+            ep.nombre_impuesto AS nombre_impuesto,
+            pcp.texto_inferior_firma AS texto_inferior_firma,
+            pcp.mensaje_envio_proyecto AS mensaje_envio_proyecto,
+            pcp.texto_confirmacion_compra AS texto_confirmacion_compra
+            FROM
+                empresa_proyecto ep
+                INNER JOIN para_clientes_proyectos pcp ON ep.empresa = pcp.empresa
+            WHERE
+                pcp.empresa = ${empresaId};`
+            return response
+        } catch (error) {
+            handlePrismaError(error)
         }
     }
 }
 
 
 export default new ComercialRepository()
+
+

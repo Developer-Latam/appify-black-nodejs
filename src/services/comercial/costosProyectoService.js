@@ -8,7 +8,8 @@ class costosProyectoService {
     }
 
     async getCostosByProyectoId(proyectoId) {
-        return costosProyectoRepository.findAllCostosByProyectoId(proyectoId);
+        const res = await costosProyectoRepository.findAllCostosByProyectoId(proyectoId);
+        return res
     }
 
     async updateCosto(id, updateData) {
