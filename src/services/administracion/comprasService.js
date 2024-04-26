@@ -43,7 +43,6 @@ class ComprasService {
                     tipo: tipoFactura
                 });
             });
-            return facturas;
         } catch (error) {
             throw error
         }
@@ -287,12 +286,12 @@ class ComprasService {
                 for (const { func, key } of functionsToTry) {
                     try {
                         const resultado = await func(documento.id);
-                        console.log(`El resultado de ${func.name} es:`, resultado);
+    
                         if (resultado.length > 0) { // Verificar si el resultado no está vacío
                             results.push({ key, resultado });
                         }
                     } catch (error) {
-                        console.error(`Error al intentar ejecutar la función ${func.name}:`, error.message);
+                        
                     }
                 }
                 
