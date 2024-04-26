@@ -45,9 +45,9 @@ class comercialService {
             throw(error)
         }
     }
-    async getProyectoYParaClientes(userId) {
+   async getProyectoYParaClientes(userId) {
         try {
-            const result = await comercialRepository. 
+            const result = await comercialRepository
         } catch (error) {
             throw(error)
         }

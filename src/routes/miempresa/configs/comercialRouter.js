@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { updateProyectoController, updateParaClientesController } from "../../../controllers/miempresa/configs/comercialController.js";
+import { updateProyectoController, updateParaClientesController, getProyectoYParaClientesController } from "../../../controllers/miempresa/configs/comercialController.js";
 const router = Router()
 
 
