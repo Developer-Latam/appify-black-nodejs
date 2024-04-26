@@ -523,6 +523,7 @@ class comprasRepository {
     }
     async notaFCE_NCOD(NCOD){
         try {
+            console.log(NCOD)
             const notaFCE_NCOD = await prisma.$queryRaw`SELECT
             nfc.id AS NotaID,
             nfc.idFacturaCompraExenta AS FCEAsociada,
@@ -543,8 +544,10 @@ class comprasRepository {
             INNER JOIN factura_compra_excenta fc ON nfc.idFacturaCompraExenta = fc.id
         WHERE
             nfc.idNotadeCD = ${NCOD};`;
+            console.log(notaFCE_NCOD)
             return notaFCE_NCOD;
         } catch (error) {
+            console.log(NCOD)
             handlePrismaError(error)
         }
     }

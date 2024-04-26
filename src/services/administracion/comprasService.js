@@ -45,6 +45,7 @@ class ComprasService {
             });
             return facturas;
         } catch (error) {
+            console.log(error)
             throw error
         }
     }
@@ -395,7 +396,9 @@ class ComprasService {
                     dataFCdetails = dataFC.FacturaCompra_FacturaCompraExenta
                     break;
                 case 'FCE':
+                    console.log('te va a entrar toda')
                     data = await comprasRepository.notaFCE_NCOD(NCOD);
+                    console.log(data)
                     const idDCe = data[0].DocumentoCompraID
                     const dataFCE = await this.getFCoFCEbyIdDoc(false, idDCe)
                     dataFCEdetails = dataFCE.FacturaCompra_FacturaCompraExenta
