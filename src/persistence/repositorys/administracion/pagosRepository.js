@@ -1,124 +1,152 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
 
 class pagosRepository {
 
 
     async createPagos(data) {
-        return prisma.pagos.create({
-            data: data
-        });
+        try {
+            return await prisma.pagos.create({ data });
+        } catch (error) {
+             handlePrismaError(error);
+        }
     }
 
     async createPagosFC(data) {
-        return prisma.pagos_factura_compra.create({
-            data : data
-        });
+        try {
+            return await prisma.pagos_factura_compra.create({ data });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async createPagosFCE(data) {
-        return prisma.pagos_factura_compra_excenta.create({
-            data : data
-        });
+        try {
+            return await prisma.pagos_factura_compra_excenta.create({ data });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
-
     async createPagosNC(data) {
-        return prisma.pagos_factura_nota_credito.create({
-            data : data
-        });
+        try {
+            return await prisma.pagos_factura_nota_credito.create({ data });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async findPagosById(id) {
-        return prisma.pagos.findUnique({
-            where: { id: id }
-        });
+        try {
+            return await prisma.pagos.findUnique({ where: { id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async findPagosFCByPagoId(id) {
-        return prisma.pagos_factura_compra.findFirst({
-            where: { idPago: id }
-        });
+        try {
+            return await prisma.pagos_factura_compra.findFirst({ where: { idPago: id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async findPagosFCEByPagoId(id) {
-        return prisma.pagos_factura_compra_excenta.findFirst({
-            where: { idPago : id }
-        });
+        try {
+            return await prisma.pagos_factura_compra_excenta.findFirst({ where: { idPago: id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async findFCById(id) {
-        return prisma.factura_compra.findUnique({
-            where: { id: id }
-        });
+        try {
+            return await prisma.factura_compra.findUnique({ where: { id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async findFCEById(id) {
-        return prisma.factura_compra_excenta.findUnique({
-            where: { id: id }
-        });
+        try {
+            return await prisma.factura_compra_excenta.findUnique({ where: { id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async findFCNCById(id) {
-        return prisma.notas_de_credito_debito_compras.findUnique({
-            where: { id: id }
-        });
+        try {
+            return await prisma.notas_de_credito_debito_compras.findUnique({ where: { id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async findPagosNCByPagoId(id) {
-        return prisma.pagos_factura_nota_credito.findFirst({
-            where: { idPago: id }
-        });
+        try {
+            return await prisma.pagos_factura_nota_credito.findFirst({ where: { idPago: id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async findAllPagosByUserId(userId) {
-        return prisma.pagos.findMany({
-            where: { user: userId }
-        });
+        try {
+            return await prisma.pagos.findMany({ where: { user: userId } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
-
     async updatePagos(id, updateData) {
-        return prisma.pagos.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return await prisma.pagos.update({ where: { id }, data: updateData });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async updatePagosFC(id, updateData) {
-        return prisma.pagos_factura_compra.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return await prisma.pagos_factura_compra.update({ where: { id }, data: updateData });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-    
 
     async updatePagosNC(id, updateData) {
-        return prisma.pagos_factura_nota_credito.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return await prisma.pagos_factura_nota_credito.update({ where: { id }, data: updateData });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
-
     async deletePagos(id) {
-        return prisma.pagos.delete({
-            where: { id: id }
-        });
+        try {
+            return await prisma.pagos.delete({ where: { id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async deletePagosFCByCobroId(id) {
-        return prisma.pagos_factura_compra.delete({
-            where: { id: id }
-        });
+        try {
+            return await prisma.pagos_factura_compra.delete({ where: { id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
 
     async deletePagosNCByCobroId(id) {
-        return prisma.pagos_factura_nota_credito.delete({
-            where: { id: id }
-        });
+        try {
+            return await prisma.pagos_factura_nota_credito.delete({ where: { id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
 }
 
 

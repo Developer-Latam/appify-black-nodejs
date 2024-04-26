@@ -2,55 +2,67 @@ import { prisma } from "../../../utils/dependencys/injection.js";
 
 class anticiposClienteProvRepository{
     async createAnticipoCliente(data) {
-        return prisma.anticipos_cliente.create({
-            data: data
-        });
+        try {
+            return await prisma.anticipos_cliente.create({ data });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
-
     async findAllAnticiposCienteByProyectoId(id) {
-        return prisma.anticipos_cliente.findMany({
-            where: { idProyecto : id }
-        });
+        try {
+            return await prisma.anticipos_cliente.findMany({ where: { idProyecto: id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async updateAnticipoCliente(id, updateData) {
-        return prisma.anticipos_cliente.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return await prisma.anticipos_cliente.update({ where: { id }, data: updateData });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async deleteAnticipoCliente(id) {
-        return prisma.anticipos_cliente.delete({
-            where: { id: id }
-        });
+        try {
+            return await prisma.anticipos_cliente.delete({ where: { id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async createAnticipoProveedor(data) {
-        return prisma.anticipos_proveedor.create({
-            data: data
-        });
+        try {
+            return await prisma.anticipos_proveedor.create({ data });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
-
     async findAllAnticiposProveedorByProyectoId(id) {
-        return prisma.anticipos_proveedor.findMany({
-            where: { idProyecto : id }
-        });
+        try {
+            return await prisma.anticipos_proveedor.findMany({ where: { idProyecto: id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async updateAnticipoProveedor(id, updateData) {
-        return prisma.anticipos_proveedor.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return await prisma.anticipos_proveedor.update({ where: { id }, data: updateData });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 
     async deleteAnticipoProveedor(id) {
-        return prisma.anticipos_proveedor.delete({
-            where: { id: id }
-        });
+        try {
+            return await prisma.anticipos_proveedor.delete({ where: { id } });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 }
 

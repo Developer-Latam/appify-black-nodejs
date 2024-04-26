@@ -1,4 +1,5 @@
 import { prisma, prismaError } from "../../../utils/dependencys/injection.js";
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../../utils/id/idGenerate.js";
 
@@ -13,12 +14,7 @@ class VentasRepository {
                 }
             })
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async getAllDV() {
