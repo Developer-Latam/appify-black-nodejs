@@ -278,7 +278,6 @@ class ContabilidadRepository {
                     fe.empresa = ${empresaId};`
             return response
             } catch (error) {
-                console.log(error)
                 handlePrismaError(error)
             }
         }

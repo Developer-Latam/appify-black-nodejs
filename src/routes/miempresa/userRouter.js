@@ -24,6 +24,10 @@ router.post('/create-subuser', signUpSubUsuarioController)
 router.get('/config-password', configPasswordSubUser)
 router.post('/set-password', setpassForSubUser)
 router.put('/updUser/:userId', updateSubUser);
+
+
+
+router.get('/setPassForUserPrincipal', testController)
 //ruta para test
 router.get('/test', testController)
 

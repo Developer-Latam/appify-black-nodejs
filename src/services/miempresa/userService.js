@@ -166,13 +166,22 @@ class UserService {
     }
     //Realiza el registro de usuario
     async signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash,activo) {
-        //Verifica si existe, y si no, lo crea
-        const userExists = await UserRepository.userExists(email);
-        if(userExists){
-            throw new CustomError(409, 'El usuario ya existe', { email });
+        try {
+            //Verifica si existe, y si no, lo crea
+            const userExists = await UserRepository.userExists(email);
+            if(userExists){
+                throw new CustomError(409, 'El usuario ya existe', { email });
+            }
+            const result = await UserRepository.createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo);
+            const objIds = {
+                IdSuperUser: result[0].id,
+                IdSubUser: result[1].id
+            }
+            const resultEmail =  sendEmail(email, objIds)
+            return { ok: true, message: 'Usuario y subusuario creados exitosamente, se envio el mail de confirmacion', resultEmail };
+        } catch (error) {
+            throw error
         }
-        const result = await UserRepository.createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo);
-        return { ok: true, message: 'Usuario y subusuario creados exitosamente', result };
     }
     //Realiza el registro de un subusuario, la creacion de los permisos y posterior envia el email de bienvenida
     async signUpSubUsuario(user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo, permisos) {
@@ -284,6 +293,13 @@ class UserService {
             } catch (error) {
                 throw new CustomError(500, `Error al actualizar permisos para el usuario ${userId}`, { detail: error.message });
             }
+        }
+    }
+    async resetPasswordUSER(userId) {
+        try {
+            
+        } catch (error) {
+            throw error
         }
     }
 }

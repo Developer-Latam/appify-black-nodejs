@@ -115,8 +115,17 @@ export const getAllUsersInactController = async (req, res, next) => {
 // ENDPOINT PARA REALIZAR TEST DE FUNCION:
 //Realiza el registro del usuario 
 export const testController = async (req, res, next) => {
+    const { token } = req.query;
+    if (!token) {
+        ResponseHandler.Unauthorized(res, "Falta el token.");
+    }
     try {
-        
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY_MAIL)
+        console.log(decodedToken)
+        const userIdS = decodedToken.userId
+        console.log(userIdS)
+        const user = await userService.getSubUserById(userIdS.IdSubUser)
+        ResponseHandler.Ok(res, user);
     } catch (error) {
         ResponseHandler.HandleError(res, error);
     }

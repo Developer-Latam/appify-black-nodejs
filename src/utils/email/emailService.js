@@ -3,6 +3,7 @@ import { createTransport } from "nodemailer";
 import jwt from "jsonwebtoken"
 import "dotenv/config"
 import { getConfigPasswordTemplateHTML } from "./templateEmail/configYourPasswordTemplate.js"
+import { getHTMLBienvenidaYPassword } from "./templateEmail/BienvenidaPassword.js";
 // la direccion de destino se envia a un email temporal sacado de "https://tempail.com/"
 const transporterGmail = createTransport({
     service: 'gmail',
@@ -23,14 +24,14 @@ export const sendEmail = async (email, userId) => {
     try {
         const token = jwt.sign({userId}, process.env.SECRET_KEY_MAIL, {expiresIn: '24h'});
         // Construir el link con el token como parametro
-        const linkDeConfiguracion = `http://localhost:8080/user/config-password?token=${token}`;
+        const linkDeConfiguracion = `http://localhost:8080/user/setPassForUserPrincipal?token=${token}`;
         // Genera el contenido HTML con el enlace incluido
-        const htmlContent = getConfigPasswordTemplateHTML(linkDeConfiguracion);
+        const htmlContent = getHTMLBienvenidaYPassword(linkDeConfiguracion);
         createPasswordMessage.to = email;
         createPasswordMessage.html = htmlContent;
         const response = await transporterGmail.sendMail(createPasswordMessage);
         return `Te llegara un mail a ${response.accepted}`
     } catch (error) {
-        throw new Error('Error al enviar el correo.');
+        throw error
     }
 }

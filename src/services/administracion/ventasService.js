@@ -252,6 +252,7 @@ class VentasService {
             } else {
                 throw new CustomError(404, "Not Found", "No se encontraron detalles para el documento de venta solicitado")
             }
+            
         } catch (error) {
             throw error
         }
