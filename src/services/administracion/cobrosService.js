@@ -268,7 +268,9 @@ class cobrosService {
                         case "findCobroNCByCobroId":
                             const idNotaCredito = result.resultado.idNotaCredito;
                             const notacredito = await cobrosRepository.findNCById(idNotaCredito);
-                            const notaCompletaNC = await ventasService.getNCoDbyIdDoc(notacredito.idDoc);
+                            const idDocumentoCompra = notacredito.idDoc
+                            const averquees = await ventasService.getFVoFVEbyDC(idDocumentoCompra);
+                            const notaCompletaNC = await ventasService.getItemsByNCOD(notacredito.id, averquees[0].tipo);
                             formattedCobros.push({ cobro, factura: notaCompletaNC });
                             break;
     
