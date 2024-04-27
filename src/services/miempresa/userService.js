@@ -72,6 +72,21 @@ class UserService {
             throw error;
         }
     }
+    //
+    async resetPasswordUserPrincipal(data, passwordHashed){
+        try {
+            console.log("este es el data del service",data)
+            const {
+                IdSuperUser,
+                IdSubUser
+            } = data
+            const result0 = UserRepository.resetPasswordUser(IdSuperUser, passwordHashed)
+            const result = UserRepository.resetPasswordSubUser(IdSubUser, passwordHashed)
+            return ["Password actualizadas correctamente", result0, result]
+        } catch (error) {
+            throw error
+        }
+    }
     //Realiza la creacion de contraseña para un nuevo sub usuario
     async createPasswordForSubUser(subUserId, passwordHashed) {
         try {

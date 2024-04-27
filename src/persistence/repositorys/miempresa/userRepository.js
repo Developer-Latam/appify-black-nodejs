@@ -219,6 +219,18 @@ class UserRepository {
             handlePrismaError(error)
         }
     }
+    async resetPasswordUser(idUser, passwordHashed){
+        try {
+            await prisma.usuarios.update({
+                where: {id : idUser},
+                data: {
+                    password: passwordHashed,
+                }
+            })
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
     //Realiza un update a la password del subUser
     async resetPasswordSubUser(id, passwordHashed) {
         try {

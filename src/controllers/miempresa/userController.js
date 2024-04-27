@@ -85,6 +85,25 @@ export const setpassForSubUser = async (req, res, next) => {
         ResponseHandler.HandleError(res, error);
     }
 }
+//Realiza el seteo de contraseña del nuevo usuario
+export const setpassForUser = async (req, res, next) => {
+    const { userId, password, passwordConfirm } = req.body;
+    const validationResult = validatePassword(password, passwordConfirm)
+    if (!validationResult.isValid){
+        return res.status(400).json({ 
+            status: 400,
+            message: 'Bad Request',
+            error: validationResult.message
+        });
+    }
+    try {
+        const passwordHashed = createHash(password)
+        const result = await userService.resetPasswordUserPrincipal(userId, passwordHashed);
+        ResponseHandler.Ok(res, { message: result });
+    } catch (error) {
+        ResponseHandler.HandleError(res, error);
+    }
+}
 export const getDataUserController = async (req, res, next) => {
     try {
         const {id} = req.params
@@ -121,12 +140,11 @@ export const testController = async (req, res, next) => {
     }
     try {
         const decodedToken = jwt.verify(token, process.env.SECRET_KEY_MAIL)
-        console.log(decodedToken)
-        const userIdS = decodedToken.userId
-        console.log(userIdS)
-        const user = await userService.getSubUserById(userIdS.IdSubUser)
+        const data = decodedToken.userId
+        const user = await userService.resetPasswordUserPrincipal(data, passwordHashed)
         ResponseHandler.Ok(res, user);
     } catch (error) {
+        console.log(error)
         ResponseHandler.HandleError(res, error);
     }
 }
