@@ -75,14 +75,16 @@ class UserService {
     //
     async resetPasswordUserPrincipal(data, passwordHashed){
         try {
-            console.log("este es el data del service",data)
             const {
                 IdSuperUser,
                 IdSubUser
             } = data
-            const result0 = UserRepository.resetPasswordUser(IdSuperUser, passwordHashed)
-            const result = UserRepository.resetPasswordSubUser(IdSubUser, passwordHashed)
-            return ["Password actualizadas correctamente", result0, result]
+            let op = [];
+            const updateUserPromise = UserRepository.resetPasswordUserOP(IdSuperUser, passwordHashed)
+            const updateSubUserPromise = UserRepository.resetPasswordSubUserOP(IdSubUser, passwordHashed)
+            op.push(updateUserPromise, updateSubUserPromise)
+            await executeTransactions(op)
+            return "Transacciones para User-SubUser completadas correctamente"
         } catch (error) {
             throw error
         }

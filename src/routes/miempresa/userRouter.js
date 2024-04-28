@@ -13,24 +13,22 @@ const router = Router()
 
 
 router.post('/login', loginUser);
-
-
-
 router.get('/dataUser/:id', getDataUserController)
 router.get('/allUsersAct/:idUser', getAllUsersActController)
 router.get('/allUsersInact/:idUser', getAllUsersInactController)
 router.post('/create-subuser', signUpSubUsuarioController)
-
-router.post('/set-password', setpassForSubUser)
 router.put('/updUser/:userId', updateSubUser);
 //esta ruta es para recibir el token y descifrarlo, se tiene que hacer en el lado del front, esta de example
 router.get('/config-password', configPasswordSubUser)
-//ruta casi lista
-router.put('/setPassForUserPrincipal', setpassForUser)
+//Ruta de seteo de contraseñas para usuario principal
+router.put('/setPassForUser', setpassForUser)
+//Seteo de contraseña para sub usuario
+router.put('/set-password', setpassForSubUser)
+
+
 //ruta que es para testear
-router.get('/setPassForUserPrincipal', testController)
-//ruta para test
-router.get('/test', testController)
+router.get('/setPassForToken', testController)
+
 
 
 export default router 

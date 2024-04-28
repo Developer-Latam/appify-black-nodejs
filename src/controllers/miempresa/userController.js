@@ -141,6 +141,11 @@ export const testController = async (req, res, next) => {
     try {
         const decodedToken = jwt.verify(token, process.env.SECRET_KEY_MAIL)
         const data = decodedToken.userId
+        console.log("TEST CONTROLLER DATA", data)
+        // TEST CONTROLLER DATA {
+        //     IdSuperUser: 'super-user-519aa586-9d24-45c5-be3a-46724ad5db5e',
+        //     IdSubUser: 'sub-user-dc026e6e-3f46-40d6-9fc6-efdd5de56ce1'
+        //   }
         const user = await userService.resetPasswordUserPrincipal(data, passwordHashed)
         ResponseHandler.Ok(res, user);
     } catch (error) {
