@@ -1,14 +1,14 @@
 import ordenCompraService from "../../services/operaciones/ordenCompraService.js";
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createOrdenCompra = async (req, res) => {
     try {
         const data = req.body;
         const response = await ordenCompraService.createOrdenCompra(data);
-        res.status(200).json({cliente: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getOrdenCompraById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -16,30 +16,28 @@ export const getOrdenCompraById = async (req, res) => {
         if (!ordencompra) {
             return res.status(404).json({ message: 'Orden no encontrada' });
         }
-        res.status(200).json(ordencompra);
+        ResponseHandler.Ok(res, ordencompra)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getOrdenCompraByUserId = async (req, res) => {
     try {
         const { idUser } = req.params;
         const ordencompra = await ordenCompraService.getOrdenCompraByUserId(idUser);
-        res.status(200).json({ data: ordencompra });
+        ResponseHandler.Ok(res, ordencompra)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateOrdenCompra = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
         await ordenCompraService.updateOrdenCompra(id, updateData);
-        res.status(200).json({ ok: true, message: 'Orden de trabajo actualizada' });
+        ResponseHandler.Ok(res, 'Orden de trabajo actualizada')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
 

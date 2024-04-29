@@ -1,14 +1,14 @@
 import itemProdServOrdenCompraService from "../../services/operaciones/itemProdServOrdenCompraService.js";
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createitemProducto = async (req, res) => {
     try {
         const data = req.body;
         const response = await itemProdServOrdenCompraService.createitemProducto(data);
-        res.status(200).json({cliente: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getProductoById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -16,22 +16,20 @@ export const getProductoById = async (req, res) => {
         if (!producto) {
             return res.status(404).json({ message: 'Item no encontrado' });
         }
-        res.status(200).json(producto);
+        ResponseHandler.Ok(res, producto)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const createitemServicio = async (req, res) => {
     try {
         const data = req.body;
         const response = await itemProdServOrdenCompraService.createitemServicio(data);
-        res.status(200).json({cliente: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getServicioById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -39,64 +37,57 @@ export const getServicioById = async (req, res) => {
         if (!servicio) {
             return res.status(404).json({ message: 'Item no encontrado' });
         }
-        res.status(200).json(servicio);
+        ResponseHandler.Ok(res, servicio)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getProdServByOrdenCompraId = async (req, res) => {
     try {
         const { idOrden } = req.params;
         const prodservicios = await itemProdServOrdenCompraService.getProdServByOrdenCompraId(idOrden);
-        res.status(200).json({ data: prodservicios });
+        ResponseHandler.Ok(res, prodservicios)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateItemProducto = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
         await itemProdServOrdenCompraService.updateItemProducto(id, updateData);
-        res.status(200).json({ ok: true, message: 'Item actualizado' });
+        ResponseHandler.Ok(res, "Item actualizado")
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 // Esta funcion va a quedar comentada por si la usamos enun futuro pero no se deberian borrar las ordenes de trabajo...o si?
-
 export const deleteItemProducto = async (req, res) => {
     try {
         const { id } = req.params;
         await itemProdServOrdenCompraService.deleteItemProducto(id);
-        res.status(200).json({ message: 'Item eliminado' });
+        ResponseHandler.Ok(res, "Item eliminado")
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateItemServicios = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
         await itemProdServOrdenCompraService.updateItemServicios(id, updateData);
-        res.status(200).json({ ok: true, message: 'Item actualizado' });
+        ResponseHandler.Ok(res, "Item actualizado")
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 // Esta funcion va a quedar comentada por si la usamos enun futuro pero no se deberian borrar las ordenes de trabajo...o si?
-
 export const deleteItemServicios = async (req, res) => {
     try {
         const { id } = req.params;
         await itemProdServOrdenCompraService.deleteItemServicios(id);
-        res.status(200).json({ message: 'Item eliminado' });
+        ResponseHandler.Ok(res, "Item eliminado")
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };

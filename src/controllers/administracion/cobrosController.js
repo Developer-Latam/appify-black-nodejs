@@ -1,119 +1,105 @@
 import cobrosService from "../../services/administracion/cobrosService.js";
-
-
-
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createCobrosAll = async (req, res) => {
     try {
         const data = req.body;
         const response = await cobrosService.createCobrosAll(data);
-        res.status(200).json({cobros: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getCobrosAllById = async (req, res) => {
     try {
         const { id } = req.params;
         const cobro = await cobrosService.getCobrosAllById(id);
-        res.status(200).json(cobro);
+        ResponseHandler.Ok(res, cobro)
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
-
 export const getAllCobrosByUserId = async (req, res) => {
     try {
         const { id } = req.params;
         const cobros = await cobrosService.getCobrosByUserId(id);
-        res.status(200).json({ data: cobros });
+        ResponseHandler.Ok(res, cobros)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getAllCobrosDataByUserId = async (req, res) => {
     try {
         const { id } = req.params;
         const cobros = await cobrosService.getAllCobrosDataByUserId(id);
-        res.status(200).json({ data: cobros });
+        ResponseHandler.Ok(res, cobros)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateCobro = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
-        await cobrosService.updateCobro(id, updateData);
-        res.status(200).json({ ok: true, message: 'Cobro actualizado' });
+        const result = await cobrosService.updateCobro(id, updateData);
+        ResponseHandler.Ok(res, result)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateCobroFV = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
-        await cobrosService.updateCobroFV(id, updateData);
-        res.status(200).json({ ok: true, message: 'Cobro actualizado' });
+        const result = await cobrosService.updateCobroFV(id, updateData);
+        ResponseHandler.Ok(res, result)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateCobroFVE = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
-        await cobrosService.updateCobroFVE(id, updateData);
-        res.status(200).json({ ok: true, message: 'Cobro actualizado' });
+        const result = await cobrosService.updateCobroFVE(id, updateData);
+        ResponseHandler.Ok(res, result)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateCobroNC = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
-        await cobrosService.updateCobroNC(id, updateData);
-        res.status(200).json({ ok: true, message: 'Cobro actualizado' });
+        const result = await cobrosService.updateCobroNC(id, updateData);
+        ResponseHandler.Ok(res, result)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
-
 export const deleteCobroFV = async (req, res) => {
     try {
         const { id } = req.params;
-        await cobrosService.deleteCobroFV(id);
-        res.status(200).json({ message: 'Cobro de factura de venta eliminado' });
+        const result = await cobrosService.deleteCobroFV(id);
+        ResponseHandler.Ok(res, result)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const deleteCobroFVE = async (req, res) => {
     try {
         const { id } = req.params;
-        await cobrosService.deleteCobroFVE(id);
-        res.status(200).json({ message: 'Cobro de factura de venta excenta eliminado' });
+        const result = await cobrosService.deleteCobroFVE(id);
+        ResponseHandler.Ok(res, result)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const deleteCobroNC = async (req, res) => {
     try {
         const { id } = req.params;
-        await cobrosService.deleteCobroNC(id);
-        res.status(200).json({ message: 'Cobro de nota de credito eliminado' });
+        const result = await cobrosService.deleteCobroNC(id);
+        ResponseHandler.Ok(res, result)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };

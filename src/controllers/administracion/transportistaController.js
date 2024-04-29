@@ -1,16 +1,14 @@
 import transportistaService from "../../services/administracion/transportistaService.js";
-
-
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createTransportista = async (req, res) => {
     try {
         const data = req.body;
         const response = await transportistaService.createTransportista(data);
-        res.status(200).json({transportista: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getTransportistaById = async (req, res) => {
     try {
         const { idTransportista } = req.params;
@@ -18,39 +16,36 @@ export const getTransportistaById = async (req, res) => {
         if (!transportista) {
             return res.status(404).json({ message: 'Transportista no encontrado' });
         }
-        res.status(200).json(transportista);
+        ResponseHandler.Ok(res, transportista)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getTransportistaByUserId = async (req, res) => {
     try {
         const { id } = req.params;
         const transportista = await transportistaService.getTransportistaByUserId(id);
-        res.status(200).json({ data: transportista });
+        ResponseHandler.Ok(res, transportista)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateTransportista = async (req, res) => {
     try {
         const { idTransportista } = req.params;
         const updateData = req.body;
         await transportistaService.updateTransportista(idTransportista, updateData);
-        res.status(200).json({ ok: true, message: 'Transportista actualizado' });
+        ResponseHandler.Ok(res, 'Transportista actualizado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const deleteTransportista = async (req, res) => {
     try {
         const { idTransportista } = req.params;
         await transportistaService.deleteTransportista(idTransportista);
-        res.status(200).json({ message: 'Transportista eliminado' });
+        ResponseHandler.Ok(res, 'Transportista eliminado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };

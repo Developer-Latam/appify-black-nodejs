@@ -1,7 +1,5 @@
 import { ResponseHandler } from "../../../utils/dependencys/injection.js";
 import contabilidadService from "../../../services/miempresa/configs/contabilidadService.js";
-
-
 export const createFEController = async (req, res) => {
     try {
         const { recibir_doc_libre_DTE_automatico, contrasena_sii, folio_factura_excenta, folio_facura, folio_factura_compra, folio_nota_debito, folio_nota_credito, folio_guia_despacho, folio_boleta_excenta, folio_boleta_fisica, folio_boleta_electronica, set_factura_basica, set_boletas, set_facturas_exportacion, set_facturas_compra } = req.body;

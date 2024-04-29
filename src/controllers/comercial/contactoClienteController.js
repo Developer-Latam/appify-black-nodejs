@@ -1,42 +1,39 @@
 import contactoClienteService from "../../services/comercial/contactoClienteService.js";
-
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createContacto = async (req, res) => {
     try {
         const data = req.body;
         const response = await contactoClienteService.createContacto(data);
-        res.status(200).json({ project: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getContactosByClienteId = async (req, res) => {
     try {
         const { idContacto } = req.params;
         const projects = await contactoClienteService.getContactosByClienteId(idContacto);
-        res.status(200).json({ data: projects });
+        ResponseHandler.Ok(res, projects)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateContacto = async (req, res) => {
     try {
         const {id} = req.params;
         const updateData = req.body;
         await contactoClienteService.updateContacto(id, updateData);
-        res.status(200).json({ ok: true, message: 'Contacto actualizado' });
+        ResponseHandler.Ok(res, 'Contacto actualizado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const deleteContacto = async (req, res) => {
     try {
         const { id } = req.params;
         await contactoClienteService.deleteContacto(id);
-        res.status(200).json({ message: 'Contacto eliminado' });
+        ResponseHandler.Ok(res, 'Contacto eliminado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
