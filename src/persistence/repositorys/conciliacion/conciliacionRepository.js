@@ -19,6 +19,16 @@ class conciliacionRepository {
             handlePrismaError(error);
         }
     }
+
+    async createCuentaBancariaLinkConciliacion(data) {
+        try {
+            return prisma.cuenta_banco_conciliacion.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
+    }
     async insertarMovimiento(movimiento) {
         try {
             // Verificar si el movimiento ya existe en la base de datos
@@ -81,6 +91,16 @@ class conciliacionRepository {
         try {
             return prisma.link_fintoc_bancos.findUnique({
                 where: { user: userid }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
+    }
+
+    async findLinkCuentasBancoConciliacionByCuentaId(id) {
+        try {
+            return prisma.cuenta_banco_conciliacion.findFirst({
+                where: { idCuentaBanco: id }
             });
         } catch (error) {
             handlePrismaError(error);

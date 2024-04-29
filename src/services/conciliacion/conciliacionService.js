@@ -1,5 +1,7 @@
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import conciliacionRepository from "../../persistence/repositorys/conciliacion/conciliacionRepository.js";
+import handlePrismaError from "../../utils/httpRes/handlePrismaError.js";
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 
 class conciliacionService {
 
@@ -60,7 +62,37 @@ class conciliacionService {
     }
     async createMovimientos(data) {
 
-        return conciliacionRepository.createMovimientos(data);
+        try{
+
+            return conciliacionRepository.createMovimientos(data);
+        } catch (error) {
+            ResponseHandler.HandleError(error)
+        }
+    }
+
+    async createCuentaLink(id) {
+
+        try{
+            
+            return conciliacionRepository.createCuentaBancariaLinkConciliacion(id);
+
+        } catch (error) {
+
+            ResponseHandler.HandleError(error)
+        }
+    }
+
+    async getCuentaLinkById(id){
+
+        try{
+
+            return conciliacionRepository.findLinkCuentasBancoConciliacionByCuentaId(id);
+
+        } catch (error) {
+
+            ResponseHandler.HandleError(error)
+        }
+
     }
 
     async getLinkByUserId(userId){
