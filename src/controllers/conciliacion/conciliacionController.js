@@ -1,4 +1,5 @@
 import conciliacionService from "../../services/conciliacion/conciliacionService.js";
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 
 
 export const saveBankData = async (req, res) => {
@@ -25,9 +26,9 @@ export const createCuentaLink = async (req, res) => {
     try {
         const data = req.body;
         await conciliacionService.createCuentaLink(data);
-        res.status(200).json({response: 'ok' });
+        ResponseHandler.Ok({response: 'ok' });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError({ message: err.message });
     }
 };
 
@@ -35,9 +36,9 @@ export const getLinkByUserId = async (req, res) => {
     try {
         const userId = req.params;
         await conciliacionService.getLinkByUserId(userId);
-        res.status(200).json({response: 'ok' });
+        ResponseHandler.Ok({response: 'ok' });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError({ message: err.message });
     }
 };
 
