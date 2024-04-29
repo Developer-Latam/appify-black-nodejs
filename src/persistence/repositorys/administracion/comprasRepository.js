@@ -583,6 +583,4 @@ class comprasRepository {
         }
     }
 }
-
-
 export default new comprasRepository();

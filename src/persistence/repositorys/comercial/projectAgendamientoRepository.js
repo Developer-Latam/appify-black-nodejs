@@ -1,33 +1,42 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
-
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js"
 class ProjectAgendamientoRepository{
     async createProjectAgendamiento(data) {
-        return prisma.agendamiento_proyecto.create({
-            data: data
-        });
+        try {
+            return prisma.agendamiento_proyecto.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
-    
-
     async findProjectAgendamientoById(id) {
-        return prisma.agendamiento_proyecto.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.agendamiento_proyecto.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
-
     async updateProjectAgendamiento(id, updateData) {
-        return prisma.agendamiento_proyecto.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.agendamiento_proyecto.update({
+                where: { id: id },
+                data: updateData
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async deleteProjectAgendamiento(id) {
-        return prisma.agendamiento_proyecto.delete({
-            where: { id: id }
-        });
+        try {
+            return prisma.agendamiento_proyecto.delete({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 }
-
 export default new ProjectAgendamientoRepository();

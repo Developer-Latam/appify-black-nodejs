@@ -1,5 +1,4 @@
-import { CustomError } from "../../../../utils/httpRes/handlerResponse.js";
-import { prisma, prismaError } from "../../../../utils/dependencys/injection.js";
+import { prisma } from "../../../../utils/dependencys/injection.js";
 import handlePrismaError from "../../../../utils/httpRes/handlePrismaError.js";
 
 class ItemSistemaRepository {
@@ -44,10 +43,9 @@ class ItemSistemaRepository {
         try {
             return await prisma.sistema.delete({ where: { id } });
         } catch (error) {
-            throw new CustomError(500, "Error process db", {error: error.message})
+            handlePrismaError(error)
         }
     }
-    
     async getEmpresaByRUT(rut) {
         try {
             return await prisma.empresa.findFirst({ 
@@ -56,7 +54,7 @@ class ItemSistemaRepository {
                 } 
             });
         } catch (error) {
-            throw new CustomError(500, "Internal server error", {error: error.message})
+            handlePrismaError(error)
         }
     }
     async updateEmpresa(id, data) {
@@ -66,19 +64,14 @@ class ItemSistemaRepository {
                 data,
             });
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async deleteEmpresa(id) {
         try {
             return await prisma.empresa.delete({ where: { id } });
         } catch (error) {
-            throw new CustomError(500, "Error process db", {error: error.message})
+            handlePrismaError(error)
         }
     }
     async getEmpresaYSistemaByUserId(userId) {
@@ -95,5 +88,4 @@ class ItemSistemaRepository {
         }
     }
 }
-
-export default new ItemSistemaRepository()
+export default new ItemSistemaRepository();

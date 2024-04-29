@@ -1,175 +1,245 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
-
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js"
 class cuentasRepository {
-
-
     async createCuentaBanco(data) {
-        return prisma.cuentas_banco.create({
-            data: data
-        });
+        try {
+            return prisma.cuentas_banco.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
     async createCuentaBancoConciliacion(data) {
-        return prisma.cuenta_banco_conciliacion.create({
-            data: data
-        });
+        try {
+            return prisma.cuenta_banco_conciliacion.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
     async createCategoriaCuenta(data) {
-        return prisma.categoria_cuenta.create({
-            data: data
-        });
+        try {
+            return prisma.categoria_cuenta.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
     async createCuentaTipoDocumento(data) {
-        return prisma.cuenta_tipo_documento.create({
-            data: data
-        });
+        try {
+            return prisma.cuenta_tipo_documento.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
     async createBanco(data) {
-        return prisma.bancos.create({
-            data: data
-        });
+        try {
+            return prisma.bancos.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
     async createCondicionPago(data) {
-        return prisma.condicion_pago.create({
-            data: data
-        });
+        try {
+            return prisma.condicion_pago.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
     async createCondicionesCondicionPago(data) {
-        return prisma.condiciones_condicion_pago.create({
-            data: data
-        });
+        try {
+            return prisma.condiciones_condicion_pago.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
-
     async findCuentaBancoById(id) {
-        return prisma.cuentas_banco.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.cuentas_banco.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
     async findCuentaBancoConciliacionById(id) {
-        return prisma.cuenta_banco_conciliacion.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.cuenta_banco_conciliacion.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
     async findCategoriaCuentaById(id) {
-        return prisma.categoria_cuenta.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.categoria_cuenta.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
     async findCuentaTipodocumentoById(id) {
-        return prisma.cuenta_tipo_documento.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.cuenta_tipo_documento.findUnique({
+                where: { id: id }
+            });    
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-
     async findBancoById(id) {
-        return prisma.bancos.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.bancos.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findCondicionPagoById(id) {
-        return prisma.condicion_pago.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.condicion_pago.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findCondicionesCondicionPagoById(id) {
-        return prisma.condiciones_condicion_pago.findFirst({
-            where: { idCondicion: id }
-        });
+        try {
+            return prisma.condiciones_condicion_pago.findFirst({
+                where: { idCondicion: id }
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
-
     async findAllCuentasBancoByUserId(userId) {
-        return prisma.cuentas_banco.findMany({
-            where: { user: userId }
-        });
+        try {
+            return prisma.cuentas_banco.findMany({
+                where: { user: userId }
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllCuentasBancoConciliacionByUserId(userId) {
-        return prisma.cuenta_banco_conciliacion.findMany({
-            where: { user: userId }
-        });
+        try {
+            return prisma.cuenta_banco_conciliacion.findMany({
+                where: { user: userId }
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllCategoriasCuentaByUserId(userId) {
-        return prisma.categoria_cuenta.findMany({
-            where: { user: userId }
-        });
+        try {
+            return prisma.categoria_cuenta.findMany({
+                where: { user: userId }
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllCuentaTipoDocumentoByUserId(userId) {
-        return prisma.cuenta_tipo_documento.findMany({
-            where: { user: userId }
-        });
+        try {
+            return prisma.cuenta_tipo_documento.findMany({
+                where: { user: userId }
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllBancosByUserId(userId) {
-        return prisma.bancos.findMany({
-            where: { user: userId }
-        });
+        try {
+            return prisma.bancos.findMany({
+                where: { user: userId }
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllCondicionPagoByUserId(userId) {
-        return prisma.condicion_pago.findMany({
-            where: { user: userId }
-        });
+        try {
+            return prisma.condicion_pago.findMany({
+                where: { user: userId }
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
-
-
     async updateCuentasBanco(id, updateData) {
-        return prisma.cuentas_banco.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.cuentas_banco.update({
+                where: { id: id },
+                data: updateData
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateCategoriaCuenta(id, updateData) {
-        return prisma.categoria_cuenta.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.categoria_cuenta.update({
+                where: { id: id },
+                data: updateData
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-    
-
     async updateCuentaTipoDoc(id, updateData) {
-        return prisma.cuenta_tipo_documento.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.cuenta_tipo_documento.update({
+                where: { id: id },
+                data: updateData
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateBanco(id, updateData) {
-        return prisma.bancos.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.bancos.update({
+                where: { id: id },
+                data: updateData
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateCondicionPago(id, updateData) {
-        return prisma.condicion_pago.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.condicion_pago.update({
+                where: { id: id },
+                data: updateData
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateCondicionesCondicionPago(id, updateData) {
-        return prisma.condiciones_condicion_pago.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.condiciones_condicion_pago.update({
+                where: { id: id },
+                data: updateData
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 }
-
-
 export default new cuentasRepository()

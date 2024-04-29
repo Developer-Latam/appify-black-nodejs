@@ -1,54 +1,77 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js"
 class ClientesRepository {
     async createCliente(data) {
-        return prisma.clientes.create({
-            data: data
-        });
+        try {
+            return prisma.clientes.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findClienteById(id) {
-        return prisma.clientes.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.clientes.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     async findClienteById_razonsocial(id) {
-        const cliente = await prisma.clientes.findUnique({
-            where: { id: id },
-            select: {
-                razon_social: true
-            }
-        });
-        return cliente ? cliente.razon_social : null; 
+        try {
+            const cliente = await prisma.clientes.findUnique({
+                where: { id: id },
+                select: {
+                    razon_social: true
+                }
+            });
+            return cliente ? cliente.razon_social : null; 
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     // Funcion para checkear que no exista el mismo servicio
     async clienteExistsByName(nameCliente) {
-        // const [response] = await connectionDB.execute('SELECT * FROM proveedores WHERE rut = ?', [rutProveedor]);
-        const nombre = await prisma.clientes.findFirst({
-            where: {
-                razon_social : nameCliente,
-            },
-        })
-        return nombre !== null;
+        try {
+            const nombre = await prisma.clientes.findFirst({
+                where: {
+                    razon_social : nameCliente,
+                },
+            })
+            return nombre !== null;
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllClientesByUserId(userId) {
-        return prisma.clientes.findMany({
-            where: { user: userId }
-        });
+        try {
+            return prisma.clientes.findMany({
+                where: { user: userId }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateCliente(id, updateData) {
-        return prisma.clientes.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.clientes.update({
+                where: { id: id },
+                data: updateData
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async deleteCliente(id) {
-        return prisma.clientes.delete({
-            where: { id: id }
-        });
+        try {
+            return prisma.clientes.delete({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 }
-
 export default new ClientesRepository();

@@ -1,5 +1,5 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
-
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js"
 class anticiposClienteProvRepository{
     async createAnticipoCliente(data) {
         try {
@@ -8,7 +8,6 @@ class anticiposClienteProvRepository{
             handlePrismaError(error);
         }
     }
-
     async findAllAnticiposCienteByProyectoId(id) {
         try {
             return await prisma.anticipos_cliente.findMany({ where: { idProyecto: id } });
@@ -16,7 +15,6 @@ class anticiposClienteProvRepository{
             handlePrismaError(error);
         }
     }
-
     async updateAnticipoCliente(id, updateData) {
         try {
             return await prisma.anticipos_cliente.update({ where: { id }, data: updateData });
@@ -24,7 +22,6 @@ class anticiposClienteProvRepository{
             handlePrismaError(error);
         }
     }
-
     async deleteAnticipoCliente(id) {
         try {
             return await prisma.anticipos_cliente.delete({ where: { id } });
@@ -32,7 +29,6 @@ class anticiposClienteProvRepository{
             handlePrismaError(error);
         }
     }
-
     async createAnticipoProveedor(data) {
         try {
             return await prisma.anticipos_proveedor.create({ data });
@@ -40,7 +36,6 @@ class anticiposClienteProvRepository{
             handlePrismaError(error);
         }
     }
-
     async findAllAnticiposProveedorByProyectoId(id) {
         try {
             return await prisma.anticipos_proveedor.findMany({ where: { idProyecto: id } });
@@ -48,7 +43,6 @@ class anticiposClienteProvRepository{
             handlePrismaError(error);
         }
     }
-
     async updateAnticipoProveedor(id, updateData) {
         try {
             return await prisma.anticipos_proveedor.update({ where: { id }, data: updateData });
@@ -56,7 +50,6 @@ class anticiposClienteProvRepository{
             handlePrismaError(error);
         }
     }
-
     async deleteAnticipoProveedor(id) {
         try {
             return await prisma.anticipos_proveedor.delete({ where: { id } });
@@ -65,5 +58,4 @@ class anticiposClienteProvRepository{
         }
     }
 }
-
 export default new anticiposClienteProvRepository();

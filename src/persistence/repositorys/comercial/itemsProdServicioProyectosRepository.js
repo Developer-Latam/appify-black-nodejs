@@ -1,66 +1,97 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
-
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js"
 class itemsProdServProyectosRepository{
     async createProductItem(data) {
-        return prisma.item_producto_proyecto.create({
-            data: data
-        });
+        try {
+            return prisma.item_producto_proyecto.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findProductByIdProyecto(id) {
-        return prisma.item_producto_proyecto.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.item_producto_proyecto.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllProductosByProyectId(id) {
-        return prisma.item_producto_proyecto.findMany({
-            where: { idProyecto: id }
-        });
+        try {
+            return prisma.item_producto_proyecto.findMany({
+                where: { idProyecto: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateProductItem(id, updateData) {
-        return prisma.item_producto_proyecto.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.item_producto_proyecto.update({
+                where: { id: id },
+                data: updateData
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async deleteProductItem(id) {
-        return prisma.item_producto_proyecto.delete({
-            where: { id: id }
-        });
+        try {
+            return prisma.item_producto_proyecto.delete({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     async createServiceItem(data) {
-        return prisma.item_servicio_proyecto.create({
-            data: data
-        });
+        try {
+            return prisma.item_servicio_proyecto.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findServiceById(id) {
-        return prisma.item_servicio_proyecto.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.item_servicio_proyecto.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllServiciosByServiceId(serviceId) {
-        return prisma.item_servicio_proyecto.findMany({
-            where: { idProyecto: serviceId }
-        });
+        try {
+            return prisma.item_servicio_proyecto.findMany({
+                where: { idProyecto: serviceId }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateServiceItem(id, updateData) {
-        return prisma.item_servicio_proyecto.update({
-            where: { id : id },
-            data: updateData
-        });
+        try {
+            return prisma.item_servicio_proyecto.update({
+                where: { id : id },
+                data: updateData
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async deleteServiceItem(id) {
-        return prisma.item_servicio_proyecto.delete({
-            where: { id: id }
-        });
+        try {
+            return prisma.item_servicio_proyecto.delete({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 }
-
 export default new itemsProdServProyectosRepository();

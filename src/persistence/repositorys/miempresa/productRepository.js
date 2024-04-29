@@ -1,46 +1,65 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
 class ProductRepository {
     async createProduct(data) {
-        return prisma.productos.create({
-            data: data
-        });
+        try {
+            return prisma.productos.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findProductById(id) {
-        return prisma.productos.findUnique({
-            where: { id: id
-                //user: userid
-             }
-        });
+        try {
+            return prisma.productos.findUnique({
+                where: { id: id
+                    //user: userid
+                }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     async productExistsByName(nameProduct) {
-        // const [response] = await connectionDB.execute('SELECT * FROM proveedores WHERE rut = ?', [rutProveedor]);
-        const nombre = await prisma.productos.findFirst({
-            where: {
-                nombre : nameProduct,
-            },
-        })
-        return nombre !== null;
+        try {
+            const nombre = await prisma.productos.findFirst({
+                where: {
+                    nombre : nameProduct,
+                },
+            })
+            return nombre !== null;
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllProductsByUserId(userId) {
-        return prisma.productos.findMany({
-            where: { user: userId }
-        });
+        try {
+            return prisma.productos.findMany({
+                where: { user: userId }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateProduct(id, updateData) {
-        return prisma.productos.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.productos.update({
+                where: { id: id },
+                data: updateData
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async deleteProduct(id) {
-        return prisma.productos.delete({
-            where: { id: id }
-        });
+        try {
+            return prisma.productos.delete({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 }
-
 export default new ProductRepository();

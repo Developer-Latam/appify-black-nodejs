@@ -1,86 +1,71 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
 import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
-
-
+import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 class cobrosRepository {
-
-
     async createCobros(data) {
         // Verificar si se proporciona un objeto de datos
         if (!data) {
-            throw new Error("Error 400: Datos faltantes");
+            throw new CustomError(400,"Bad request", "Datos faltantes");
         }
-    
         try {
             // Crear un nuevo cobro utilizando Prisma
             const nuevoCobro = await prisma.cobros.create({
                 data: data
             });
-    
             // Devolver el nuevo cobro creado
             return nuevoCobro;
         } catch (error) {
             handlePrismaError(error);
         }
     }
-
     async createCobrosFV(data) {
         // Verificar si se proporciona un objeto de datos
         if (!data) {
-            throw new Error("Error 400: Datos faltantes");
+            throw new CustomError(400,"Bad request", "Datos faltantes");
         }
-    
         try {
             // Crear un nuevo cobro utilizando Prisma
             const nuevoCobroFV = await prisma.cobros_factura_venta.create({
                 data: data
             });
-    
             // Devolver el nuevo cobro creado
             return nuevoCobroFV;
         } catch (error) {
             handlePrismaError(error);
         }
     }
-
     async createCobrosFVE(data) {
         // Verificar si se proporciona un objeto de datos
         if (!data) {
-            throw new Error("Error 400: Datos faltantes");
+            throw new CustomError(400, "Bad Request", "Datos faltantes");
         }
-    
         try {
             // Crear un nuevo cobro utilizando Prisma
             const nuevoCobroFVE = await prisma.cobros_factura_venta_excenta.create({
                 data: data
             });
-    
             // Devolver el nuevo cobro creado
             return nuevoCobroFVE;
         } catch (error) {
             handlePrismaError(error);
         }
     }
-
     async createCobrosNC(data) {
         // Verificar si se proporciona un objeto de datos
         if (!data) {
-            throw new Error("Error 400: Datos faltantes");
+            throw new CustomError(400, "Bad Request", "Datos faltantes");
         }
-    
         try {
             // Crear un nuevo cobro utilizando Prisma
             const nuevoCobroNC = await prisma.cobros_factura_nota_credito.create({
                 data: data
             });
-    
             // Devolver el nuevo cobro creado
             return nuevoCobroNC;
         } catch (error) {
             handlePrismaError(error);
         }
     }
-
     async findCobroById(id) {
         try {
             return prisma.cobros.findUnique({
@@ -90,7 +75,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async findCobroFVByCobroId(id) {
         try {
             return prisma.cobros_factura_venta.findFirst({
@@ -100,7 +84,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async findCobroFVEByCobroId(id) {
         try {
             return prisma.cobros_factura_venta_excenta.findFirst({
@@ -119,7 +102,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async findFVById(id){
         try {
             return prisma.factura_venta.findUnique({
@@ -129,7 +111,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async findFVEById(id){
         try {
             return prisma.factura_venta_excenta.findUnique({
@@ -139,7 +120,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async findFVNCById(id){
         try {
             return prisma.notas_de_credito_debito.findUnique({
@@ -149,7 +129,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async findCobroNCByCobroId(id) {
         try {
             return prisma.cobros_factura_nota_credito.findFirst({
@@ -159,7 +138,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async findAllCobrosByUserId(userId) {
         try{
             return prisma.cobros.findMany({
@@ -169,8 +147,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
-
     async updateCobro(id, updateData) {
         try {
             return prisma.cobros.update({
@@ -181,7 +157,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async updateCobroFV(id, updateData) {
         try {
             return prisma.cobros_factura_venta.update({
@@ -202,7 +177,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async updateCobroNC(id, updateData) {
         try{
             return prisma.cobros_factura_nota_credito.update({
@@ -213,8 +187,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
-
     async deleteCobro(id) {
         try{
             return prisma.cobros.delete({
@@ -224,7 +196,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async deleteCobroFVByCobroId(id) {
         try{
             return prisma.cobros_factura_venta.delete({
@@ -234,7 +205,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async deleteCobroFVEByCobroId(id) {
         try{
             return prisma.cobros_factura_venta_excenta.delete({
@@ -244,7 +214,6 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
     async deleteCobroNCByCobroId(id) {
         try{
             return prisma.cobros_factura_nota_credito.delete({
@@ -254,8 +223,5 @@ class cobrosRepository {
             handlePrismaError(error);
         }
     }
-
 }
-
-
 export default new cobrosRepository()

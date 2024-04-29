@@ -1,68 +1,68 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
-
-
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
 class ordenCompraRepository {
-    async createOrdenCompra(data) {
-        return prisma.orden_compra.create({
-            data: data
-        });
+  async createOrdenCompra(data) {
+    try {
+      return prisma.orden_compra.create({
+        data: data
+      });
+    } catch (error) {
+      handlePrismaError(error);
     }
-
-    async findOrdenCompraById(id) {
-        return prisma.orden_compra.findUnique({
-            where: { id: id }
-        });
+  }
+  async findOrdenCompraById(id) {
+    try {
+      return prisma.orden_compra.findUnique({
+        where: { id: id }
+      });
+    } catch (error) {
+      handlePrismaError(error);
     }
-
-    async findAllOrdenCompraByUserId(idUser) {
-        const resultado = []; // Inicializamos un arreglo para almacenar los resultados
-
-  try {
-    const proveedores = await prisma.proveedores.findMany({
-      where: {
-        user: idUser, // Filtrar proyectos por el ID de usuario
-      },
-    });
-
-    for (const proveedor of proveedores) {
-      const Proveedores = await prisma.orden_compra.findMany({
+  }
+  async findAllOrdenCompraByUserId(idUser) {
+    const resultado = []; // Inicializamos un arreglo para almacenar los resultados
+    try {
+      const proveedores = await prisma.proveedores.findMany({
         where: {
-          idProvedor: proveedor.id,
+          user: idUser, // Filtrar proyectos por el ID de usuario
         },
       });
-
-      // Creamos un objeto que contenga la información del proyecto y sus órdenes de trabajo
-      const proovedtot = {
-        Proveedores
-      };
-
-      // Agregamos el objeto al resultado
-      resultado.push(proovedtot);
+      for (const proveedor of proveedores) {
+        const Proveedores = await prisma.orden_compra.findMany({
+          where: {
+            idProvedor: proveedor.id,
+          },
+        });
+        // Creamos un objeto que contenga la información del proyecto y sus órdenes de trabajo
+        const proovedtot = {
+          Proveedores
+        };
+        // Agregamos el objeto al resultado
+        resultado.push(proovedtot);
+      }
+      return resultado;
+    } catch (error) {
+      return { error: 'Error al obtener los proveedores y sus ordenes de compra' }; // Manejo de error
     }
-  } catch (error) {
-    console.error('Error al obtener los proveedores y sus ordenes de compra:', error);
-    return { error: 'Error al obtener los proveedores y sus ordenes de compra' }; // Manejo de error
-  } finally {
-    await prisma.$disconnect();
   }
-
-  // Retornamos el resultado como un objeto JSON
-  return resultado;
-}
-
-
-    async updateOrdenCompra(id, updateData) {
-        return prisma.orden_compra.update({
-            where: { id: id },
-            data: updateData
-        });
+  async updateOrdenCompra(id, updateData) {
+    try {
+      return prisma.orden_compra.update({
+        where: { id: id },
+        data: updateData
+      });
+    } catch (error) {
+      handlePrismaError(error);
     }
-
-    async deleteOrdenCompra(id) {
-        return prisma.orden_compra.delete({
-            where: { id: id }
-        });
+  }
+  async deleteOrdenCompra(id) {
+    try {
+      return prisma.orden_compra.delete({
+        where: { id: id }
+      });
+    } catch (error) {
+      handlePrismaError(error);
     }
+  }
 }
-
 export default new ordenCompraRepository();

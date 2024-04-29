@@ -1,7 +1,6 @@
 import { CustomError } from "../../../../utils/httpRes/handlerResponse.js";
-import { prisma, prismaError } from "../../../../utils/dependencys/injection.js";
+import { prisma } from "../../../../utils/dependencys/injection.js";
 import handlePrismaError from "../../../../utils/httpRes/handlePrismaError.js";
-import { response } from "express";
 class ComercialRepository {
     createProyecto(empresaId, {valor_impuesto, porcentaje_de_ot, texto_para_compartir_proyecto, cotizacion_descuento_visible, nombre_impuesto}) {
         try {
@@ -30,7 +29,7 @@ class ComercialRepository {
         try {
             return await prisma.empresa_proyecto.delete({ where: { id } });
         } catch (error) {
-            throw new CustomError(500, "Error process db", {error: error.message})
+            handlePrismaError(error)
         }
     }
     //{texto_inferior_firma, mensaje_envio_proyecto, texto_confirmacion_compra}
@@ -79,8 +78,4 @@ class ComercialRepository {
         }
     }
 }
-
-
 export default new ComercialRepository()
-
-

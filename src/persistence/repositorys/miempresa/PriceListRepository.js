@@ -1,10 +1,8 @@
-
-import { connectionDB } from "../../db/connection.js";
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
 import { prisma } from "../../../utils/dependencys/injection.js"
 class PriceListRepository {
     async findAllByUserId(userId) {
         try {
-            //await connectionDB.execute('SELECT * FROM listas_de_precio WHERE user = ?', [userId]);
             const listas = await prisma.listas_de_precio.findMany({
                 where: {
                     user: userId,
@@ -12,12 +10,11 @@ class PriceListRepository {
             })
             return listas;
         } catch (error) {
-            throw new Error(error.message);
+            handlePrismaError(error)
         }
     }
     async findByIdAndUserId(id, userId) {
         try {
-            //await connectionDB.execute('SELECT * FROM listas_de_precio WHERE id = ? AND user = ?', [id, userId]);
             const lista = await prisma.listas_de_precio.findFirst({
                 where: {
                     AND: [
@@ -28,13 +25,11 @@ class PriceListRepository {
             })
             return lista
         } catch (error) {
-            throw new Error(error.message);
+            handlePrismaError(error)
         }
     }
-
     async createPriceList({ id, user, nombre, iva }) {
         try {
-            // await connectionDB.execute('INSERT INTO listas_de_precio (id, user, nombre, iva) VALUES (?, ?, ?, ?)', [id, user, nombre, iva]);
             const priceList = await prisma.listas_de_precio.create({
                 data: {
                     id,
@@ -45,13 +40,11 @@ class PriceListRepository {
             })
             return priceList
         } catch (error) {
-            throw new Error(error.message);
+            handlePrismaError(error)
         }
     }
-
     async updatePriceList(id, { nombre, iva }) {
         try {
-            //await connectionDB.execute('UPDATE listas_de_precio SET nombre = ?, iva = ? WHERE id = ?', [nombre, iva, id]);
             await prisma.listas_de_precio.update({
                 where: {
                     id
@@ -63,13 +56,11 @@ class PriceListRepository {
             })
             return("Precio de productos actualizado")
         } catch (error) {
-            throw new Error(error.message);
+            handlePrismaError(error)
         }
     }
-
     async deletePriceList(id) {
         try {
-            //await connectionDB.execute('DELETE FROM listas_de_precio WHERE id = ?', [id]);
             await prisma.listas_de_precio.delete({
                 where: {
                     id
@@ -77,10 +68,8 @@ class PriceListRepository {
             })
             return("Producto eliminado de la lista exitosamente")
         } catch (error) {
-            throw new Error(error.message);
+            handlePrismaError(error)
         }
     }
 }
-
 export default new PriceListRepository();
-

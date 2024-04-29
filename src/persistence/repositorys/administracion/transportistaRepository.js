@@ -1,37 +1,51 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
-
-
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
 class TransportistaRepository {
     async createTransportista(data) {
-        return prisma.transportista.create({
-            data: data
-        });
+        try {
+            return prisma.transportista.create({
+                data: data
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findTransportistaById(id) {
-        return prisma.transportista.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.transportista.findUnique({
+                where: { id: id }
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllTransportistasByUserId(userId) {
-        return prisma.transportista.findMany({
-            where: { iduser: userId }
-        });
+        try {
+            return prisma.transportista.findMany({
+                where: { iduser: userId }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateTransportista(id, updateData) {
-        return prisma.transportista.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.transportista.update({
+                where: { id: id },
+                data: updateData
+            });    
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async deleteTransportista(id) {
-        return prisma.transportista.delete({
-            where: { id: id }
-        });
+        try {
+            return prisma.transportista.delete({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 }
-
 export default new TransportistaRepository();

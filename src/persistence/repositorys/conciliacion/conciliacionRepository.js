@@ -1,20 +1,24 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
-
-
-
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
 class conciliacionRepository {
     async createLink(data) {
-        return prisma.link_fintoc_bancos.create({
-            data: data
-        });
+        try {
+            return prisma.link_fintoc_bancos.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async createCuentaBancaria(data) {
-        return prisma.CuentasBancarias.create({
-            data: data
-        });
+        try {
+            return prisma.CuentasBancarias.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async insertarMovimiento(movimiento) {
         try {
             // Verificar si el movimiento ya existe en la base de datos
@@ -23,10 +27,8 @@ class conciliacionRepository {
                     id: movimiento.id
                 }
             });
-    
             // Si el movimiento no existe en la base de datos, procede a insertarlo
             if (!existingMovimiento) {
-
                 const data = {
                     id: movimiento.id,
                     cuenta_id: movimiento.cuenta_id,
@@ -52,7 +54,6 @@ class conciliacionRepository {
                     reference_id: movimiento.reference_id || null,
                     pending: movimiento.pending
                 };
-
                 await prisma.movimientos_cuenta.create({
                     data: data
                 });
@@ -61,11 +62,9 @@ class conciliacionRepository {
                 console.log(`Movimiento con ID ${movimiento.id} ya existe en la base de datos. Omitiendo inserción.`);
             }
         } catch (error) {
-            console.error(`Error al insertar el movimiento con ID ${movimiento.id}: ${error.message}`);
+            handlePrismaError(error)
         }
     }
-
-    
     async createMovimientos(data) {
         // Si el dato recibido es un objeto iterable (como una lista)
         if (Symbol.iterator in Object(data)) {
@@ -78,63 +77,80 @@ class conciliacionRepository {
             await this.insertarMovimiento(data);
         }
     }
-    
-
     async findLinkByUserId(userid) {
-        return prisma.link_fintoc_bancos.findUnique({
-            where: { user: userid }
-        });
+        try {
+            return prisma.link_fintoc_bancos.findUnique({
+                where: { user: userid }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findCuentasByCuentaId(cuentaId) {
-      return prisma.CuentasBancarias.findUnique({
-          where: { cuenta_id : cuentaId }
-      });
+        try {
+            return prisma.CuentasBancarias.findUnique({
+                where: { cuenta_id : cuentaId }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findMovimientosById(id) {
-      return prisma.movimientos_cuenta.findUnique({
-          where: { id: id }
-      });
+        try {
+            return prisma.movimientos_cuenta.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findConciliacionesByUserId(userId) {
-      return prisma.link_fintoc_bancos.findMany({
-          where: { user: userId }
-      });
+        try {
+            return prisma.link_fintoc_bancos.findMany({
+                where: { user: userId }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
-
     async findCuentasBancariasByConciliacionId(conciliacionId) {
-      return prisma.CuentasBancarias.findMany({
-          where: { conciliacion_id: conciliacionId }
-      });
+        try {
+            return prisma.CuentasBancarias.findMany({
+                where: { conciliacion_id: conciliacionId }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findMovimientosByCuentaId(cuentaId) {
-      return prisma.movimientos_cuenta.findMany({
-          where: { cuenta_id: cuentaId }
-      });
+        try {
+            return prisma.movimientos_cuenta.findMany({
+                where: { cuenta_id: cuentaId }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateUserConciliacion(id, updateData) {
-        return prisma.link_fintoc_bancos.update({
-            where: { conciliacion_id: id },
-            data : updateData
-            
-        });
+        try {
+            return prisma.link_fintoc_bancos.update({
+                where: { conciliacion_id: id },
+                data : updateData
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateCuentaBancariaById(id, updateData) {
-        return prisma.CuentasBancarias.update({
-            where: { cuenta_id: id },
-            data : updateData
-            
-        });
+        try {
+            return prisma.CuentasBancarias.update({
+                where: { cuenta_id: id },
+                data : updateData
+                
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
-    
-
 }
-
 export default new conciliacionRepository();

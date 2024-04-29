@@ -31,7 +31,7 @@ class VentasRepository {
                 }
             });
         } catch (error) {
-            throw new CustomError(500, "Internal server error", {error: error.message})
+            handlePrismaError(error)
         }
     }
     async getDDByUser(user) {
@@ -42,7 +42,7 @@ class VentasRepository {
                 }
             });
         } catch (error) {
-            throw new CustomError(500, "Internal server error", {error: error.message})
+            handlePrismaError(error)
         }
     }
     createDD (idDD, {user, venta, traslado}){
@@ -56,12 +56,7 @@ class VentasRepository {
                 }
             })
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createItemProductoDDV(idDDV, itemsProductoDDV) {
@@ -81,12 +76,7 @@ class VentasRepository {
             }));
             return op
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message});
-            }
+            handlePrismaError(error)
         }
     }
     createItemDespachoVentaOt(idDDV, itemsDVot) {
@@ -100,12 +90,7 @@ class VentasRepository {
             }));
             return op
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message});
-            }
+            handlePrismaError(error)
         }
     }
     createDocDespachoVenta(idDDV, idDD, {fecha, idCliente, idTransportista, ot, fact_libre, punto, direccion_destino, comuna, ciudad, observacion, numero_documento}) {
@@ -128,12 +113,7 @@ class VentasRepository {
             }
             });
         } catch (error) {
-            if (error instanceof prismaError.ValidationError) {
-                // Error específico de Sequelize por validación de tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message});
-            }
+            handlePrismaError(error)
         }
     }
     createDDT(idDDT, idDD, {fecha, idCliente, idTransportista, punto, direccion_destino, comuna, ciudad, observacion, numero_documento, ot, fact_libre}) {
@@ -156,12 +136,7 @@ class VentasRepository {
                 }
             });
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message});
-            }
+            handlePrismaError(error)
         }
     }
     createItemDespachoTrasladoOt(idDDT, itemsDDTot) {
@@ -175,12 +150,7 @@ class VentasRepository {
             }));
             return op
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message});
-            }
+            handlePrismaError(error)
         }
     }
     createItemProductoDDT(idDDV, itemsProductoDDT) {
@@ -196,12 +166,7 @@ class VentasRepository {
             }));
             return op
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message});
-            }
+            handlePrismaError(error)
         }
     }
     async getAllFV(){
@@ -227,12 +192,7 @@ class VentasRepository {
         `;
             return facturasConItemsYDocumentoVenta;
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async getAllFVE(){
@@ -258,12 +218,7 @@ class VentasRepository {
         `;
             return facturasExentasConItemsYDocumentoVenta;
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async notaFVE_NCOD(NCOD){
@@ -290,12 +245,7 @@ class VentasRepository {
             nf.idNotadeCD = ${NCOD};`;
             return notaFVE_NCOD;
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async notaDEncod_NCOD(NCOD){
@@ -324,12 +274,7 @@ class VentasRepository {
             nc.idNotadeCD = ${NCOD};`;
             return notaDEncod_NCOD;
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async notaFV_NCOD(NCOD){
@@ -356,12 +301,7 @@ class VentasRepository {
             nf.idNotadeCD = ${NCOD};`;
             return notaFV_NCOD;
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async getFVDetailsbyDV(fvDVID) {
@@ -407,12 +347,7 @@ class VentasRepository {
                 dv.id = ${fvDVID};`;
             return DV;
         }catch(error){
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async getNCoDbyIdDoc(DVID) {
@@ -424,12 +359,7 @@ class VentasRepository {
             });
             return notas;
         }catch(error){
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async getFVEDetailsbyDV(fveDVID) {
@@ -473,12 +403,7 @@ class VentasRepository {
             dv.id = ${fveDVID};`;
             return DV;
         }catch(error){
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createFV (idFV,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
@@ -500,12 +425,7 @@ class VentasRepository {
                     }
                 })
             } catch (error) {
-                if (error instanceof prismaError.PrismaClientValidationError) {
-                    // Error específico de Prisma por tipo de dato incorrecto
-                    throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-                } else {
-                    throw new CustomError(500, "Internal server error", {error: error.message})
-                }
+                handlePrismaError(error)
             }
     }
     async getFVidByIdDoc(idDoc){
@@ -520,12 +440,7 @@ class VentasRepository {
             });
             return facturaVenta ? facturaVenta.id : null;
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createItemServicioFV (idFV,itemsServicio){
@@ -546,12 +461,7 @@ class VentasRepository {
             }));
             return op
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createItemProductoFV (idFV,itemsProducto){
@@ -572,12 +482,7 @@ class VentasRepository {
             }));
             return operations
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createFVE (idFVE,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
@@ -599,12 +504,7 @@ class VentasRepository {
                 }
             })
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async getFVEidByIdDoc(idDoc){
@@ -619,12 +519,7 @@ class VentasRepository {
             });
             return facturaVentaExenta ? facturaVentaExenta.id : null;
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createItemServicioFVE (idFVE,itemsServicioFVE){
@@ -644,12 +539,7 @@ class VentasRepository {
             }));
             return op
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createItemProductoFVE (idFVE,itemsProductoFVE){
@@ -669,12 +559,7 @@ class VentasRepository {
             }));
             return operations
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createNCoD (idNCoD,{idDoc,idCliente,idVendedor,tipo_credito, tipo_debito, numero_documento,tipo_nota,fecha,motivo_referencia,centro_de_beneficio, observacion, nota_interna, anula_doc, corrige_monto}){
@@ -700,12 +585,7 @@ class VentasRepository {
                 }
             })
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createNotaFV(idFV, idNCoD) {
@@ -717,12 +597,7 @@ class VentasRepository {
                 }
             })
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createNotaFVE(idFVE, idNCoD) {
@@ -735,12 +610,7 @@ class VentasRepository {
                 }
             })
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createNotaNC({numero_documento, idNotadeCD}) {
@@ -754,15 +624,9 @@ class VentasRepository {
                 }
             })
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
-    
     createItemServicioForNCoD (idNCoD,itemsServicioNCoD){
         try {
             const op = itemsServicioNCoD.map(item => prisma.item_servicio_nota_credito.create({
@@ -781,12 +645,7 @@ class VentasRepository {
             }));
             return op
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createItemProductoForNCoD (idNCoD,itemsProductoNCoD){
@@ -807,12 +666,7 @@ class VentasRepository {
             }));
             return operations
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createItemServicioForNCoD_NCOD (idNCoD,itemsServicioNCoD_NC){
@@ -833,12 +687,7 @@ class VentasRepository {
             }));
             return op
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     createItemProductoForNCoD_NCOD (idNCoD,itemsProductoNCoD_NC){
@@ -859,72 +708,7 @@ class VentasRepository {
             }));
             return operations
         } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
-        }
-    }
-    async EXAMPLE (){
-        try {
-            
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
-        }
-    }
-    async createDocDespacho (){
-        try {
-            
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
-        }
-    }
-    async getDocEmitidas (){
-        try {
-            
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
-        }
-    }
-    async getDocPendientes (){
-        try {
-            
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
-        }
-    }
-    async getDocRecurrentes (){
-        try {
-            
-        } catch (error) {
-            if (error instanceof prismaError.PrismaClientValidationError) {
-                // Error específico de Prisma por tipo de dato incorrecto
-                throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
-            } else {
-                throw new CustomError(500, "Internal server error", {error: error.message})
-            }
+            handlePrismaError(error)
         }
     }
     async getFVoFVEbyDC(idDocumentoVenta) {
@@ -949,6 +733,4 @@ class VentasRepository {
         }
     }
 }
-
-
 export default new VentasRepository()

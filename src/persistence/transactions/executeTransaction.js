@@ -10,5 +10,4 @@ async function executeTransactions(operations) {
         throw new CustomError(500, 'Transaction failed', error);
     }
 }
-
 export default executeTransactions;

@@ -1,45 +1,64 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
 class ServiceRepository {
     async createService(data) {
-        return prisma.servicios.create({
-            data: data
-        });
+        try {
+            return prisma.servicios.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findServiceById(id) {
-        return prisma.servicios.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.servicios.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     // Funcion para checkear que no exista el mismo servicio
     async serviceExistsByName(nameService) {
-        // const [response] = await connectionDB.execute('SELECT * FROM proveedores WHERE rut = ?', [rutProveedor]);
-        const nombre = await prisma.servicios.findFirst({
-            where: {
-                nombre : nameService,
-            },
-        })
-        return nombre !== null;
+        try {
+            const nombre = await prisma.servicios.findFirst({
+                where: {
+                    nombre : nameService,
+                },
+            })
+            return nombre !== null;
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllServiciosByUserId(userId) {
-        return prisma.servicios.findMany({
-            where: { user: userId }
-        });
+        try {
+            return prisma.servicios.findMany({
+                where: { user: userId }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateServicios(id, updateData) {
-        return prisma.servicios.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.servicios.update({
+                where: { id: id },
+                data: updateData
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async deleteService(id) {
-        return prisma.servicios.delete({
-            where: { id: id }
-        });
+        try {
+            return prisma.servicios.delete({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 }
-
 export default new ServiceRepository();

@@ -1,46 +1,63 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
-
+import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js"
 class ProjectRepository{
     async createProject(data) {
-        return prisma.proyectos.create({
-            data: data
-        });
+        try {
+            return prisma.proyectos.create({
+                data: data
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async projectExistsByName(nameProject) {
-        // const [response] = await connectionDB.execute('SELECT * FROM proveedores WHERE rut = ?', [rutProveedor]);
-        const nombre = await prisma.proyectos.findFirst({
-            where: {
-                nombre_etiqueta : nameProject,
-            },
-        })
-        return nombre !== null;
+        try {
+            const nombre = await prisma.proyectos.findFirst({
+                where: {
+                    nombre_etiqueta : nameProject,
+                },
+            })
+            return nombre !== null;
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findProjectById(id) {
-        return prisma.proyectos.findUnique({
-            where: { id: id }
-        });
+        try {
+            return prisma.proyectos.findUnique({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async findAllProjectsByUserId(userId) {
-        return prisma.proyectos.findMany({
-            where: { user: userId }
-        });
+        try {
+            return prisma.proyectos.findMany({
+                where: { user: userId }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async updateProject(id, updateData) {
-        return prisma.proyectos.update({
-            where: { id: id },
-            data: updateData
-        });
+        try {
+            return prisma.proyectos.update({
+                where: { id: id },
+                data: updateData
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
-
     async deleteProject(id) {
-        return prisma.proyectos.delete({
-            where: { id: id }
-        });
+        try {
+            return prisma.proyectos.delete({
+                where: { id: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 }
-
 export default new ProjectRepository();

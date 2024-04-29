@@ -4,7 +4,6 @@ import { idgenerate } from "../../../utils/id/idGenerate.js";
 import executeTransactions from "../../transactions/executeTransaction.js";
 import { prisma } from "../../../utils/dependencys/injection.js";
 import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
-
 //Clase que interactua con la db mediante las querys a las diferentes tablas
 class UserRepository {
     //Encuentra un usuario mediante su email y password
@@ -79,30 +78,42 @@ class UserRepository {
     }
     //Verifica si el usuario existe por su email y devuelve true o false
     async userExists(email) {
-        const response = await prisma.usuarios.findFirst({  
-            where:{
-                email : email
-            }
-        })
-        return response !== null;
+        try {
+            const response = await prisma.usuarios.findFirst({  
+                where:{
+                    email : email
+                }
+            })
+            return response !== null;
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     //Verifica si el sub usuario existe por su email y devuelve true o false
     async subUserExists(email) {
-        const response = await prisma.subusuarios.findFirst({  
-            where:{
-                email : email
-            }
-        })
-        return response;
+        try {
+            const response = await prisma.subusuarios.findFirst({  
+                where:{
+                    email : email
+                }
+            })
+            return response;
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     //Verifica si el usuario existe por su id y devuelve true o false
     async userExistsById(id) {
-        const response = await prisma.usuarios.findUnique({
-            where:{
-                id : id
-            }
-        })
-        return response;
+        try {
+            const response = await prisma.usuarios.findUnique({
+                where:{
+                    id : id
+                }
+            })
+            return response;
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     //Realiza la creacion de usuario y un sub usuario
     async createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash) {
@@ -152,21 +163,25 @@ class UserRepository {
     createSubUser(id,user, nombre, apellido, email, celular, fecha_de_nacimiento, cargo) {
         let fecha = new Date(fecha_de_nacimiento)
         let fecha_ISO = fecha.toISOString()
-        return prisma.subusuarios.create({
-            data: {
-                id: id,
-                user:user,
-                nombre: nombre,
-                apellido: apellido,
-                email: email,
-                celular: celular,
-                fecha_de_nacimiento: fecha_ISO,
-                cargo: cargo,
-                ref_superusuario:0,
-                checkeado:0,
-                password: null
-            }
-        });
+        try {
+            return prisma.subusuarios.create({
+                data: {
+                    id: id,
+                    user:user,
+                    nombre: nombre,
+                    apellido: apellido,
+                    email: email,
+                    celular: celular,
+                    fecha_de_nacimiento: fecha_ISO,
+                    cargo: cargo,
+                    ref_superusuario:0,
+                    checkeado:0,
+                    password: null
+                }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     //Busca el subusuario por su id y lo retorna
     async findsubUserById(id) {
@@ -298,30 +313,40 @@ class UserRepository {
     }
     //Elimina un sub user por su id
     async deleteSubUserByID(id) {
-        const rows = await prisma.subusuarios.delete({
-            where: {
-                id: id
-            }
-        });
-        return rows;
+        try {
+            const rows = await prisma.subusuarios.delete({
+                where: {
+                    id: id
+                }
+            });
+            return rows;
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     async updatePermisosdeUsuario(userId, idPermiso, updates) {
-        const response = await prisma.permisos_de_usuario.update({
-            where: { user: userId, idPermiso: idPermiso },
-            data: updates
-        });
-        return response;
+        try {
+            const response = await prisma.permisos_de_usuario.update({
+                where: { user: userId, idPermiso: idPermiso },
+                data: updates
+            });
+            return response;
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
     //Edita los permisos de los sub usuarios
     async editarPermisos(id) {
-        //const [rows] = await connectionDB.execute('SELECT * FROM subusuarios WHERE id = ?', [id]);
-        const rows = await prisma.subusuarios.findUnique({
-            where:{
-                id : id
-            }
-        })
-        return rows;
+        try {
+            const rows = await prisma.subusuarios.findUnique({
+                where:{
+                    id : id
+                }
+            })
+            return rows;
+        } catch (error) {
+            handlePrismaError(error);
+        }
     }
 }
-
 export default new UserRepository()
