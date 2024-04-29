@@ -8,11 +8,11 @@ class conciliacionService {
         try {
             const { data } = jsonData;
             const username = idgenerate('temp-user');
-            const { id: link_id_banco, holder_id, link_token, accounts } = data;
+            const { id: id, holder_id, link_token, accounts } = data;
             // Crear el registro en la tabla link_fintoc_bancos
             const linkData = {
                 conciliacion_id: data.id,
-                link_id_banco,
+                link_id_banco : id,
                 link_token,
                 holder_id,
                 user: username // Incluye el username aquí
