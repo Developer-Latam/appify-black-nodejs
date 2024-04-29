@@ -1,6 +1,8 @@
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import conciliacionRepository from "../../persistence/repositorys/conciliacion/conciliacionRepository.js";
 
+import { CustomError } from "../../utils/httpRes/handlerResponse.js";
+
 class conciliacionService {
     async saveBankData(jsonData) {
         try {
@@ -57,19 +59,19 @@ class conciliacionService {
 
             return conciliacionRepository.createMovimientos(data);
         } catch (error) {
-            ResponseHandler.HandleError(error)
+            throw new CustomError('400', error)
         }
     }
 
     async createCuentaLink(id) {
 
         try{
-            
+
             return conciliacionRepository.createCuentaBancariaLinkConciliacion(id);
 
         } catch (error) {
 
-            ResponseHandler.HandleError(error)
+            throw new CustomError('400', error)
         }
     }
 
@@ -81,7 +83,7 @@ class conciliacionService {
 
         } catch (error) {
 
-            ResponseHandler.HandleError(error)
+            throw new CustomError('400', error)
         }
 
     }
