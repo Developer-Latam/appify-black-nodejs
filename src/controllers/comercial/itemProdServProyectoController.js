@@ -1,15 +1,14 @@
 import itemsProdServProjectService from "../../services/comercial/itemsProdServProyectosService.js";
-
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createItemProductProject = async (req, res) => {
     try {
         const data = req.body;
         const response = await itemsProdServProjectService.createItemProductProject(data);
-        res.status(200).json({ project: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getProductItemById = async (req, res) => {
     try {
         const { idProyecto } = req.params;
@@ -17,55 +16,49 @@ export const getProductItemById = async (req, res) => {
         if (!proyecto) {
             return res.status(404).json({ message: 'Item no encontrado' });
         }
-        res.status(200).json(proyecto);
+        ResponseHandler.Ok(res, proyecto)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getProductsItemByprojectId = async (req, res) => {
     try {
         const { idProyecto } = req.params;
         const projects = await itemsProdServProjectService.getProductsItemByprojectId(idProyecto);
-        res.status(200).json({ data: projects });
+        ResponseHandler.Ok(res, projects)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateProductItem = async (req, res) => {
     try {
         const { idProyecto } = req.params;
         const updateData = req.body;
         await itemsProdServProjectService.updateProductItem(idProyecto, updateData);
-        res.status(200).json({ ok: true, message: 'Item actualizado' });
+        ResponseHandler.Ok(res, 'Item actualizado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const deleteProductItem = async (req, res) => {
     try {
         const { idProyecto } = req.params;
         await itemsProdServProjectService.deleteProductItem(idProyecto);
-        res.status(200).json({ message: 'Item eliminado' });
+        ResponseHandler.Ok(res, 'Item eliminado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 // Servicios Items
-
 export const createServiceItem = async (req, res) => {
     try {
         const data = req.body;
         const response = await itemsProdServProjectService.createServiceItem(data);
-        res.status(200).json({ project: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getServiceItemById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -73,39 +66,36 @@ export const getServiceItemById = async (req, res) => {
         if (!proyecto) {
             return res.status(404).json({ message: 'Item no encontrado' });
         }
-        res.status(200).json(proyecto);
+        ResponseHandler.Ok(res, proyecto)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getServiceItemByProjectId = async (req, res) => {
     try {
         const { idProyecto } = req.params;
         const projects = await itemsProdServProjectService.getServiceItemByProjectId(idProyecto);
-        res.status(200).json({ data: projects });
+        ResponseHandler.Ok(res, projects)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateServiceItem = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
         await itemsProdServProjectService.updateServiceItem(id, updateData);
-        res.status(200).json({ ok: true, message: 'Item actualizado' });
+        ResponseHandler.Ok(res, 'Item actualizado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const deleteServiceItem = async (req, res) => {
     try {
         const { idProyecto } = req.params;
         await itemsProdServProjectService.deleteServiceItem(idProyecto);
-        res.status(200).json({ message: 'Item eliminado' });
+        ResponseHandler.Ok(res, 'Item eliminado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };

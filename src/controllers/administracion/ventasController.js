@@ -1,6 +1,5 @@
 import { ResponseHandler } from "../../utils/dependencys/injection.js";
 import ventasService from "../../services/administracion/ventasService.js";
-
 export const createFVController = async (req, res) => {
     try {
         const data = {
@@ -94,7 +93,6 @@ export const createDDController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
-
 export const getNCODbyIdDocController = async (req, res) => {
     try {
         const {DVID} = req.params
@@ -130,7 +128,6 @@ export const getDocumentosVentaByUserController  = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
-
 export const getAllDataVentasByUserId  = async (req, res) => {
     try {
         const {user} = req.params

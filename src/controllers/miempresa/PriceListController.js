@@ -1,17 +1,14 @@
-// PriceListController.js
-
 import priceListService from "../../services/miempresa/PriceListService.js";
-
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const getAllPriceLists = async (req, res, next) => {
     const { userId } = req.params; // Asumiendo que se obtiene el userId de algún middleware de autenticación o similar
     try {
         const lists = await priceListService.getPriceListsByUserId(userId);
-        res.status(200).json(lists);
+        ResponseHandler.Ok(res, lists)
     } catch (err) {
-        res.status(400).json({ ok: false, message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 }
-
 export const getPriceList = async (req, res, next) => {
     const { id } = req.params;
     const { userId } = req.body; // O de un token JWT, por ejemplo
@@ -20,40 +17,37 @@ export const getPriceList = async (req, res, next) => {
         if (!list) {
             return res.status(404).json({ ok: false, message: "Lista de precios no encontrada." });
         }
-        res.status(200).json(list);
+        ResponseHandler.Ok(res, list)
     } catch (err) {
-        res.status(400).json({ ok: false, message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 }
-
 export const createPriceList = async (req, res, next) => {
     const { user, nombre, iva } = req.body;
     try {
         const result = await priceListService.createPriceList(user, nombre, iva);
-        res.status(201).json(result);
+        ResponseHandler.Ok(res, result)
     } catch (err) {
-        res.status(400).json({ ok: false, message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 }
-
 export const updatePriceList = async (req, res, next) => {
     const { id } = req.params;
     const { userId, ...updateFields } = req.body;
     try {
         const result = await priceListService.updatePriceList(id, userId, updateFields);
-        res.json(result);
+        ResponseHandler.Ok(res, result)
     } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        ResponseHandler.HandleError(res, err)
     }
 }
-
 export const deletePriceList = async (req, res, next) => {
     const { id } = req.params;
     const { userId } = req.body; // O de un token JWT, por ejemplo
     try {
         const result = await priceListService.deletePriceList(id, userId);
-        res.json(result);
+        ResponseHandler.Ok(res, result)
     } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        ResponseHandler.HandleError(res, err)
     }
 }

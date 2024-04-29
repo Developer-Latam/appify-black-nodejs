@@ -1,8 +1,6 @@
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import conciliacionRepository from "../../persistence/repositorys/conciliacion/conciliacionRepository.js";
-
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
-
 class conciliacionService {
     async saveBankData(jsonData) {
         try {

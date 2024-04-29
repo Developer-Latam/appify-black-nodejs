@@ -1,15 +1,14 @@
 import ProjectAgendamientoService from "../../services/comercial/projectAgendamientoService.js";
-
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createProjectAgendamiento = async (req, res) => {
     try {
         const data = req.body;
         const response = await ProjectAgendamientoService.createProjectAgendamiento(data);
-        res.status(200).json({ project: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getProjectAgendamientoById = async (req, res) => {
     try {
         const idString = req.params.idProyecto;  // Acceder id.Cosnulta del objeto y llevarlo a int 
@@ -18,33 +17,29 @@ export const getProjectAgendamientoById = async (req, res) => {
         if (!proyectoa) {
             return res.status(404).json({ message: 'Agendamiento no encontrado' });
         }
-        res.status(200).json(proyectoa);
+        ResponseHandler.Ok(res, proyectoa)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
-
-
 export const updateProjectAgendamiento = async (req, res) => {
     try {
         const idString = req.params.idProyecto;
         const idProyecto = parseInt(idString, 10);
         const updateData = req.body;
         await ProjectAgendamientoService.updateProjectAgendamiento(idProyecto, updateData);
-        res.status(200).json({ ok: true, message: 'Agendamiento actualizado' });
+        ResponseHandler.Ok(res, 'Agendamiento actualizado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const deleteProjectAgendamiento = async (req, res) => {
     try {
         const idString = req.params.idProyecto;
         const idProyecto = parseInt(idString, 10);
         await ProjectAgendamientoService.deleteProjectAgendamiento(idProyecto);
-        res.status(200).json({ message: 'Agendamiento eliminado' });
+        ResponseHandler.Ok(res, 'Agendamiento eliminado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };

@@ -1,42 +1,39 @@
 import costosProyectoService from "../../services/comercial/costosProyectoService.js";
-
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createCosto = async (req, res) => {
     try {
         const data = req.body;
         const response = await costosProyectoService.createCosto(data);
-        res.status(200).json({ project: response });
+        ResponseHandler.Ok(res, response);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err);
     }
 };
-
 export const getCostosByProyectoId = async (req, res) => {
     try {
         const { idProyecto } = req.params;
         const projects = await costosProyectoService.getCostosByProyectoId(idProyecto);
-        res.status(200).json({ data: projects });
+        ResponseHandler.Ok(res, projects);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err);
     }
 };
-
 export const updateCosto = async (req, res) => {
     try {
         const {id} = req.params;
         const updateData = req.body;
         await costosProyectoService.updateCosto(id, updateData);
-        res.status(200).json({ ok: true, message: 'Costo actualizado' });
+        ResponseHandler.Ok(res, 'Costo actualizado');
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err);
     }
 };
-
 export const deleteCosto = async (req, res) => {
     try {
         const { id } = req.params;
         await costosProyectoService.deleteCosto(id);
-        res.status(200).json({ message: 'Costo eliminado' });
+        ResponseHandler.Ok(res, 'Costo eliminado');
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err);
     }
 };

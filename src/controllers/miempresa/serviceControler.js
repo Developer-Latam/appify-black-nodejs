@@ -1,14 +1,14 @@
 import ServiceService from "../../services/miempresa/ServiceService.js";
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createService = async (req, res) => {
     try {
         const data = req.body;
         const response = await ServiceService.createService(data);
-        res.status(200).json({service: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getServiceById = async (req, res) => {
     try {
         const { idServicio } = req.params;
@@ -16,39 +16,36 @@ export const getServiceById = async (req, res) => {
         if (!servicio) {
             return res.status(404).json({ message: 'Servicio no encontrado' });
         }
-        res.status(200).json(servicio);
+        ResponseHandler.Ok(res, servicio)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getServiceByUserId = async (req, res) => {
     try {
         const { id } = req.params;
         const service = await ServiceService.getServiceByUserId(id);
-        res.status(200).json({ data: service });
+        ResponseHandler.Ok(res, service)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateService = async (req, res) => {
     try {
         const { idServicio } = req.params;
         const updateData = req.body;
         await ServiceService.updateService(idServicio, updateData);
-        res.status(200).json({ ok: true, message: 'Servicio actualizado' });
+        ResponseHandler.Ok(res, 'Servicio actualizado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const deleteService = async (req, res) => {
     try {
         const { idServicio } = req.params;
         await ServiceService.deleteService(idServicio);
-        res.status(200).json({ message: 'Servicio eliminado' });
+        ResponseHandler.Ok(res, 'Servicio eliminado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };

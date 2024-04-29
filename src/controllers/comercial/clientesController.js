@@ -1,14 +1,14 @@
 import clientesService from "../../services/comercial/clientesService.js";
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createCliente = async (req, res) => {
     try {
         const data = req.body;
         const response = await clientesService.createCliente(data);
-        res.status(200).json({cliente: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getClienteById = async (req, res) => {
     try {
         const { idCliente } = req.params;
@@ -16,39 +16,36 @@ export const getClienteById = async (req, res) => {
         if (!cliente) {
             return res.status(404).json({ message: 'Cliente no encontrado' });
         }
-        res.status(200).json(cliente);
+        ResponseHandler.Ok(res, cliente)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getClienteByUserId = async (req, res) => {
     try {
         const { id } = req.params;
         const cliente = await clientesService.getClienteByUserId(id);
-        res.status(200).json({ data: cliente });
+        ResponseHandler.Ok(res, cliente)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateCliente = async (req, res) => {
     try {
         const { idCliente } = req.params;
         const updateData = req.body;
         await clientesService.updateCliente(idCliente, updateData);
-        res.status(200).json({ ok: true, message: 'Cliente actualizado' });
+        ResponseHandler.Ok(res, 'Cliente actualizado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const deleteCliente = async (req, res) => {
     try {
         const { idCliente } = req.params;
         await clientesService.deleteCliente(idCliente);
-        res.status(200).json({ message: 'Cliente eliminado' });
+        ResponseHandler.Ok(res, 'Cliente eliminado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };

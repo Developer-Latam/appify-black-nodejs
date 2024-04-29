@@ -1,56 +1,52 @@
 import ProductService from "../../services/miempresa/ProductService.js";
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createProduct = async (req, res) => {
     try {
         const data = req.body;
         const response = await ProductService.createProduct(data);
-        res.status(200).json({ message: 'Producto creado!', product: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getProductById = async (req, res) => {
     try {
         const { idProducto } = req.params;
-        console.log(idProducto)
         //const { userid } = req.params.userid;
         const product = await ProductService.getProductById(idProducto);
         if (!product) {
             return res.status(404).json({ message: 'Producto no encontrado' });
         }
-        res.status(200).json(product);
+        ResponseHandler.Ok(res, product)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const getProductsByUserId = async (req, res) => {
     try {
         const { id } = req.params;
         const products = await ProductService.getProductsByUserId(id);
-        res.status(200).json({ data: products });
+        ResponseHandler.Ok(res, products)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const updateProduct = async (req, res) => {
     try {
         const { idProducto } = req.params;
         const updateData = req.body;
         await ProductService.updateProduct(idProducto, updateData);
-        res.status(200).json({ ok: true, message: 'Producto actualizado' });
+        ResponseHandler.Ok(res, "Producto actualizado")
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
-
 export const deleteProduct = async (req, res) => {
     try {
         const { idProducto } = req.params;
         await ProductService.deleteProduct(idProducto);
-        res.status(200).json({ message: 'Producto eliminado' });
+        ResponseHandler.Ok(res, "Producto eliminado")
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };

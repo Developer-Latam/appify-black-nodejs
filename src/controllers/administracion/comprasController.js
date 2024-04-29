@@ -67,7 +67,6 @@ export const getDocumentosCompraByUserController  = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
-
 export const getAllDataComprasByUserId  = async (req, res) => {
     try {
         const {user} = req.params

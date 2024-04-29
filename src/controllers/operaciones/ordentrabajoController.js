@@ -1,11 +1,12 @@
 import ordenTrabajoService from "../../services/operaciones/ordentrabajoService.js";
+import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createOrdenTrabajo = async (req, res) => {
     try {
         const data = req.body;
         const response = await ordenTrabajoService.createOrdenTrabajo(data);
-        res.status(200).json({cliente: response });
+        ResponseHandler.Ok(res, response)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
 
@@ -16,9 +17,9 @@ export const getOrdenTrabajoById = async (req, res) => {
         if (!ordentrabajo) {
             return res.status(404).json({ message: 'Orden no encontrada' });
         }
-        res.status(200).json(ordentrabajo);
+        ResponseHandler.Ok(res, ordentrabajo)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
 
@@ -26,9 +27,9 @@ export const getOrdenTrabajoByUserId = async (req, res) => {
     try {
         const { idUser } = req.params;
         const ordentrabajo = await ordenTrabajoService.getOrdenTrabajoByUserId(idUser);
-        res.status(200).json({ data: ordentrabajo });
+        ResponseHandler.Ok(res, ordentrabajo)
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
 
@@ -37,9 +38,9 @@ export const updateOrdenTrabajo = async (req, res) => {
         const { id } = req.params;
         const updateData = req.body;
         await ordenTrabajoService.updateOrdenTrabajo(id, updateData);
-        res.status(200).json({ ok: true, message: 'Orden de trabajo actualizada' });
+        ResponseHandler.Ok(res, 'Orden de trabajo actualizada')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
 
@@ -49,8 +50,8 @@ export const deleteOrdenTrabajo = async (req, res) => {
     try {
         const { idCliente } = req.params;
         await ordenTrabajoService.deleteOrdenTrabajo(idCliente);
-        res.status(200).json({ message: 'Cliente eliminado' });
+        ResponseHandler.Ok(res, 'Cliente eliminado')
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };

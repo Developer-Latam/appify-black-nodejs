@@ -1,8 +1,5 @@
-
 import { ResponseHandler } from "../../utils/dependencys/injection.js";
-
 import proveedorService from "../../services/miempresa/proveedorService.js"
-
 // Funciones que interactuan con la clase Service, se encargan de los parametros y las respuestas al cliente
 //Crea un proveedor
 export const createProveedorController = async (req, res) => {
@@ -22,14 +19,13 @@ export const createProveedorController = async (req, res) => {
         ResponseHandler.HandleError(res, err)
     }
 }
-
 export const getProveedoresByUserId = async (req, res) => {
     try {
         const { id } = req.params;
         const proveedores = await proveedorService.getProveedoresByUserId(id);
-        res.status(200).json({ data: proveedores });
+        ResponseHandler.Ok(res, proveedores);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        ResponseHandler.HandleError(res, err)
     }
 };
 //Actualiza un proveedor

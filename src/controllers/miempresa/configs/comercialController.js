@@ -1,7 +1,5 @@
 import { ResponseHandler } from "../../../utils/dependencys/injection.js";
 import comercialService from "../../../services/miempresa/configs/comercialService.js";
-
-
 export const updateProyectoController = async (req, res) => {
     try {
         const { id } = req.params;
@@ -12,7 +10,6 @@ export const updateProyectoController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
-
 export const updateParaClientesController = async (req, res) => {
     try {
         const { id } = req.params;
