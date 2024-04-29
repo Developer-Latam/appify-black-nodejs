@@ -1,5 +1,6 @@
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import conciliacionRepository from "../../persistence/repositorys/conciliacion/conciliacionRepository.js";
+
 class conciliacionService {
     async saveBankData(jsonData) {
         try {
@@ -51,11 +52,38 @@ class conciliacionService {
         }
     }
     async createMovimientos(data) {
-        try {
+
+        try{
+
             return conciliacionRepository.createMovimientos(data);
         } catch (error) {
-            throw error;
+            ResponseHandler.HandleError(error)
         }
+    }
+
+    async createCuentaLink(id) {
+
+        try{
+            
+            return conciliacionRepository.createCuentaBancariaLinkConciliacion(id);
+
+        } catch (error) {
+
+            ResponseHandler.HandleError(error)
+        }
+    }
+
+    async getCuentaLinkById(id){
+
+        try{
+
+            return conciliacionRepository.findLinkCuentasBancoConciliacionByCuentaId(id);
+
+        } catch (error) {
+
+            ResponseHandler.HandleError(error)
+        }
+
     }
     async getLinkByUserId(userId){
         try {

@@ -21,10 +21,30 @@ export const createMovimientos = async (req, res) => {
     }
 };
 
+export const createCuentaLink = async (req, res) => {
+    try {
+        const data = req.body;
+        await conciliacionService.createCuentaLink(data);
+        res.status(200).json({response: 'ok' });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
 export const getLinkByUserId = async (req, res) => {
     try {
         const userId = req.params;
         await conciliacionService.getLinkByUserId(userId);
+        res.status(200).json({response: 'ok' });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
+export const getCuentaLinkById = async (req, res) => {
+    try {
+        const id = req.params;
+        await conciliacionService.getCuentaLinkById(id);
         res.status(200).json({response: 'ok' });
     } catch (err) {
         res.status(400).json({ message: err.message });

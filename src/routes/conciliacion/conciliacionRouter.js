@@ -9,7 +9,9 @@ import {
   getCuentasBancariasByConciliacionId,
   getMovimientosByCuentaId,
   updateUserConciliacion,
-  updateCuentaBancariaById
+  updateCuentaBancariaById,
+  createCuentaLink,
+  getCuentaLinkById
 } from '../../controllers/conciliacion/conciliacionController.js';
 
 const router = Router();
@@ -20,11 +22,17 @@ router.post('/createCon', saveBankData);
 // Creacion de uno o varios movimientos
 router.post('/createMov', createMovimientos);
 
+// Creacion de  vinculacion de cuenta de banco con la conciliacion 
+router.post('/createVinculacion', createCuentaLink);
+
 /* AL FINAL NO SE PARA QUE HICE ESTA RUTA
 router.get('/linkConciliacion/:userid', getLinkByUserId);*/
 
 // Obtener cuenta Bancaria con el id de la cuenta
 router.get('/BankAccount/:cuentaId', getCuentasByCuentaId);
+
+// Obtener cuenta Bancaria con el id de la cuenta con el id de la cuenta de banco si es que existe
+router.get('/obtenerVinculacion', getCuentaLinkById);
 
 // Obtener los datos de un movimiento por su id
 router.get('/movimiento/:id', getMovimientosById);
