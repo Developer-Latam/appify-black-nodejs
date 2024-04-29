@@ -1,34 +1,53 @@
 import EcommerceRepository from "../../persistence/repositorys/comercial/ecommerceRepository.js";
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
+import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 class EcommerceService {
     async createEcommerce(data) {
-        const superUserExist = await userRepository.userExistsById(data.user);
-        const ecommerceExist = await EcommerceRepository.ecommerceExistsByName(data.nombre);
-        if(ecommerceExist && superUserExist){
-            return { ok: false, message: 'El nombre del E-commerce ya existe!' };
+        try {
+            const superUserExist = await userRepository.userExistsById(data.user);
+            const ecommerceExist = await EcommerceRepository.ecommerceExistsByName(data.nombre);
+            if(ecommerceExist && superUserExist){
+                throw new CustomError(400, "Bad Request", 'El nombre del E-commerce ya existe!')
+            }
+            return  EcommerceRepository.createEcommerce({ ...data });
+        } catch (error) {
+            throw error
         }
-        
-        return  EcommerceRepository.createEcommerce({ ...data });
     }
-
     async getEcommerceById(id) {
-        return EcommerceRepository.findEcommerceById(id);
+        try {
+            return EcommerceRepository.findEcommerceById(id);
+        } catch (error) {
+            throw error
+        }
     }
-
     async getEcommerceByCategory(userId, nameEcommerce) {
-        return EcommerceRepository.findAllEcommerceByCategory(userId, nameEcommerce);
+        try {
+            return EcommerceRepository.findAllEcommerceByCategory(userId, nameEcommerce);
+        } catch (error) {
+            throw error
+        }
     }
-
     async getEcommerceByUserId(userId) {
-        return EcommerceRepository.findAllEcommerceByUserId(userId);
+        try {
+            return EcommerceRepository.findAllEcommerceByUserId(userId);
+        } catch (error) {
+            throw error
+        }
     }
-
     async updateEcommerce(id, updateData) {
-        return EcommerceRepository.updateEcommerce(id, updateData);
+        try {
+            return EcommerceRepository.updateEcommerce(id, updateData);
+        } catch (error) {
+            throw error
+        }
     }
-
     async deleteEcommerce(id) {
-        return EcommerceRepository.deleteEcommerce(id);
+        try {
+            return EcommerceRepository.deleteEcommerce(id);
+        } catch (error) {
+            throw error
+        }
     }
 }
 export default new EcommerceService();

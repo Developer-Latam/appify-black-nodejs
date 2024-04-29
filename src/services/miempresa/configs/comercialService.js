@@ -1,9 +1,7 @@
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 import ComercialRepositoy from "../../../persistence/repositorys/miempresa/configs/comercialRepository.js";
 import comercialRepository from "../../../persistence/repositorys/miempresa/configs/comercialRepository.js";
-
 class comercialService {
-
     async updateProyecto(id, inputData) {
         try {
             const camposPermitidos = [
@@ -24,7 +22,6 @@ class comercialService {
             throw(error)
         }
     }
-
     async updateParaClientes(id, inputData) {
         try {
             const camposPermitidos = [
@@ -75,7 +72,4 @@ class comercialService {
         }
     }
 }
-
-
-
 export default new comercialService()

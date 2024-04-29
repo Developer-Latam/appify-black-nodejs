@@ -130,56 +130,39 @@ class VentasService {
     async getFVDetailsbyDV(id) {
         return ventasRepository.getFVDetailsbyDV(id)
     }
-
     async getFVEDetailsbyDV(id) {
         return ventasRepository.getFVEDetailsbyDV(id)
     }
-
-
-
     async getAllDataVentasByUserId(id) {
         try {
             let documentos = await this.getDVByUser(id);
             const formattedVentas = [];
-            
             for (const documento of documentos) {
                 const functionsToTry = [
                     { func: this.getNCoDbyIdDoc, key: 'NotaCredito' },
                     { func: this.getFVDetailsbyDV, key: 'FacturaVenta' },
                     { func: this.getFVEDetailsbyDV, key: 'FacturaVentaExcenta' }
                 ];
-                
                 const results = [];
                 for (const { func, key } of functionsToTry) {
-                    try {
-                        const resultado = await func(documento.id);
-    
-                        if (resultado.length > 0) { // Verificar si el resultado no está vacío
-                            results.push({ key, resultado });
-                        }
-                    } catch (error) {
-                        
+                    const resultado = await func(documento.id);
+                    if (resultado.length > 0) { // Verificar si el resultado no está vacío
+                        results.push({ key, resultado });
                     }
                 }
-                
                 if (results.length > 0) { // Verificar si hay resultados antes de agregarlos
                     const formattedResult = { documento };
                     for (const { key, resultado } of results) {
                         formattedResult[key] = resultado;
                     }
-                    
                     formattedVentas.push(formattedResult);
                 }
             }
-            
             return formattedVentas;
         } catch (error) {
             throw error;
         }
     }
-    
-    
-    
     async getFVoFVEbyIdDoc(fvDVID, fveDVID) {
         try {
             let detalles;
@@ -252,18 +235,14 @@ class VentasService {
             } else {
                 throw new CustomError(404, "Not Found", "No se encontraron detalles para el documento de venta solicitado")
             }
-            
         } catch (error) {
             throw error
         }
     }
-
     // SAMUELIN SAMUELIN VOY A DIVIDIRLA EN DOS A LA DE ARRIBA DE ESTO
-
     async getFVIdDoc(fvDVID) {
         try {
             let detalles = await ventasRepository.getFVDetailsbyDV(fvDVID)
-            
             // Reestructurando los datos para agruparlos en un solo objeto
             // Verifica si la consulta devolvió algún detalle
             if (detalles.length > 0) {
@@ -332,11 +311,9 @@ class VentasService {
             throw error
         }
     }
-
     async getFVEIdDoc(fveDVID) {
         try {
             let detalles = await ventasRepository.getFVEDetailsbyDV(fveDVID)
-            
             // Reestructurando los datos para agruparlos en un solo objeto
             // Verifica si la consulta devolvió algún detalle
             if (detalles.length > 0) {
@@ -466,62 +443,69 @@ class VentasService {
         }
     }
     async createDocumentoVenta(data, idDD, operations) {
-        const {
-            documento_despacho_venta,
-            item_despacho_venta_ot,
-            item_producto_documento_despacho_venta
-        } = data;
-        if (!documento_despacho_venta) {
-            throw new CustomError(400, "Bad Request", "Los detalles de la venta son obligatorios.");
-        }
-         // Validar que solo uno de los campos ot o fact_libre sea true
-        if ((documento_despacho_venta.ot && documento_despacho_venta.fact_libre) || (!documento_despacho_venta.ot && !documento_despacho_venta.fact_libre)) {
-            throw new CustomError(400, "Bad Request", "Debe especificar solo uno de los campos 'ot' o 'fact_libre' como true en los detalles de la venta.");
-        }
-        const idDDV = idgenerate("DDV");
-        operations.push(ventasRepository.createDocDespachoVenta(idDDV, idDD, documento_despacho_venta));
-        if (documento_despacho_venta.ot === true) {
-            if (!item_despacho_venta_ot || item_despacho_venta_ot <= 0) {
-                throw new CustomError(400, "Bad Request", "Los items de despacho de venta OT son necesarios y deben ser mayores a 0.");
+        try {
+            const {
+                documento_despacho_venta,
+                item_despacho_venta_ot,
+                item_producto_documento_despacho_venta
+            } = data;
+            if (!documento_despacho_venta) {
+                throw new CustomError(400, "Bad Request", "Los detalles de la venta son obligatorios.");
             }
-            const promiseDVot = ventasRepository.createItemDespachoVentaOt(idDDV, item_despacho_venta_ot);
-            operations.push(...promiseDVot);
-        } else if (documento_despacho_venta.fact_libre === true) {
-            if (!item_producto_documento_despacho_venta || item_producto_documento_despacho_venta <= 0) {
-                throw new CustomError(400, "Bad Request", "Los productos del documento de despacho de venta son necesarios y deben ser mayores a 0.");
+             // Validar que solo uno de los campos ot o fact_libre sea true
+            if ((documento_despacho_venta.ot && documento_despacho_venta.fact_libre) || (!documento_despacho_venta.ot && !documento_despacho_venta.fact_libre)) {
+                throw new CustomError(400, "Bad Request", "Debe especificar solo uno de los campos 'ot' o 'fact_libre' como true en los detalles de la venta.");
             }
-            const promiseDDVProd = ventasRepository.createItemProductoDDV(idDDV, item_producto_documento_despacho_venta);
-            operations.push(...promiseDDVProd);
+            const idDDV = idgenerate("DDV");
+            operations.push(ventasRepository.createDocDespachoVenta(idDDV, idDD, documento_despacho_venta));
+            if (documento_despacho_venta.ot === true) {
+                if (!item_despacho_venta_ot || item_despacho_venta_ot <= 0) {
+                    throw new CustomError(400, "Bad Request", "Los items de despacho de venta OT son necesarios y deben ser mayores a 0.");
+                }
+                const promiseDVot = ventasRepository.createItemDespachoVentaOt(idDDV, item_despacho_venta_ot);
+                operations.push(...promiseDVot);
+            } else if (documento_despacho_venta.fact_libre === true) {
+                if (!item_producto_documento_despacho_venta || item_producto_documento_despacho_venta <= 0) {
+                    throw new CustomError(400, "Bad Request", "Los productos del documento de despacho de venta son necesarios y deben ser mayores a 0.");
+                }
+                const promiseDDVProd = ventasRepository.createItemProductoDDV(idDDV, item_producto_documento_despacho_venta);
+                operations.push(...promiseDDVProd);
+            }
+        } catch (error) {
+            throw error
         }
     }
-    
     async createDocumentoTraslado(data, idDD, operations) {
-        const {
-            documento_despacho_traslado,
-            item_despacho_traslado_ot,
-            item_producto_documento_despacho_traslado
-        } = data;
-        if (!documento_despacho_traslado) {
-            throw new CustomError(400, "Bad Request", "Los detalles de traslado son obligatorios.");
-        }
-        // Validar que solo uno de los campos ot o fact_libre sea true
-        if ((documento_despacho_traslado.ot && documento_despacho_traslado.fact_libre) || (!documento_despacho_traslado.ot && !documento_despacho_traslado.fact_libre)) {
-            throw new CustomError(400, "Bad Request", "Debe especificar solo uno de los campos 'ot' o 'fact_libre' como true en los detalles de traslado.");
-        }
-        const idDDT = idgenerate("DDT");
-        operations.push(ventasRepository.createDDT(idDDT, idDD, documento_despacho_traslado));
-        if (documento_despacho_traslado.ot === true) {
-            if (!item_despacho_traslado_ot || item_despacho_traslado_ot <= 0) {
-                throw new CustomError(400, "Bad Request", "Los items de despacho de traslado OT son necesarios y deben ser mayores a 0.");
+        try {
+            const {
+                documento_despacho_traslado,
+                item_despacho_traslado_ot,
+                item_producto_documento_despacho_traslado
+            } = data;
+            if (!documento_despacho_traslado) {
+                throw new CustomError(400, "Bad Request", "Los detalles de traslado son obligatorios.");
             }
-            const promiseDDTot = ventasRepository.createItemDespachoTrasladoOt(idDDT, item_despacho_traslado_ot);
-            operations.push(...promiseDDTot);
-        } else if (documento_despacho_traslado.fact_libre === true) {
-            if (!item_producto_documento_despacho_traslado || item_producto_documento_despacho_traslado <= 0) {
-                throw new CustomError(400, "Bad Request", "Los productos del documento de despacho de traslado son necesarios y deben ser mayores a 0.");
+            // Validar que solo uno de los campos ot o fact_libre sea true
+            if ((documento_despacho_traslado.ot && documento_despacho_traslado.fact_libre) || (!documento_despacho_traslado.ot && !documento_despacho_traslado.fact_libre)) {
+                throw new CustomError(400, "Bad Request", "Debe especificar solo uno de los campos 'ot' o 'fact_libre' como true en los detalles de traslado.");
             }
-            const promiseItemProdDDT = ventasRepository.createItemProductoDDT(idDDT, item_producto_documento_despacho_traslado);
-            operations.push(...promiseItemProdDDT);
+            const idDDT = idgenerate("DDT");
+            operations.push(ventasRepository.createDDT(idDDT, idDD, documento_despacho_traslado));
+            if (documento_despacho_traslado.ot === true) {
+                if (!item_despacho_traslado_ot || item_despacho_traslado_ot <= 0) {
+                    throw new CustomError(400, "Bad Request", "Los items de despacho de traslado OT son necesarios y deben ser mayores a 0.");
+                }
+                const promiseDDTot = ventasRepository.createItemDespachoTrasladoOt(idDDT, item_despacho_traslado_ot);
+                operations.push(...promiseDDTot);
+            } else if (documento_despacho_traslado.fact_libre === true) {
+                if (!item_producto_documento_despacho_traslado || item_producto_documento_despacho_traslado <= 0) {
+                    throw new CustomError(400, "Bad Request", "Los productos del documento de despacho de traslado son necesarios y deben ser mayores a 0.");
+                }
+                const promiseItemProdDDT = ventasRepository.createItemProductoDDT(idDDT, item_producto_documento_despacho_traslado);
+                operations.push(...promiseItemProdDDT);
+            }
+        } catch (error) {
+            throw error
         }
     }
     async createFVE(data) {
@@ -637,7 +621,6 @@ class VentasService {
             throw error;
         }
     }
-    
     async createNCoDyItemsCorrigeMonto(idNCoD, data) {
         try {
             const {
@@ -706,7 +689,4 @@ class VentasService {
         }
     }
 }
-
-
 export default new VentasService()
-

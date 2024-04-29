@@ -1,16 +1,11 @@
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import conciliacionRepository from "../../persistence/repositorys/conciliacion/conciliacionRepository.js";
-
 class conciliacionService {
-
     async saveBankData(jsonData) {
         try {
-            console.log(idgenerate('funciono'));
             const { data } = jsonData;
             const username = idgenerate('temp-user');
-            console.log(username);
             const { id: link_id_banco, holder_id, link_token, accounts } = data;
-    
             // Crear el registro en la tabla link_fintoc_bancos
             const linkData = {
                 conciliacion_id: data.id,
@@ -20,7 +15,6 @@ class conciliacionService {
                 user: username // Incluye el username aquí
             };
             await conciliacionRepository.createLink(linkData);
-    
             if (Array.isArray(accounts)) {
                 // Iterar sobre cada movimiento en la lista
                 for (const account of accounts) {
@@ -52,65 +46,74 @@ class conciliacionService {
                 };
                 await conciliacionRepository.createCuentaBancaria(cuentaData);
             }
-    
-            console.log('Datos de bancos y cuentas bancarias guardados correctamente.');
         } catch (error) {
-            console.error('Error al guardar datos de bancos y cuentas bancarias:', error);
+            throw error
         }
     }
     async createMovimientos(data) {
-
-        return conciliacionRepository.createMovimientos(data);
+        try {
+            return conciliacionRepository.createMovimientos(data);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async getLinkByUserId(userId){
-
-        return conciliacionRepository.findLinkByUserId(userId);
-
+        try {
+            return conciliacionRepository.findLinkByUserId(userId);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async getCuentasByCuentaId(cuentaId){
-
-        return conciliacionRepository.findCuentasByCuentaId(cuentaId);
-        
+        try {
+            return conciliacionRepository.findCuentasByCuentaId(cuentaId);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async getMovimientosById(id){
-
-        return conciliacionRepository.findMovimientosById(id);
-        
+        try {
+            return conciliacionRepository.findMovimientosById(id);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async getConciliacionesByUserId(userId) {
-
-        return conciliacionRepository.findConciliacionesByUserId(userId);
-
+        try {
+            return conciliacionRepository.findConciliacionesByUserId(userId);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async getCuentasBancariasByConciliacionId(conciliacionId){
-
-        return conciliacionRepository.findCuentasBancariasByConciliacionId(conciliacionId);
-        
+        try {
+            return conciliacionRepository.findCuentasBancariasByConciliacionId(conciliacionId);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async getMovimientosByCuentaId(cuentaId) {
-
-        return conciliacionRepository.findMovimientosByCuentaId(cuentaId);
+        try {
+            return conciliacionRepository.findMovimientosByCuentaId(cuentaId);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async updateUserConciliacion(id, user) {
-        const updateData = { user }; 
-        return conciliacionRepository.updateUserConciliacion(id, updateData);
+        try {
+            const updateData = { user }; 
+            return conciliacionRepository.updateUserConciliacion(id, updateData);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async updateCuentaBancariaById(id, accId) {
-        const updateData = {activo: accId}; 
-        return conciliacionRepository.updateCuentaBancariaById(id, updateData);
+        try {
+            const updateData = {activo: accId}; 
+            return conciliacionRepository.updateCuentaBancariaById(id, updateData);
+        } catch (error) {
+            throw error;
+        }
     }
 }
-
 export default new conciliacionService();
-
-
-
-

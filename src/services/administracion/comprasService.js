@@ -261,11 +261,9 @@ class ComprasService {
             throw error;
         }
     }
-
     async getFCDetailsbyDC(id){
         return comprasRepository.getFCDetailsbyDC(id)
     }
-
     async getFCEDetailsbyDC(id){
         return comprasRepository.getFCEDetailsbyDC(id)
     }
@@ -274,44 +272,36 @@ class ComprasService {
         try {
             let documentos = await this.getDCByUser(id);
             const formattedCompras = [];
-            
             for (const documento of documentos) {
                 const functionsToTry = [
                     { func: this.getNCoDbyIdDoc, key: 'NotaCredito' },
                     { func: this.getFCDetailsbyDC, key: 'FacturaVenta' },
                     { func: this.getFCEDetailsbyDC, key: 'FacturaVentaExcenta' }
                 ];
-                
                 const results = [];
                 for (const { func, key } of functionsToTry) {
                     try {
                         const resultado = await func(documento.id);
-    
                         if (resultado.length > 0) { // Verificar si el resultado no está vacío
                             results.push({ key, resultado });
                         }
                     } catch (error) {
-                        
+                        throw error
                     }
                 }
-                
                 if (results.length > 0) { // Verificar si hay resultados antes de agregarlos
                     const formattedResult = { documento };
                     for (const { key, resultado } of results) {
                         formattedResult[key] = resultado;
                     }
-                    
                     formattedCompras.push(formattedResult);
                 }
             }
-            
             return formattedCompras;
         } catch (error) {
-            console.error("Error al obtener los datos de ventas:", error.message);
             throw error;
         }
     }
-    
     async getFCoFCEbyIdDoc(fcDCID, fceDCID) {
         try {
             let detalles;
@@ -382,9 +372,7 @@ class ComprasService {
             throw error;
         }
     }
-
     // Samuelin samuelin te divido la funcion en dos
-
     async getFCbyIdDoc(fcDCID) {
         try {
             let detalles = await comprasRepository.getFCDetailsbyDC(fcDCID);
@@ -449,11 +437,9 @@ class ComprasService {
             throw error;
         }
     }
-
     async getFCEbyIdDoc(fceDCID) {
         try {
             let detalles = await comprasRepository.getFCEDetailsbyDC(fceDCID);
-            
             if (detalles.length > 0) {
                 const uniqueServices = new Map();
                 const uniqueProducts = new Map();
@@ -514,8 +500,6 @@ class ComprasService {
             throw error;
         }
     }
-
-
     async getNCoDbyIdDoc(DCID){
         try {
             const notas = await comprasRepository.getNCODDetailsbyDC(DCID);
@@ -670,6 +654,4 @@ class ComprasService {
         }
     }
 }
-
-
 export default new ComprasService()

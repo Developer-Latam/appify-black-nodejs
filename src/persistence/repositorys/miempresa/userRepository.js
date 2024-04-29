@@ -129,7 +129,7 @@ class UserRepository {
             celular,
             fecha_de_nacimiento: fecha_ISO,
             password: passwordHash,
-            activo: true,
+            activo: false,
         };
         // Datos para el subusuario
         let subUserData = {
@@ -144,7 +144,7 @@ class UserRepository {
             ref_superusuario: 1,
             checkeado: 1,
             password: passwordHash,
-            activo: true,
+            activo: false,
         };
         // Preparando las operaciones para la transacción
         const operations = [

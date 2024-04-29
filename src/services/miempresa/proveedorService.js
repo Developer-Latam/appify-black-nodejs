@@ -26,9 +26,7 @@ class proveedorService {
             throw (error)
         }
     }
-
     async getProveedoresByUserId(userId) {
-
         return proveedorRepository.findAllProveedoresByUserId(userId);
     }
     async getProveedorById(idProv) {
@@ -88,5 +86,4 @@ class proveedorService {
         }
     }
 }
-
 export default new proveedorService()

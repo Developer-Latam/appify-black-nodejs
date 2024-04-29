@@ -1,9 +1,7 @@
 import contabilidadRepository from "../../../persistence/repositorys/miempresa/configs/contabilidadRepository.js";
 import executeTransactions from "../../../persistence/transactions/executeTransaction.js";
 import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
-
 class ContabilidadService {
-    
     async updateFE(id, inputData) {
         try {
             const camposPermitidos = [
@@ -45,7 +43,6 @@ class ContabilidadService {
             throw(error)
         }
     }
-    
     async UpdateExecuteOperationsModuloAdministracion(data) {
         //Preparar los datos para cada operacion
         // Desestructurar "data" para obtener los datos específicos para cada operación.
@@ -138,5 +135,4 @@ class ContabilidadService {
         }
     }
 }
-
 export default new ContabilidadService()

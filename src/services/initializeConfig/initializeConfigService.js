@@ -27,7 +27,6 @@ class initConfigService {
             throw(error)
         }
     }
-    
     async executeOperationsModuloAdministracion(empresaId) {
         //Preparar los datos para cada operacion
         // Desestructurar "data" para obtener los datos específicos para cada operación.
@@ -55,6 +54,4 @@ class initConfigService {
         }
     }
 }
-
-
 export default new initConfigService()

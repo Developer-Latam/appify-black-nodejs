@@ -1,40 +1,63 @@
 import anticiposClienteProvRepository from "../../persistence/repositorys/comercial/anticiposClienteProvRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
-
 class anticipoClientesProvService {
     async createAnticipoCliente(data) {
-        const id = idgenerate("anticipo-cliente");
-        return anticiposClienteProvRepository.createAnticipoCliente({ ...data, id: id });
+        try {
+            const id = idgenerate("anticipo-cliente");
+            return anticiposClienteProvRepository.createAnticipoCliente({ ...data, id: id });
+        } catch (error) {
+            throw error
+        }
     }
-
     async getAnticiposClienteByProyectoId(proyectoId) {
-        return anticiposClienteProvRepository.findAllAnticiposCienteByProyectoId(proyectoId);
+        try {
+            return anticiposClienteProvRepository.findAllAnticiposCienteByProyectoId(proyectoId);
+        } catch (error) {
+            throw error
+        }
     }
-
     async updateAnticipoCliente(id, updateData) {
-        return anticiposClienteProvRepository.updateAnticipoCliente(id, updateData);
+        try {
+            return anticiposClienteProvRepository.updateAnticipoCliente(id, updateData);
+        } catch (error) {
+            throw error
+        }
     }
-
     async deleteAnticipoCliente(id) {
-        return anticiposClienteProvRepository.deleteAnticipoCliente(id);
+        try {
+            return anticiposClienteProvRepository.deleteAnticipoCliente(id);
+        } catch (error) {
+            throw error
+        }
     }
-
     async createAnticipoProveedor(data) {
-        const id = idgenerate("anticipo-proveedor");
-        return anticiposClienteProvRepository.createAnticipoProveedor({ ...data, id: id });
+        try {
+            const id = idgenerate("anticipo-proveedor");
+            return anticiposClienteProvRepository.createAnticipoProveedor({ ...data, id: id });
+        } catch (error) {
+            throw error
+        }
     }
-
     async getAnticiposProveedorByProyectoId(proyectoId) {
-        return anticiposClienteProvRepository.findAllAnticiposProveedorByProyectoId(proyectoId);
+        try {
+            return anticiposClienteProvRepository.findAllAnticiposProveedorByProyectoId(proyectoId);
+        } catch (error) {
+            throw error
+        }
     }
-
     async updateAnticipoProveedor(id, updateData) {
-        return anticiposClienteProvRepository.updateAnticipoProveedor(id, updateData);
+        try {
+            return anticiposClienteProvRepository.updateAnticipoProveedor(id, updateData);
+        } catch (error) {
+            throw error
+        }
     }
-
     async deleteAnticipoProveedor(id) {
-        return anticiposClienteProvRepository.deleteAnticipoProveedor(id);
+        try {
+            return anticiposClienteProvRepository.deleteAnticipoProveedor(id);
+        } catch (error) {
+            throw error
+        }
     }
-
 }
 export default new anticipoClientesProvService();

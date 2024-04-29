@@ -85,5 +85,4 @@ class ItemsSistemaService {
     }
     
 }
-
 export default new ItemsSistemaService()

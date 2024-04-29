@@ -2,41 +2,69 @@ import itemProdServOrdenCompraRepository from "../../persistence/repositorys/ope
 import { idgenerate } from "../../utils/id/idGenerate.js";
 class itemProdServOrdenCompraService {
     async createitemProducto(data) {
-        const id = idgenerate("orden-compra-producto");
-        return  itemProdServOrdenCompraRepository.createitemProducto({ ...data, id: id });
+        try {
+            const id = idgenerate("orden-compra-producto");
+            return  itemProdServOrdenCompraRepository.createitemProducto({ ...data, id: id });
+        } catch (error) {
+            throw error;
+        }
     }
-
     async getProductoById(id) {
-        return itemProdServOrdenCompraRepository.findItemProductoById(id);
+        try {
+            return itemProdServOrdenCompraRepository.findItemProductoById(id);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async createitemServicio(data) {
-        const id = idgenerate("orden-compra-servicio");
-        return  itemProdServOrdenCompraRepository.createitemServicio({ ...data, id: id });
+        try {
+            const id = idgenerate("orden-compra-servicio");
+            return  itemProdServOrdenCompraRepository.createitemServicio({ ...data, id: id });
+        } catch (error) {
+            throw error;
+        }
     }
-
     async getServicioById(id) {
-        return itemProdServOrdenCompraRepository.findItemServicioById(id);
+        try {
+            return itemProdServOrdenCompraRepository.findItemServicioById(id);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async getProdServByOrdenCompraId(userId) {
-        return itemProdServOrdenCompraRepository.findAllProdServByOrdenCompraId(userId);
+        try {
+            return itemProdServOrdenCompraRepository.findAllProdServByOrdenCompraId(userId);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async updateItemProducto(id, updateData) {
-        return itemProdServOrdenCompraRepository.updateItemProducto(id, updateData);
+        try {
+            return itemProdServOrdenCompraRepository.updateItemProducto(id, updateData);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async deleteItemProducto(id) {
-        return itemProdServOrdenCompraRepository.deleteItemProducto(id);
+        try {
+            return itemProdServOrdenCompraRepository.deleteItemProducto(id);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async updateItemServicios(id, updateData) {
-        return itemProdServOrdenCompraRepository.updateItemServicios(id, updateData);
+        try {
+            return itemProdServOrdenCompraRepository.updateItemServicios(id, updateData);
+        } catch (error) {
+            throw error;
+        }
     }
-
     async deleteItemServicios(id) {
-        return itemProdServOrdenCompraRepository.deleteItemServicios(id);
+        try {
+            return itemProdServOrdenCompraRepository.deleteItemServicios(id);
+        } catch (error) {
+            throw error;
+        }
     }
 }
 export default new itemProdServOrdenCompraService();

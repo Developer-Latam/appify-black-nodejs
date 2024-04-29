@@ -182,14 +182,14 @@ class UserService {
         }
     }
     //Realiza el registro de usuario
-    async signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash,activo) {
+    async signUpUsuario(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash) {
         try {
             //Verifica si existe, y si no, lo crea
             const userExists = await UserRepository.userExists(email);
             if(userExists){
                 throw new CustomError(409, 'El usuario ya existe', { email });
             }
-            const result = await UserRepository.createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo);
+            const result = await UserRepository.createUserAndSubuser(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash);
             const objIds = {
                 IdSuperUser: result[0].id,
                 IdSubUser: result[1].id
