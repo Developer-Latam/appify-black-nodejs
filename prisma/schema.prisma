@@ -1147,21 +1147,6 @@ model item_servicio_proyecto {
   @@index([idServicio], map: "servicios")
 }
 
-model CuentasBancarias {
-  id               String   @id @db.VarChar(100)
-  conciliacion_id  String   @db.VarChar(100)
-  account_id       String?  @db.VarChar(255)
-  tipo             String?  @db.VarChar(255)
-  numero           String?  @db.VarChar(255)
-  nombre           String?  @db.VarChar(255)
-  saldo_disponible Int?
-  saldo_actual     Int?
-  moneda           String?  @db.VarChar(5)
-  activo           Boolean? @default(false)
-
-  @@index([conciliacion_id], map: "link_fintoc_bancos")
-}
-
 model link_fintoc_bancos {
   id            String @id @db.VarChar(100)
   link_id_banco String @db.VarChar(150)
@@ -1197,7 +1182,7 @@ model movimientos_cuenta {
   reference_id                          String?   @db.VarChar(255)
   pending                               Boolean?
 
-  @@index([cuenta_id], map: "CuentasBancarias")
+  @@index([cuenta_id], map: "cuentasBancarias")
 }
 
 model nota_credito_nota_NC {
@@ -1509,4 +1494,19 @@ model pagos_factura_compra_excenta {
 
   @@index([idFacturaCompraE], map: "factura_compra_excenta")
   @@index([idPago], map: "pagos")
+}
+
+model cuentasBancarias {
+  id               String   @id @db.VarChar(100)
+  conciliacion_id  String   @db.VarChar(100)
+  account_id       String?  @db.VarChar(255)
+  tipo             String?  @db.VarChar(255)
+  numero           String?  @db.VarChar(255)
+  nombre           String?  @db.VarChar(255)
+  saldo_disponible Int?
+  saldo_actual     Int?
+  moneda           String?  @db.VarChar(5)
+  activo           Boolean? @default(false)
+
+  @@index([conciliacion_id], map: "link_fintoc_bancos")
 }

@@ -12,7 +12,7 @@ class conciliacionRepository {
     }
     async createCuentaBancaria(data) {
         try {
-            return prisma.CuentasBancarias.create({
+            return prisma.cuentasBancarias.create({
                 data: data
             });
         } catch (error) {
