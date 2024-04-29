@@ -154,7 +154,7 @@ class conciliacionRepository {
     async updateUserConciliacion(id, updateData) {
         try {
             return prisma.link_fintoc_bancos.update({
-                where: { conciliacion_id: id },
+                where: { id: id },
                 data : updateData
             });
         } catch (error) {
