@@ -44,7 +44,6 @@ model categoria_cuenta {
 model clientes {
   id                      String   @id @db.VarChar(100)
   user                    String   @db.VarChar(100)
-  lista_de_precios        String   @db.VarChar(100)
   razon_social            String   @db.VarChar(200)
   rut                     String   @db.VarChar(30)
   giro                    String?  @db.VarChar(200)
@@ -59,7 +58,6 @@ model clientes {
   notas                   String?  @db.Text
   pie_de_pagina           String?  @db.Text
 
-  @@index([lista_de_precios], map: "listas_de_precio")
   @@index([user], map: "usuarios")
   @@index([condicion_de_pago], map: "condicion_pago")
 }
@@ -562,12 +560,12 @@ model item_servicios {
 }
 
 model listas_de_precio {
-  id     String   @id @db.VarChar(100)
-  user   String   @db.VarChar(100)
-  nombre String   @db.VarChar(200)
-  iva    Boolean?
+  id      String   @id @db.VarChar(100)
+  nombre  String   @db.VarChar(200)
+  cliente String   @db.VarChar(100)
+  iva     Boolean?
 
-  @@index([user], map: "usuarios")
+  @@index([cliente], map: "clientes")
 }
 
 model nota_factura_venta {
@@ -794,17 +792,19 @@ model puntos_de_despacho_por_cliente {
 }
 
 model receta_productos {
-  id         String @id @db.VarChar(100)
-  idProducto String @db.VarChar(100)
+  id                  String @id @db.VarChar(100)
+  idProductoprincipal String @db.VarChar(100)
+  idProductoasociado  String @db.VarChar(100)
 
-  @@index([idProducto], map: "productos")
+  @@index([idProductoasociado], map: "productos")
 }
 
 model receta_servicios {
-  id         String @id @db.VarChar(100)
-  idServicio String @db.VarChar(100)
+  id                  String @id @db.VarChar(100)
+  idServicioprincipal String @db.VarChar(100)
+  idServicioasociado  String @db.VarChar(100)
 
-  @@index([idServicio], map: "servicios")
+  @@index([idServicioasociado], map: "servicios")
 }
 
 model servicios {
