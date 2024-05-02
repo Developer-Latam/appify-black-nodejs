@@ -10,6 +10,28 @@ class ProductRepository {
             handlePrismaError(error);
         }
     }
+
+    async createProductWithProveedor(productData, proveedorId) {
+        try {
+            // Crear el producto
+            const createdProduct = await prisma.productos.create({
+                data: productData
+            });
+    
+            // Crear la entrada en la tabla proveedor_productos
+             const proveedorProducto = await prisma.proveedor_productos.create({
+                data: {
+                    proveedor: proveedorId,
+                    idProducto: createdProduct.id
+                }
+            });
+    
+            return [{...createdProduct, lista: proveedorProducto}];
+        } catch (error) {
+            console.log(error.message)
+            handlePrismaError(error);
+        }
+    }
     async findProductById(id) {
         try {
             return prisma.productos.findUnique({

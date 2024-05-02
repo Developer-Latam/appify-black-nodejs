@@ -12,7 +12,7 @@ class conciliacionRepository {
     }
     async createCuentaBancaria(data) {
         try {
-            return prisma.CuentasBancarias.create({
+            return prisma.cuentasBancarias.create({
                 data: data
             });
         } catch (error) {
@@ -154,7 +154,7 @@ class conciliacionRepository {
     async updateUserConciliacion(id, updateData) {
         try {
             return prisma.link_fintoc_bancos.update({
-                where: { conciliacion_id: id },
+                where: { id: id },
                 data : updateData
             });
         } catch (error) {
@@ -163,7 +163,7 @@ class conciliacionRepository {
     }
     async updateCuentaBancariaById(id, updateData) {
         try {
-            return prisma.CuentasBancarias.update({
+            return prisma.cuentasBancarias.update({
                 where: { cuenta_id: id },
                 data : updateData
                 
