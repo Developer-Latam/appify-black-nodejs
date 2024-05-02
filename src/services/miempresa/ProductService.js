@@ -8,14 +8,28 @@ class ProductService {
             const id = idgenerate("product");
             const superUserExist = await userRepository.userExistsById(data.user);
             const productoExist = await ProductRepository.productExistsByName(data.nombre);
-            if(productoExist && superUserExist){
-                throw new CustomError(400, "Bad Request",'Producto ya existente en la empresa')
+            
+            if (productoExist && superUserExist) {
+                throw new CustomError(400, "Bad Request",'Producto ya existente en la empresa');
             }
-            return ProductRepository.createProduct({ ...data, id: id });
+            
+            let createdProduct;
+    
+            if (data.manejo_stock) {
+                const proveedorId = data.proveedor;
+                const productData = { ...data, id: id };
+                delete productData.proveedor; // Eliminar el proveedor_id del objeto productData
+                createdProduct = await ProductRepository.createProductWithProveedor(productData, proveedorId);
+            } else {
+                createdProduct = await ProductRepository.createProduct({ ...data, id: id });
+            }
+    
+            return createdProduct;
         } catch (error) {
             throw error;
         }
     }
+    
     async getProductById(id) {
         try {
             return ProductRepository.findProductById(id);

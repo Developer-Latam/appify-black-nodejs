@@ -163,7 +163,7 @@ class conciliacionRepository {
     }
     async updateCuentaBancariaById(id, updateData) {
         try {
-            return prisma.CuentasBancarias.update({
+            return prisma.cuentasBancarias.update({
                 where: { cuenta_id: id },
                 data : updateData
                 
