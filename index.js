@@ -90,7 +90,7 @@ app.use('/cuentas', cuentasRouter)
 
 
 app.get('/', (req, res) => {
-    res.json('Estoy desplegado hijo de tu puta madre, pruebame');
+    res.json('Estoy desplegado hijo, pruebame');
 });
 
 
