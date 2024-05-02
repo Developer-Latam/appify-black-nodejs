@@ -715,7 +715,7 @@ model productos {
   minimo_stock      Int?
   maximo_stock      Int?
   unidad_medida     String?  @db.VarChar(50)
-  unidad_de_compra  Int?
+  cantidad          Int?
   notas             String?  @db.Text
 
   @@index([user], map: "usuarios")
