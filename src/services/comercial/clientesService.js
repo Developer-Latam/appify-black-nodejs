@@ -1,21 +1,48 @@
 import clientesRepository from "../../persistence/repositorys/comercial/clientesRepository.js";
+import contactoClienteRepository from "../../persistence/repositorys/comercial/contactoClienteRepository.js";
+import puntoDespachoClienteRepository from "../../persistence/repositorys/comercial/puntoDespachoClienteRepository.js";
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
+import contactoClienteService from "./contactoClienteService.js";
 class ClientesService {
     async createCliente(data) {
         try {
             const id = idgenerate("cliente");
             const superUserExist = await userRepository.userExistsById(data.user);
             const clienteExist = await clientesRepository.clienteExistsByName(data.razon_social);
-            if(clienteExist && superUserExist){
+            
+            if (clienteExist && superUserExist) {
                 throw new CustomError(400, "Bad Request", 'El nombre del cliente ya existe!')
             }
-            return  clientesRepository.createCliente({ ...data, id: id });
+    
+            const clienteData = { ...data, id: id };
+            const contactoData = data.contactos || []; // Manejamos el caso de que no haya contactos
+            const puntoDespachoData = data.puntos_de_despacho || []; // Manejamos el caso de que no haya puntos de despacho
+    
+            // Crear el cliente
+            const cliente = await clientesRepository.createCliente(clienteData);
+    
+            // Crear los contactos
+            const contactosPromises = contactoData.map(async (contacto) => {
+                const contactoId = idgenerate("contacto-cliente");
+                await contactoClienteRepository.createContacto({ ...contacto, cliente: cliente.id, id: contactoId });
+            });
+            const contactos = await Promise.all(contactosPromises);
+    
+            // Crear los puntos de despacho
+            const puntosDespachoPromises = puntoDespachoData.map(async (puntoDespacho) => {
+                const puntoDespachoId = idgenerate("punto-despacho");
+                await puntoDespachoClienteRepository.createPuntoDespacho({ ...puntoDespacho, cliente: cliente.id, id: puntoDespachoId });
+            });
+            const puntosDespacho = await Promise.all(puntosDespachoPromises);
+    
+            return {cliente, contactos, puntosDespacho};
         } catch (error) {
-            throw error
+            throw error;
         }
     }
+    
     async getClienteById(id) {
         try {
             return clientesRepository.findClienteById(id);
