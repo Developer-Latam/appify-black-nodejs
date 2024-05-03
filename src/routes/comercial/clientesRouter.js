@@ -4,7 +4,7 @@ import {
     getClienteById,
     getClienteByUserId,
     updateCliente,
-    deleteCliente
+    deleteCliente,getAllDataClienteByUserId
 } from '../../controllers/comercial/clientesController.js';
 const router = Router();
 
@@ -16,6 +16,9 @@ router.get('/cliente/:idCliente', getClienteById);
 
 // Ruta para obtener todos los cliente por ID de usuario
 router.get('/clientes/:id', getClienteByUserId);
+
+// Ruta para obtener todos los cliente por ID de usuario
+router.get('/alldata/:id', getAllDataClienteByUserId);
 
 // Ruta para actualizar un cliente
 router.put('/cliente/:idCliente', updateCliente);

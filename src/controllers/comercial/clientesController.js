@@ -30,6 +30,16 @@ export const getClienteByUserId = async (req, res) => {
         ResponseHandler.HandleError(res, err)
     }
 };
+
+export const getAllDataClienteByUserId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const cliente = await clientesService.getAllDataClienteByUserId(id);
+        ResponseHandler.Ok(res, cliente)
+    } catch (err) {
+        ResponseHandler.HandleError(res, err)
+    }
+};
 export const updateCliente = async (req, res) => {
     try {
         const { idCliente } = req.params;

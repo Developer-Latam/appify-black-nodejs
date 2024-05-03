@@ -5,6 +5,7 @@ import userRepository from "../../persistence/repositorys/miempresa/userReposito
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import contactoClienteService from "./contactoClienteService.js";
+import puntoDespachoClienteService from "./puntoDespachoClienteService.js";
 class ClientesService {
     async createCliente(data) {
         try {
@@ -59,6 +60,42 @@ class ClientesService {
             throw error
         }
     }
+
+    async getAllDataClienteByUserId(userId) {
+        try {
+            const clientes = await clientesRepository.findAllClientesByUserId(userId);
+
+            const clientesAll = [];
+            
+
+            for (const cliente of clientes ) {
+
+                const contactos = await contactoClienteService.getContactosByClienteId(cliente.id)
+                
+
+                const puntosDespacho = await puntoDespachoClienteService.getPuntoDespachoByClienteId(cliente.id)
+
+                clientesAll.push({cliente: cliente, contactos : contactos, punto_despacho_cliente: puntosDespacho})
+            }
+
+            return clientesAll;
+
+
+
+
+
+
+
+
+
+
+
+        } catch (error) {
+            throw error
+        }
+    }
+
+
     async updateCliente(id, updateData) {
         try {
             return clientesRepository.updateCliente(id, updateData);
