@@ -15,10 +15,12 @@ class ClientesService {
             if (clienteExist && superUserExist) {
                 throw new CustomError(400, "Bad Request", 'El nombre del cliente ya existe!')
             }
-    
-            const clienteData = { ...data, id: id };
             const contactoData = data.contactos || []; // Manejamos el caso de que no haya contactos
             const puntoDespachoData = data.puntos_de_despacho || []; // Manejamos el caso de que no haya puntos de despacho
+            const clienteData = { ...data, id: id };
+            delete clienteData.contactos
+            delete clienteData.puntos_de_despacho
+            
     
             // Crear el cliente
             const cliente = await clientesRepository.createCliente(clienteData);

@@ -782,13 +782,14 @@ model proyectos {
 }
 
 model puntos_de_despacho_por_cliente {
-  id              String  @id @db.VarChar(100)
-  cliente         String  @db.VarChar(100)
-  direccion       String? @db.VarChar(200)
-  nombre_receptor String? @db.VarChar(200)
-  lugar           String? @db.VarChar(200)
-  comuna          String? @db.VarChar(200)
-  ciudad          String? @db.VarChar(200)
+  id              String   @id @db.VarChar(100)
+  cliente         String   @db.VarChar(100)
+  direccion       String?  @db.VarChar(200)
+  nombre_receptor String?  @db.VarChar(200)
+  lugar           String?  @db.VarChar(200)
+  comuna          String?  @db.VarChar(200)
+  ciudad          String?  @db.VarChar(200)
+  datos_de_pago   Boolean?
 
   @@index([cliente], map: "clientes")
 }
