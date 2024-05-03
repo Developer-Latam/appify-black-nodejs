@@ -104,14 +104,16 @@ model consultas {
 }
 
 model contactos_por_cliente {
-  id       String  @id @db.VarChar(100)
-  cliente  String  @db.VarChar(100)
-  nombre   String? @db.VarChar(200)
-  email    String? @db.VarChar(200)
-  celular  String? @db.VarChar(30)
-  telefono String? @db.VarChar(30)
+  id         String  @id @db.VarChar(100)
+  cliente    String  @db.VarChar(100)
+  nombre     String? @db.VarChar(200)
+  email      String? @db.VarChar(200)
+  celular    String? @db.VarChar(30)
+  telefono   String? @db.VarChar(30)
+  vendedorId String  @db.VarChar(100)
 
   @@index([cliente], map: "clientes")
+  @@index([vendedorId], map: "subusuarios")
 }
 
 model costos_por_proyecto {
