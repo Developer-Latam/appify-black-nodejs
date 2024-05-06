@@ -120,7 +120,7 @@ class ProjectService {
                     estado: project.estado,
                     fecha: project.fecha,
                     cliente: cliente.razon_social,
-                    vendedor:`${vendedor.nombre} ${vendedor.apellido}`,
+                    vendedor:`${vendedor.nombre},${vendedor.apellido}`,
                     productos_servicios: {
                         productos: productos,
                         servicios: servicios
