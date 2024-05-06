@@ -51,6 +51,7 @@ export const updateSubUser = async (req, res, next) => {
         ResponseHandler.HandleError(res, error);
     }
 }
+
 //Realiza la validacion del token, y si existe, continua con la restauracion de la contraseña
 export const configPasswordSubUser = async (req, res, next) => {
     const { token } = req.query;
