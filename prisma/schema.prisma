@@ -774,6 +774,7 @@ model proyectos {
   plazo_de_entrega      DateTime? @db.Date
   nota_interna          String?   @db.Text
   estado                String?   @db.VarChar(100)
+  fecha                 DateTime? @db.Date
 
   @@index([cliente], map: "clientes")
   @@index([vendedor], map: "subusuarios")
