@@ -4,7 +4,8 @@ import {
     getOrdenTrabajoById,
     getOrdenTrabajoByUserId,
     updateOrdenTrabajo,
-    deleteOrdenTrabajo
+    deleteOrdenTrabajo,
+    getAllDataOrdenTrabajoByUserId
 } from '../../controllers/operaciones/ordentrabajoController.js';
 const router = Router();
 
@@ -16,6 +17,9 @@ router.get('/ordenTrabajo/:id', getOrdenTrabajoById);
 
 // Ruta para obtener todas las ordenes de trabajo por ID de usuario
 router.get('/ordenTrabajos/:idUser', getOrdenTrabajoByUserId);
+
+// Ruta para obtener todas las ordenes de trabajo por ID de usuario
+router.get('/alldata/:idUser', getAllDataOrdenTrabajoByUserId);
 
 // Ruta para actualizar una orden de trabajo
 router.put('/ordenTrabajo/:id', updateOrdenTrabajo);

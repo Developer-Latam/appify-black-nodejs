@@ -33,6 +33,15 @@ export const getOrdenTrabajoByUserId = async (req, res) => {
     }
 };
 
+export const getAllDataOrdenTrabajoByUserId = async (req, res) => {
+    try {
+        const { idUser } = req.params;
+        const ordentrabajo = await ordenTrabajoService.getAllDataOrdenTrabajoByUserId(idUser);
+        ResponseHandler.Ok(res, ordentrabajo)
+    } catch (err) {
+        ResponseHandler.HandleError(res, err)
+    }
+};
 export const updateOrdenTrabajo = async (req, res) => {
     try {
         const { id } = req.params;
