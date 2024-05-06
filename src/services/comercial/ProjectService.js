@@ -118,7 +118,7 @@ class ProjectService {
                     nombre: project.nombre,
                     estado: project.estado,
                     fecha: project.fecha,
-                    cliente: cliente.nombre,
+                    cliente: cliente.razon_social,
                     vendedor:`${vendedor.nombre} ${vendedor.apellido}`,
                     productos_servicios: {
                         productos: productos,
