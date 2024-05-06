@@ -115,6 +115,7 @@ class ProjectService {
                 const totalServicios = servicios.reduce((total, service) => total + service.total, 0);
                 const formattedProject = {
                     id: project.id,
+                    numero: project.numero_proyecto,
                     nombre: project.nombre_etiqueta,
                     estado: project.estado,
                     fecha: project.fecha,
