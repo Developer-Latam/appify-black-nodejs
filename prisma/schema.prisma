@@ -652,6 +652,7 @@ model orden_trabajo {
   idVendedor String    @db.VarChar(100)
   fecha      DateTime? @db.Date
   estado     String    @db.VarChar(50)
+  compromiso DateTime? @db.Date
 
   @@index([idProyecto], map: "proyectos")
   @@index([idVendedor], map: "subusuarios")

@@ -1,5 +1,6 @@
 import ordenTrabajoRepository from "../../persistence/repositorys/operaciones/ordentrabajoRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
+import ProjectService from "../comercial/ProjectService.js";
 class ordenTrabajoService {
     async createOrdenTrabajo(data) {
         try {
@@ -21,6 +22,70 @@ class ordenTrabajoService {
             return ordenTrabajoRepository.findAllOrdenTrabajoByUserId(userId);
         } catch (error) {
             throw error;
+        }
+    }
+
+    async getAllDataOrdenTrabajoByUserId(id) {
+        try{
+            const ordenes = this.getOrdenTrabajoByUserId(id);
+            const formattedOrdenes = [];
+
+            for (const orden of ordenes) {
+                const project = await ProjectService.getProjectById(orden.idProyecto)
+                const cliente = await clientesService.getClienteById(project.cliente)
+                const vendedor = await userService.getSubUserById(orden.idVendedor)
+                const itemproductos = await itemsProdServProjectService.getProductsItemByprojectId(project.id)
+                const itemservicios = await itemsProdServProjectService.getServiceItemByProjectId(project.id)
+
+                const productos = await Promise.all(itemproductos.map(async (itemProducto) => {
+                    const producto = await ProductService.getProductById(itemProducto.idProducto);
+                    return {
+                        ...itemProducto,
+                        nombre: producto.nombre
+                    };
+                }));
+                // Obtener los nombres de los servicios
+                const servicios = await Promise.all(itemservicios.map(async (itemServicio) => {
+                    const servicio = await ServiceService.getServiceById(itemServicio.idServicio);
+                    return {
+                        ...itemServicio,
+                        nombre: servicio.nombre
+                    };
+                }));
+                // Calcular la suma de los netos de los productos
+                const netoProductos = productos.reduce((total, product) => total + product.precio, 0);
+                // Calcular la suma de los netos de los servicios
+                const netoServicios = servicios.reduce((total, service) => total + service.precio, 0);
+                // Calcular la suma de los totales de los productos
+                const totalProductos = productos.reduce((total, product) => total + product.total, 0);
+                // Calcular la suma de los totales de los servicios
+                const totalServicios = servicios.reduce((total, service) => total + service.total, 0);
+                const formattedProject = {
+                    orden: orden.id,
+                    idProyecto: project.id,
+                    numero: project.numero_proyecto,
+                    nombre: project.nombre_etiqueta,
+                    estado: orden.estado,
+                    compromiso : orden.compromiso,
+                    fechaOrden: orden.fecha,
+                    cliente: cliente.razon_social,
+                    vendedor:`${vendedor.nombre},${vendedor.apellido}`,
+                    productos_servicios: {
+                        productos: productos,
+                        servicios: servicios
+                    },
+                    neto: netoProductos + netoServicios,
+                    total: totalProductos + totalServicios
+                };
+                    formattedOrdenes.push(formattedProject);
+            }
+
+        return formattedOrdenes;
+            
+
+        }catch (error){
+            throw error;
+
         }
     }
     async updateOrdenTrabajo(id, updateData) {

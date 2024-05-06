@@ -61,6 +61,7 @@ class ClientesService {
         }
     }
 
+
     async getAllDataClienteByUserId(userId) {
         try {
             const clientes = await clientesRepository.findAllClientesByUserId(userId);
@@ -79,16 +80,6 @@ class ClientesService {
             }
 
             return clientesAll;
-
-
-
-
-
-
-
-
-
-
 
         } catch (error) {
             throw error
