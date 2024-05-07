@@ -16,7 +16,7 @@ router.post('/cliente', createCliente);
 router.get('/cliente/:idCliente', getClienteById);
 
 // Ruta para obtener un cliente con su ID
-router.get('/agospesada/:idCliente', getAllDatosPesadosByClienteId);
+router.get('/clientDetail/:idCliente', getAllDatosPesadosByClienteId);
 
 // Ruta para obtener todos los cliente por ID de usuario
 router.get('/clientes/:id', getClienteByUserId);
