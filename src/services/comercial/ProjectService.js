@@ -79,10 +79,10 @@ class ProjectService {
             const itemproductos = await itemsProdServProjectService.getProductsItemByprojectId(project.id)
             const itemservicios = await itemsProdServProjectService.getServiceItemByProjectId(project.id)
 
-            const contactos = await contactoClienteService.getContactosByClienteId(project.cliente)
+            //const contactos = await contactoClienteService.getContactosByClienteId(project.cliente)
                 
 
-            const puntosDespacho = await puntoDespachoClienteService.getPuntoDespachoByClienteId(project.cliente)
+            //const puntosDespacho = await puntoDespachoClienteService.getPuntoDespachoByClienteId(project.cliente)
             // Obtener los nombres de los productos
             const productos = await Promise.all(itemproductos.map(async (itemProducto) => {
                 const producto = await ProductService.getProductById(itemProducto.idProducto);
@@ -117,14 +117,14 @@ class ProjectService {
                 condicion_pago:project.condicion_de_pago,
                 plazo_de_entrega: project.plazo_de_entrega,
                 plazo_de_entrega_dias: project.plazo_de_entrega_dias,
-                contacto: contactos,
+                //contacto: contactos,
                 cliente: cliente,
                 vendedor:`${vendedor.nombre},${vendedor.apellido}`,
                 productos_servicios: {
                     productos: productos,
                     servicios: servicios
                 },
-                puntodespacho: puntosDespacho,
+                //puntodespacho: puntosDespacho,
                 neto: netoProductos + netoServicios,
                 total: totalProductos + totalServicios
             };
