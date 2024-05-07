@@ -122,6 +122,7 @@ class ProjectService {
                 //contacto: contactos,
                 cliente: cliente,
                 vendedor:`${vendedor.nombre},${vendedor.apellido}`,
+                idVendedor:vendedor.id,
                 productos_servicios: {
                     productos: productos,
                     servicios: servicios
