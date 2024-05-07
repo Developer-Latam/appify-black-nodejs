@@ -1,5 +1,6 @@
 import { prisma } from "../../../utils/dependencys/injection.js";
 import handlePrismaError from "../../../utils/httpRes/handlePrismaError.js";
+import itemProdServOrdenCompraRepository from "./itemProdServOrdenCompraRepository.js";
 class ordenCompraRepository {
   async createOrdenCompra(data) {
     try {
@@ -33,9 +34,13 @@ class ordenCompraRepository {
             idProvedor: proveedor.id,
           },
         });
+        const items = await itemProdServOrdenCompraRepository.findAllProdServByOrdenCompraId(Proveedores.id);
         // Creamos un objeto que contenga la información del proyecto y sus órdenes de trabajo
         const proovedtot = {
-          Proveedores
+          proveedores,
+          Proveedores,
+          items
+
         };
         // Agregamos el objeto al resultado
         resultado.push(proovedtot);
