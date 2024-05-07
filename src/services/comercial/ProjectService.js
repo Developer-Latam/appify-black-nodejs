@@ -113,9 +113,7 @@ class ProjectService {
                 nombre: project.nombre_etiqueta,
                 estado: project.estado,
                 fecha: project.fecha,
-                email: contactos[0].email,
-                telefono:contactos[0].telefono,
-                celular: contactos[0].celular,
+                contacto: contactos,
                 cliente: cliente.razon_social,
                 vendedor:`${vendedor.nombre},${vendedor.apellido}`,
                 productos_servicios: {
