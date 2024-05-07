@@ -118,7 +118,7 @@ class ClientesService {
             clienteAllData.push({notacredito:nc});
 
             const cobros = await clientesRepository.findCobrosByClienteId(id);
-
+            clienteAllData.push({cobro:null});
             for (const cobro of cobros){
 
                 const cobrillo = await cobrosService.getCobrosAllById(cobro.id);
