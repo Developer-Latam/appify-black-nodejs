@@ -48,7 +48,12 @@ class ClientesService {
     
     async getClienteById(id) {
         try {
-            return clientesRepository.findClienteById(id);
+            const cliente = await clientesRepository.findClienteById(id);
+            const contactos = await contactoClienteService.getContactosByClienteId(id)
+                
+
+            const puntosDespacho = await puntoDespachoClienteService.getPuntoDespachoByClienteId(id)
+        return {cliente: cliente, contactos : contactos, puntos : puntosDespacho}
         } catch (error) {
             throw error
         }

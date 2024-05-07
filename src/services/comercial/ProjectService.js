@@ -68,7 +68,66 @@ class ProjectService {
     }
     async getProjectById(id) {
         try {
-            return ProjectRepository.findProjectById(id);
+
+            const formattedProjectito = [];
+
+            const project = await ProjectRepository.findProjectById(id);
+            const cliente = await clientesService.getClienteById(project.cliente)
+            const vendedor = await userService.getSubUserById(project.vendedor)
+            const itemproductos = await itemsProdServProjectService.getProductsItemByprojectId(project.id)
+            const itemservicios = await itemsProdServProjectService.getServiceItemByProjectId(project.id)
+
+            const contactos = await contactoClienteService.getContactosByClienteId(project.cliente)
+                
+
+            const puntosDespacho = await puntoDespachoClienteService.getPuntoDespachoByClienteId(project.cliente)
+            // Obtener los nombres de los productos
+            const productos = await Promise.all(itemproductos.map(async (itemProducto) => {
+                const producto = await ProductService.getProductById(itemProducto.idProducto);
+                return {
+                    ...itemProducto,
+                    nombre: producto.nombre
+                };
+            }));
+            // Obtener los nombres de los servicios
+            const servicios = await Promise.all(itemservicios.map(async (itemServicio) => {
+                const servicio = await ServiceService.getServiceById(itemServicio.idServicio);
+                return {
+                    ...itemServicio,
+                    nombre: servicio.nombre
+                };
+            }));
+            // Calcular la suma de los netos de los productos
+            const netoProductos = productos.reduce((total, product) => total + product.precio, 0);
+            // Calcular la suma de los netos de los servicios
+            const netoServicios = servicios.reduce((total, service) => total + service.precio, 0);
+            // Calcular la suma de los totales de los productos
+            const totalProductos = productos.reduce((total, product) => total + product.total, 0);
+            // Calcular la suma de los totales de los servicios
+            const totalServicios = servicios.reduce((total, service) => total + service.total, 0);
+            const formattedProject = {
+                id: project.id,
+                numero: project.numero_proyecto,
+                nombre: project.nombre_etiqueta,
+                estado: project.estado,
+                fecha: project.fecha,
+                email: contactos[0].email,
+                telefono:contactos[0].telefono,
+                celular: contactos[0].celular,
+                cliente: cliente.razon_social,
+                vendedor:`${vendedor.nombre},${vendedor.apellido}`,
+                productos_servicios: {
+                    productos: productos,
+                    servicios: servicios
+                },
+                puntodespacho: puntosDespacho,
+                neto: netoProductos + netoServicios,
+                total: totalProductos + totalServicios
+            };
+                formattedProjectito.push(formattedProject);
+
+        return formattedProjectito;
+
         } catch (error) {
             throw error;
         }
