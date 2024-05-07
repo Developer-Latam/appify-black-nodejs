@@ -21,6 +21,19 @@ export const getClienteById = async (req, res) => {
         ResponseHandler.HandleError(res, err)
     }
 };
+
+export const getAllDatosPesadosByClienteId= async (req, res) => {
+    try {
+        const { idCliente } = req.params;
+        const cliente = await clientesService.getAllDatosPesadosByClienteId(idCliente);
+        if (!cliente) {
+            return res.status(404).json({ message: 'Cliente no encontrado' });
+        }
+        ResponseHandler.Ok(res, cliente)
+    } catch (err) {
+        ResponseHandler.HandleError(res, err)
+    }
+};
 export const getClienteByUserId = async (req, res) => {
     try {
         const { id } = req.params;

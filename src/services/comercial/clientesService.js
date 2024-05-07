@@ -4,6 +4,7 @@ import puntoDespachoClienteRepository from "../../persistence/repositorys/comerc
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
+import cobrosService from "../administracion/cobrosService.js";
 import contactoClienteService from "./contactoClienteService.js";
 import puntoDespachoClienteService from "./puntoDespachoClienteService.js";
 class ClientesService {
@@ -85,6 +86,51 @@ class ClientesService {
             }
 
             return clientesAll;
+
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async getAllDatosPesadosByClienteId(id) {
+        try {
+            const clienteP = await clientesRepository.findClienteById(id);
+
+            const clienteAllData = [];
+
+            clienteAllData.push({cliente:clienteP});
+
+            const oTs = [];
+
+            const proyectCliente = await clientesRepository.findProjectByClienteId(id);
+            clienteAllData.push({proyectos:proyectCliente});
+
+            for (const projectillo of proyectCliente){
+                const ordenesT = await clientesRepository.findOTByProjectId(projectillo.id)
+                oTs.push(ordenesT);
+            }
+            clienteAllData.push({ordenes :oTs});
+            const fv = await clientesRepository.findFVByClienteId(id);
+            clienteAllData.push({facturaventa:fv});
+            const fve = await clientesRepository.findFVEByClienteId(id);
+            clienteAllData.push({facturaventaexcenta:fve});
+            const nc = await clientesRepository.findNCByClienteId(id);
+            clienteAllData.push({notacredito:nc});
+
+            const cobros = await clientesRepository.findCobrosByClienteId(id);
+
+            for (const cobro of cobros){
+
+                const cobrillo = await cobrosService.getCobrosAllById(cobro.id);
+
+                clienteAllData.push({cobro:cobrillo.result});
+            }
+
+
+
+
+            
+            return clienteAllData;
 
         } catch (error) {
             throw error

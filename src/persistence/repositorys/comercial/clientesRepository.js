@@ -19,6 +19,71 @@ class ClientesRepository {
             handlePrismaError(error);
         }
     }
+
+    // Aca empiezan los repo para hacer el enpoint pesado de clientes
+
+    async findProjectByClienteId(id) {
+        try {
+            return prisma.proyectos.findMany({
+                where: { cliente: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
+    }
+
+    async findOTByProjectId(id) {
+        try {
+            return prisma.orden_trabajo.findFirst({
+                where: { idProyecto: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
+    }
+
+    async findFVByClienteId(id) {
+        try {
+            return prisma.factura_venta.findMany({
+                where: { idCliente: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
+    }
+    async findFVEByClienteId(id) {
+        try {
+            return prisma.factura_venta_excenta.findMany({
+                where: { idCliente: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
+    }
+
+    async findNCByClienteId(id) {
+        try {
+            return prisma.notas_de_credito_debito.findMany({
+                where: { idCliente: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
+    }
+
+    async findCobrosByClienteId(id) {
+        try {
+            return prisma.cobros.findMany({
+                where: { clienteId: id }
+            });
+        } catch (error) {
+            handlePrismaError(error);
+        }
+    }
+
+    // Aca termino endpoint pesado
+
+
     async findClienteById_razonsocial(id) {
         try {
             const cliente = await prisma.clientes.findUnique({
