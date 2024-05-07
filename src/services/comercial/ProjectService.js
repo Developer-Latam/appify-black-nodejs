@@ -11,6 +11,7 @@ import ServiceService from "../miempresa/ServiceService.js";
 import puntoDespachoClienteService from "./puntoDespachoClienteService.js";
 import contactoClienteService from "./contactoClienteService.js";
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
+import clientesRepository from "../../persistence/repositorys/comercial/clientesRepository.js";
 class ProjectService {
     async createProject(data) {
         try {
@@ -78,7 +79,7 @@ class ProjectService {
             const vendedor = await userService.getSubUserById(project.vendedor)
             const itemproductos = await itemsProdServProjectService.getProductsItemByprojectId(project.id)
             const itemservicios = await itemsProdServProjectService.getServiceItemByProjectId(project.id)
-
+            const ordenTrabajo = await clientesRepository.findOTByProjectId(id);
             //const contactos = await contactoClienteService.getContactosByClienteId(project.cliente)
                 
 
@@ -117,6 +118,7 @@ class ProjectService {
                 condicion_pago:project.condicion_de_pago,
                 plazo_de_entrega: project.plazo_de_entrega,
                 plazo_de_entrega_dias: project.plazo_de_entrega_dias,
+                orden_trabajo: ordenTrabajo,
                 //contacto: contactos,
                 cliente: cliente,
                 vendedor:`${vendedor.nombre},${vendedor.apellido}`,
