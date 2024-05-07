@@ -69,7 +69,7 @@ class ordenTrabajoService {
                     compromiso : orden.compromiso,
                     fechaOrden: orden.fecha,
                     cliente: cliente.razon_social,
-                    vendedor:`${vendedor.nombre},${vendedor.apellido}`,
+                    vendedor: vendedor.id,
                     productos_servicios: {
                         productos: productos,
                         servicios: servicios
