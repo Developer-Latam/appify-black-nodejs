@@ -113,8 +113,12 @@ class ProjectService {
                 nombre: project.nombre_etiqueta,
                 estado: project.estado,
                 fecha: project.fecha,
+                comision: project.comision,
+                condicion_pago:project.condicion_de_pago,
+                plazo_de_entrega: project.plazo_de_entrega,
+                plazo_de_entrega_dias: project.plazo_de_entrega_dias,
                 contacto: contactos,
-                cliente: cliente.razon_social,
+                cliente: cliente,
                 vendedor:`${vendedor.nombre},${vendedor.apellido}`,
                 productos_servicios: {
                     productos: productos,

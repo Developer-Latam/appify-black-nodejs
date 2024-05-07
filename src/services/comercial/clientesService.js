@@ -123,7 +123,7 @@ class ClientesService {
 
                 const cobrillo = await cobrosService.getCobrosAllById(cobro.id);
 
-                clienteAllData.push({cobro:cobrillo.result});
+                clienteAllData.push({cobro:cobrillo});
             }
 
 
