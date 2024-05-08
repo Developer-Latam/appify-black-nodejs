@@ -1,6 +1,11 @@
+import clientesRepository from "../../persistence/repositorys/comercial/clientesRepository.js";
 import ordenTrabajoRepository from "../../persistence/repositorys/operaciones/ordentrabajoRepository.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import ProjectService from "../comercial/ProjectService.js";
+import userService from "../miempresa/userService.js";
+import itemsProdServProyectosService from "../comercial/itemsProdServProyectosService.js";
+import ProductService from "../miempresa/ProductService.js";
+import ServiceService from "../miempresa/ServiceService.js";
 class ordenTrabajoService {
     async createOrdenTrabajo(data) {
         try {
@@ -27,15 +32,15 @@ class ordenTrabajoService {
 
     async getAllDataOrdenTrabajoByUserId(id) {
         try{
-            const [ordenes] = this.getOrdenTrabajoByUserId(id);
+            const ordenes = await this.getOrdenTrabajoByUserId(id);
             const formattedOrdenes = [];
 
             for (const orden of ordenes) {
                 const project = await ProjectService.getProjectById(orden.idProyecto)
-                const cliente = await clientesService.getClienteById(project.cliente)
+                const cliente = await clientesRepository.findClienteById(project[0].cliente.cliente.id)
                 const vendedor = await userService.getSubUserById(orden.idVendedor)
-                const itemproductos = await itemsProdServProjectService.getProductsItemByprojectId(project.id)
-                const itemservicios = await itemsProdServProjectService.getServiceItemByProjectId(project.id)
+                const itemproductos = await itemsProdServProyectosService.getProductsItemByprojectId(project[0].id)
+                const itemservicios = await itemsProdServProyectosService.getServiceItemByProjectId(project[0].id)
 
                 const productos = await Promise.all(itemproductos.map(async (itemProducto) => {
                     const producto = await ProductService.getProductById(itemProducto.idProducto);
@@ -63,8 +68,8 @@ class ordenTrabajoService {
                 const formattedProject = {
                     orden: orden.id,
                     idProyecto: project.id,
-                    numero: project.numero_proyecto,
-                    nombre: project.nombre_etiqueta,
+                    numero: project[0].numero_proyecto,
+                    nombre: project[0].nombre_etiqueta,
                     estado: orden.estado,
                     compromiso : orden.compromiso,
                     fechaOrden: orden.fecha,
@@ -85,6 +90,7 @@ class ordenTrabajoService {
             
 
         }catch (error){
+            console.log(error)
             throw error;
 
         }
