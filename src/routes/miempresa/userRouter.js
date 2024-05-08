@@ -81,7 +81,7 @@ const verifyToken = (req,res,next) =>{
     const validPayload = jwt.verify(token,process.env.SECRET_KEY_LOGIN)
     next()
   }catch(err){
-    return res.status(401).json({ok:false,message:'invalid token'})
+    return res.status(401).json({ok:false,message:'invalid token', hola: token})
   }
 }
 //Funcion check auth
