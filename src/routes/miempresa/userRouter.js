@@ -11,6 +11,7 @@ import { loginUser,
     setpassForUser,
     getUserPrincipalValidation
   } from '../../controllers/miempresa/userController.js';
+import "dotenv/config";
 const router = Router()
 
 
