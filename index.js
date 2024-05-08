@@ -32,11 +32,13 @@ import cors from 'cors';
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import { swaggerOpts } from './src/docs/swaggerOpts.js'
+import cookieParser from 'cookie-parser';
 import 'dotenv/config'
 const app = express()
 const PORT = process.env.PORT || 8080;
 
 app.use(cors())
+app.use(cookieParser());
 app.use(express.urlencoded({extended:true}))
 
 app.use(express.json())
@@ -68,6 +70,7 @@ app.use('/projectsitem', itemprojectsrouter)
 app.use('/puntoDes', puntodespachorouter)
 app.use('/costosProyecto', costorouter)
 app.use('/anticipos', anticiposrouter)
+
 
 
 // Routers a Operaciones

@@ -21,6 +21,19 @@ export const getOrdenCompraById = async (req, res) => {
         ResponseHandler.HandleError(res, err)
     }
 };
+
+export const getAllDataOrdenCompraByUserId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const ordencompra = await ordenCompraService.getAllDataOrdenCompraByUserId(id);
+        if (!ordencompra) {
+            return res.status(404).json({ message: 'Orden no encontrada' });
+        }
+        ResponseHandler.Ok(res, ordencompra)
+    } catch (err) {
+        ResponseHandler.HandleError(res, err)
+    }
+};
 export const getOrdenCompraByUserId = async (req, res) => {
     try {
         const { idUser } = req.params;
