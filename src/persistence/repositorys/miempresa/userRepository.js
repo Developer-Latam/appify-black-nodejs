@@ -110,7 +110,7 @@ class UserRepository {
                     id : id
                 }
             })
-            return response;
+            return response !== null;
         } catch (error) {
             handlePrismaError(error);
         }
