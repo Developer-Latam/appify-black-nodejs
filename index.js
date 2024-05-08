@@ -31,11 +31,14 @@ import cors from 'cors';
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import { swaggerOpts } from './src/docs/swaggerOpts.js'
+import jwt from "jsonwebtoken"
+import cookieParser from 'cookie-parser';
 import 'dotenv/config'
 const app = express()
 const PORT = process.env.PORT || 8080;
 
 app.use(cors())
+app.use(cookieParser());
 app.use(express.urlencoded({extended:true}))
 
 app.use(express.json())
@@ -67,6 +70,24 @@ app.use('/projectsitem', itemprojectsrouter)
 app.use('/puntoDes', puntodespachorouter)
 app.use('/costosProyecto', costorouter)
 app.use('/anticipos', anticiposrouter)
+
+app.get('/api/check-auth',verifyToken,checkAuth)
+
+
+//Middleware para verificar token
+const verifyToken = (req,res,next) =>{
+    try{
+      const token = req.cookies.tkn
+      const validPayload = jwt.verify(token,process.env.JWT_SECRET_KEY)
+      next()
+    }catch(err){
+      return res.status(401).json({ok:false,message:'invalid token'})
+    }
+}
+//Funcion check auth
+const checkAuth = async (req,res) =>{
+    return res.status(200).json({ok:true,message:"auth token!"})
+}
 
 
 // Routers a Operaciones
