@@ -649,13 +649,14 @@ model orden_compra {
 model orden_trabajo {
   id         String    @id @db.VarChar(100)
   idProyecto String    @db.VarChar(100)
+  user       String    @db.VarChar(100)
   idVendedor String    @db.VarChar(100)
   fecha      DateTime? @db.Date
   estado     String    @db.VarChar(50)
-  compromiso DateTime? @db.Date
 
   @@index([idProyecto], map: "proyectos")
   @@index([idVendedor], map: "subusuarios")
+  @@index([user], map: "usuarios")
 }
 
 model pagos {

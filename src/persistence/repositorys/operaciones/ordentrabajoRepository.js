@@ -19,6 +19,16 @@ class ordenTrabajoRepository {
       handlePrismaError(error);
     }
   }
+
+  async findOrdenTrabajoalldataById(id) {
+    try {
+      return prisma.orden_trabajo.findMany({
+        where: { user: id }
+      });
+    } catch (error) {
+      handlePrismaError(error);
+    }
+  }
   async findAllOrdenTrabajoByUserId(idUser) {
     const resultado = []; // Inicializamos un arreglo para almacenar los resultados
     try {
