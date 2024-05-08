@@ -77,7 +77,7 @@ router.get('/setPassForToken/', testController)
 //Middleware para verificar token
 const verifyToken = (req,res,next) =>{
   try{
-    const token = req.body.tkn
+    const token = req.cookies.tkn
     const validPayload = jwt.verify(token,process.env.SECRET_KEY_LOGIN)
     next()
   }catch(err){
