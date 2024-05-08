@@ -27,6 +27,7 @@ import pagosRouter from './src/routes/administracion/pagosRouter.js'
 import cuentasRouter from './src/routes/administracion/cuentasRouter.js'
 import comprasRouter from './src/routes/administracion/comprasRouter.js'
 import initRouter from './src/routes/initConfig/initConfigRouter.js'
+import mpRouter from './src/routes/mpRouter.js'
 import cors from 'cors';
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
@@ -88,6 +89,8 @@ app.use('/cobros', cobrosRouter)
 app.use('/pagos', pagosRouter)
 app.use('/cuentas', cuentasRouter)
 
+//Router mercado pago 
+app.use('/mp', mpRouter)
 
 app.get('/', (req, res) => {
     res.json('Estoy desplegado hijo, pruebame');
