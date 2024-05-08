@@ -89,7 +89,7 @@ const checkAuth = async (req,res) =>{
   return res.status(200).json({ok:true,message:"auth token!"})
 }
 
-router.get('/api/check-auth',verifyToken,checkAuth)
+router.post('/api/check-auth',verifyToken,checkAuth)
 
 
 
