@@ -312,9 +312,10 @@ class UserService {
             }
         }
     }
-    async resetPasswordUSER(userId) {
+    async userPrincipalExistsById(id) {
         try {
-            
+            const response = await userRepository.userExistsById(id)
+            return response
         } catch (error) {
             throw error
         }

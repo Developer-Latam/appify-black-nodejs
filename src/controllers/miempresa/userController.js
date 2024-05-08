@@ -132,6 +132,15 @@ export const getAllUsersInactController = async (req, res, next) => {
         ResponseHandler.HandleError(res, error);
     }
 }
+export const getUserPrincipalValidation = async (req, res, next) => {
+    try {
+        const {id} = req.params
+        const result = await userService.userPrincipalExistsById(id);
+        ResponseHandler.Ok(res, result);
+    } catch (error) {
+        ResponseHandler.HandleError(res, error);
+    }
+}
 // ENDPOINT PARA REALIZAR TEST DE FUNCION:
 //Realiza el registro del usuario 
 export const testController = async (req, res, next) => {

@@ -8,7 +8,9 @@ import { loginUser,
     getAllUsersActController,
     getAllUsersInactController,
     testController,
-    setpassForUser } from '../../controllers/miempresa/userController.js';
+    setpassForUser,
+    getUserPrincipalValidation
+  } from '../../controllers/miempresa/userController.js';
 const router = Router()
 
 
@@ -24,8 +26,9 @@ router.get('/config-password', configPasswordSubUser)
 router.put('/setPassForUser', setpassForUser)
 //Seteo de contraseña para sub usuario
 router.put('/set-password', setpassForSubUser)
-
-// HARCODEADO DE LA AGOS AL PALOOOOOOOOO
+//ENDPOINT PARA EL SOCKET, VALIDA EL SUPER USER
+router.get('/validateSU/:id', getUserPrincipalValidation)
+// HARCODEADO DE LA AGOS AL PALOOOOOOOOO CHANCHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 router.put('/editar-subusuario', async (req, res) => {
     const { permisos, user,data } = req.body;
