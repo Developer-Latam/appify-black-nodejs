@@ -20,6 +20,32 @@ class ordenCompraRepository {
       handlePrismaError(error);
     }
   }
+
+
+  async findOrdenCompraallByuserId(id) {
+    try {
+      return prisma.orden_compra.findMany({
+        where: { user: id }
+      });
+    } catch (error) {
+      handlePrismaError(error);
+    }
+  }
+
+  async findProductosByProovedorId(id) {
+    try {
+      return prisma.proveedor_productos.findMany({
+        where: { proveedor: id }
+      });
+    } catch (error) {
+      handlePrismaError(error);
+    }
+  }
+
+  
+
+
+
   async findAllOrdenCompraByUserId(idUser) {
     const resultado = []; // Inicializamos un arreglo para almacenar los resultados
     try {

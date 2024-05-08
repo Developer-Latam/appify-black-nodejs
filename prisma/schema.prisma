@@ -634,6 +634,7 @@ model notas_de_credito_debito_compras {
 model orden_compra {
   id                String    @id @db.VarChar(100)
   idProvedor        String    @db.VarChar(100)
+  user              String    @db.VarChar(100)
   numero_documento  String    @db.VarChar(100)
   fecha             DateTime? @db.Date
   condicion_de_pago String    @db.VarChar(100)
@@ -644,6 +645,7 @@ model orden_compra {
 
   @@index([idProvedor], map: "proveedores")
   @@index([condicion_de_pago], map: "condicion_pago")
+  @@index([user], map: "usuarios")
 }
 
 model orden_trabajo {
