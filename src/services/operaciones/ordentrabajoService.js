@@ -19,7 +19,7 @@ class ordenTrabajoService {
     }
     async getOrdenTrabajoByUserId(userId) {
         try {
-            return ordenTrabajoRepository.findAllOrdenTrabajoByUserId(userId);
+            return ordenTrabajoRepository.findOrdenTrabajoalldataById(userId);
         } catch (error) {
             throw error;
         }
