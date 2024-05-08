@@ -27,7 +27,7 @@ class ordenTrabajoService {
 
     async getAllDataOrdenTrabajoByUserId(id) {
         try{
-            const ordenes = this.getOrdenTrabajoByUserId(id);
+            const [ordenes] = this.getOrdenTrabajoByUserId(id);
             const formattedOrdenes = [];
 
             for (const orden of ordenes) {
