@@ -12,6 +12,7 @@ import { loginUser,
     getUserPrincipalValidation
   } from '../../controllers/miempresa/userController.js';
 import "dotenv/config";
+import jwt from "jsonwebtoken";
 const router = Router()
 
 
@@ -77,7 +78,7 @@ router.get('/setPassForToken', testController)
 const verifyToken = (req,res,next) =>{
   try{
     const token = req.cookies.tkn
-    const validPayload = jwt.verify(token,process.env.JWT_SECRET_KEY)
+    const validPayload = jwt.verify(token,process.env.SECRET_KEY_LOGIN)
     next()
   }catch(err){
     return res.status(401).json({ok:false,message:'invalid token'})
