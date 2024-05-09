@@ -7,10 +7,8 @@ class conciliacionService {
 
     async saveBankData(jsonData) {
         try {
-            console.log(idgenerate('funciono'));
             const { data } = jsonData;
             const username = idgenerate('temp-user');
-            console.log(username);
             const { id: link_id_banco, holder_id, link_token, accounts } = data;
     
             // Crear el registro en la tabla link_fintoc_bancos
@@ -55,9 +53,8 @@ class conciliacionService {
                 await conciliacionRepository.createCuentaBancaria(cuentaData);
             }
     
-            console.log('Datos de bancos y cuentas bancarias guardados correctamente.');
         } catch (error) {
-            console.error('Error al guardar datos de bancos y cuentas bancarias:', error);
+            throw new Error('Error al guardar datos de bancos y cuentas bancarias:' + error);
         }
     }
     async createMovimientos(data) {
