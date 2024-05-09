@@ -74,10 +74,10 @@ router.put('/editar-subusuario', async (req, res) => {
 //ruta que es para testear
 router.get('/setPassForToken/', testController)
 
-//Middleware para verificar token
+//Middleware para verificar token y hay que cambiarlo a get en algun momento
 const verifyToken = (req,res,next) =>{
   try{
-    const token = req.cookies.tkn
+    const token = req.body.tkn
     const validPayload = jwt.verify(token,process.env.SECRET_KEY_LOGIN)
     next()
   }catch(err){
