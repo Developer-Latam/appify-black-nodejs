@@ -141,6 +141,15 @@ export const getUserPrincipalValidation = async (req, res, next) => {
         ResponseHandler.HandleError(res, error);
     }
 }
+export const sendMailController = async (req, res, next) => {
+    try {
+        const {email} = req.body
+        const result = await userService.sendEmailBienvenida(email);
+        ResponseHandler.Ok(res, result);
+    } catch (error) {
+        ResponseHandler.HandleError(res, error);
+    }
+}
 // ENDPOINT PARA REALIZAR TEST DE FUNCION:
 //Realiza el registro del usuario 
 export const testController = async (req, res, next) => {

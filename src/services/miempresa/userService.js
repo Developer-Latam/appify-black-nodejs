@@ -7,6 +7,7 @@ import { isValidPassword } from "../../utils/password/hashPass.js";
 import jwt from "jsonwebtoken"
 import "dotenv/config"
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
+import { sendEmailBienvenida } from "../../utils/email/emailService.js";
 //Clase que interactua con el Repository y se encarga de la logica de negocio
 class UserService {
     //Me trae un sub usuario por su id
@@ -315,6 +316,28 @@ class UserService {
     async userPrincipalExistsById(id) {
         try {
             const response = await userRepository.userExistsById(id)
+            return response
+        } catch (error) {
+            throw error
+        }
+    }
+    async sendEmailBienvenida(email) {
+        try {
+            const codigos = [
+                "SG31D",
+                "MB14C",
+                "PM03L",
+                "AA86M",
+                "CF8HY",
+                "LL85S",
+                "MR21S",
+                "MT20F",
+                "QO20G",
+                "PT20S",
+            ]
+            // Selecciona un índice aleatorio dentro del rango de la longitud del array
+            const codigoAleatorio = codigos[Math.floor(Math.random() * codigos.length)];
+            const response = await sendEmailBienvenida(email, codigoAleatorio)
             return response
         } catch (error) {
             throw error
