@@ -296,8 +296,7 @@ style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #e8
                             <!--[if mso]><table width="100%"><tr><td><![endif]-->
                             <h1 class="v-text-align v-font-size"
                               style="margin: 0px; line-height: 140%; text-align: left; word-wrap: break-word; font-family: 'Montserrat',sans-serif; font-size: 28px; font-weight: 400;">
-                              <span><span><span><span><span><span><strong>¡Te damos la
-                                            bienvenida!</strong></span></span></span></span></span></span></h1>
+                              <span><span><span><span><span><span><strong>¡Hola!</strong></span></span></span></span></span></span></h1>
                             <!--[if mso]></td></tr></table><![endif]-->
 
                           </td>
@@ -322,10 +321,7 @@ style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #e8
                                   style="line-height: 19.6px;"></span><span
                                   style="font-size: 14px; line-height: 19.6px; font-family: Montserrat, sans-serif;">Estamos
                                   emocionados de darte la bienvenida a Appify. </span><br /><br /><span
-                                  style="font-size: 14px; line-height: 19.6px; font-family: Montserrat, sans-serif;">Para
-                                  garantizar la seguridad de tu cuenta y comenzar a disfrutar de todas las
-                                  características que Appify tiene para ofrecer, necesitas configurar tu contraseña.
-                                  Es un proceso rápido y sencillo:</span></p>
+                                  style="font-size: 14px; line-height: 19.6px; font-family: Montserrat, sans-serif;">Para continuar con el proceso de verificación, por favor ingresa el siguiente código en la pantalla de confirmación de nuestra plataforma.</span></p>
                             </div>
 
                           </td>
@@ -344,10 +340,9 @@ style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #e8
                             <div class="v-text-align v-font-size"
                               style="font-size: 14px; line-height: 140%; text-align: left; word-wrap: break-word;">
                               <p style="font-size: 14px; line-height: 140%; text-align: left;"><span
-                                  style="font-size: 14px; line-height: 19.6px; font-family: Montserrat, sans-serif;">Si
-                                  tienes alguna pregunta o necesitas ayuda durante el proceso, no dudes en
-                                  contactarnos. Estamos aquí para asegurarnos de que tu experiencia con Appify sea
-                                  excepcional desde el principio.</span></p>
+                                  style="font-size: 14px; line-height: 19.6px; font-family: Montserrat, sans-serif;">Este código es válido por las próximas 24 horas y solo puede ser utilizado una vez.
+
+                                  Si no has solicitado este código, por favor ignora este mensaje o contáctanos si tienes alguna preocupación.</span></p>
                             </div>
 
                           </td>
