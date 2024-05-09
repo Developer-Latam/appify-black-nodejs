@@ -1,4 +1,5 @@
 import cobrosRepository from "../../persistence/repositorys/administracion/cobrosRepository.js";
+import clientesRepository from "../../persistence/repositorys/comercial/clientesRepository.js";
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import ventasService from "./ventasService.js";
@@ -189,6 +190,7 @@ class cobrosService {
                 cobros = [cobros]; // Convertir a un array para facilitar la iteración
             }*/
             const formattedCobros = [];
+
             for (const cobro of cobros) {
                 const functionsToTry = [
                     this.findCobroFVByCobroId,
@@ -198,10 +200,12 @@ class cobrosService {
                 let result = null;
                 for (const func of functionsToTry) {
                     try {
+                        const cliente = await clientesRepository.findClienteById(cobro.clienteId)
                         const resultado = await func(cobro.id);
                         if (resultado) {
                             result = {
                                 resultado,
+                                cliente,
                                 clave: func.name
                             };
                             break; // Si se encuentra un resultado válido, se sale del bucle
@@ -218,19 +222,19 @@ class cobrosService {
                             const idDocumentoCompra = notacredito.idDoc
                             const averquees = await ventasService.getFVoFVEbyDC(idDocumentoCompra);
                             const notaCompletaNC = await ventasService.getItemsByNCOD(notacredito.id, averquees[0].tipo);
-                            formattedCobros.push({ cobro, factura: notaCompletaNC });
+                            formattedCobros.push({ cobro, factura: notaCompletaNC, cliente: result.cliente.razon_social });
                             break;
                         case "findCobroFVEByCobroId":
                             const idFacturaVentaE = result.resultado.idFacturaVentaExcenta;
                             const facturaventae = await cobrosRepository.findFVEById(idFacturaVentaE);
                             const facturaFVEcompleta = await ventasService.getFVoFVEbyIdDoc(false,facturaventae.idDoc);
-                            formattedCobros.push({ cobro, factura: facturaFVEcompleta });
+                            formattedCobros.push({ cobro, factura: facturaFVEcompleta, cliente: result.cliente.razon_social });
                             break;
                         case "findCobroFVByCobroId":
                             const idFacturaVenta = result.resultado.idFacturaVenta;
                             const facturaventa = await cobrosRepository.findFVById(idFacturaVenta);
                             const facturaFVcompleta = await ventasService.getFVoFVEbyIdDoc(facturaventa.idDoc, false);
-                            formattedCobros.push({ cobro, factura: facturaFVcompleta });
+                            formattedCobros.push({ cobro, factura: facturaFVcompleta, cliente: result.cliente.razon_social });
                             break;
                     }
                 }
