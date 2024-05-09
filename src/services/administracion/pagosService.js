@@ -2,6 +2,7 @@ import pagosRepository from "../../persistence/repositorys/administracion/pagosR
 import { idgenerate } from "../../utils/id/idGenerate.js";
 import comprasService from "../../services/administracion/comprasService.js"
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
+import proveedorRepository from "../../persistence/repositorys/miempresa/proveedorRepository.js";
 class pagosService {
     async createPagosAll(data) {
         try {
@@ -186,10 +187,12 @@ class pagosService {
                 let result = null;
                 for (const func of functionsToTry) {
                     try {
+                        const proveedor = await proveedorRepository.getProveedorById(pago.proveedorId)
                         const resultado = await func(pago.id);
                         if (resultado) {
                             result = {
                                 resultado,
+                                proveedor,
                                 clave: func.name
                             };
                             break; // Si se encuentra un resultado válido, se sale del bucle
@@ -206,19 +209,19 @@ class pagosService {
                             const idDocumentoCompra = notacredito.idDoc
                             const averquees = await comprasService.getFCoFCEbyDC(idDocumentoCompra);
                             const notaCompletaNC = await comprasService.getItemsByNCOD(notacredito.id, averquees[0].tipo);
-                            formattedPagos.push({ pago, factura: notaCompletaNC });
+                            formattedPagos.push({ pago, factura: notaCompletaNC, proveedor: result.proveedor.razon_social });
                             break;
                         case "findPagosFCEByPagoId":
                             const idFacturaCompraE = result.resultado.idFacturaCompraE;
                             const facturacomprae = await pagosRepository.findFCEById(idFacturaCompraE);
                             const facturaFCEcompleta = await comprasService.getFCoFCEbyIdDoc(false, facturacomprae.idDoc);
-                            formattedPagos.push({ pago, factura: facturaFCEcompleta });
+                            formattedPagos.push({ pago, factura: facturaFCEcompleta, proveedor: result.proveedor.razon_social });
                             break;
                         case "findPagosFCByPagoId":
                             const idFacturaCompra = result.resultado.idFacturaCompra;
                             const facturacompra = await pagosRepository.findFCById(idFacturaCompra);
                             const facturaFCcompleta = await comprasService.getFCoFCEbyIdDoc(facturacompra.idDocCompra, false);
-                            formattedPagos.push({ pago, factura: facturaFCcompleta });
+                            formattedPagos.push({ pago, factura: facturaFCcompleta, proveedor: result.proveedor.razon_social });
                             break;
                     }
                 }
