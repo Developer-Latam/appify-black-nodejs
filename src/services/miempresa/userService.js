@@ -343,6 +343,20 @@ class UserService {
             throw error
         }
     }
+    //Realiza el registro de usuario
+    async signUpUsuarioBienvenida(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash) {
+        try {
+            //Verifica si existe, y si no, lo crea
+            const userExists = await UserRepository.userExists(email);
+            if(userExists){
+                throw new CustomError(409, 'El usuario ya existe', { email });
+            }
+            const result = await UserRepository.createUserAndSubuserBienvenida(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash);
+            return { ok: true, message: 'Usuario y subusuario creados exitosamente', result };
+        } catch (error) {
+            throw error
+        }
+    }
 }
 
 export default new UserService();
