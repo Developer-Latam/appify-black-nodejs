@@ -1,6 +1,7 @@
 [
     {
         "id": "mov_w5WYOnHoD42vLe4z",
+        "cuenta_id": "acc_8QDl85TVMnYy24J3", // Este es el campo que hay que agregar en cada movimiento que haya para que se le adjudique a la cuenta de la conciliacion
         "description": "Excepturi laborum et est.",
         "amount": -4750374,
         "currency": "CLP",

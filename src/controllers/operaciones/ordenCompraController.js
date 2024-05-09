@@ -3,7 +3,7 @@ import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const createOrdenCompra = async (req, res) => {
     try {
         const data = req.body;
-        const response = await ordenCompraService.createOrdenCompra(data);
+        const response = await ordenCompraService.createOCAll(data);
         ResponseHandler.Ok(res, response)
     } catch (err) {
         ResponseHandler.HandleError(res, err)
