@@ -324,16 +324,16 @@ class UserService {
     async sendEmailBienvenida(email) {
         try {
             const codigos = [
-                "SG31D",
-                "MB14C",
-                "PM03L",
-                "AA86M",
-                "CF8HY",
-                "LL85S",
-                "MR21S",
-                "MT20F",
-                "QO20G",
-                "PT20S",
+                "S31D",
+                "M14C",
+                "P03L",
+                "A86M",
+                "C8HY",
+                "L85S",
+                "M21S",
+                "M20F",
+                "Q20G",
+                "P20S",
             ]
             // Selecciona un índice aleatorio dentro del rango de la longitud del array
             const codigoAleatorio = codigos[Math.floor(Math.random() * codigos.length)];
