@@ -20,8 +20,8 @@ const router = Router()
 
 router.post('/login', loginUser);
 router.get('/dataUser/:id', getDataUserController)
-router.get('/allUsersAct/:idUser', getAllUsersActController)
-router.get('/allUsersInact/:idUser', getAllUsersInactController)
+router.get('/allUsersAct/:userId', getAllUsersActController)
+router.get('/allUsersInact/:userId', getAllUsersInactController)
 router.post('/create-subuser', signUpSubUsuarioController)
 router.put('/updUser/:userId', updateSubUser);
 //esta ruta es para recibir el token y descifrarlo, se tiene que hacer en el lado del front, esta de example
