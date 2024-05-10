@@ -18,6 +18,8 @@ export const createMovimientos = async (req, res) => {
         ResponseHandler.HandleError(res, err)
     }
 };
+
+
 export const createCuentaLink = async (req, res) => {
     try {
         const data = req.body;
@@ -31,6 +33,16 @@ export const getLinkByUserId = async (req, res) => {
     try {
         const userId = req.params;
         await conciliacionService.getLinkByUserId(userId);
+        ResponseHandler.Ok(res,'ok' );
+    } catch (err) {
+        ResponseHandler.HandleError(res, err)
+    }
+};
+
+export const getCuentasBancariasAllDataByUserId = async (req, res) => {
+    try {
+        const userId = req.params;
+        await conciliacionService.getCuentasBancariasAllDataByUserId(userId);
         ResponseHandler.Ok(res,'ok' );
     } catch (err) {
         ResponseHandler.HandleError(res, err)

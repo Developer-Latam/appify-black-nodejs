@@ -52,6 +52,7 @@ class conciliacionService {
                 };
                 await conciliacionRepository.createCuentaBancaria(cuentaData);
             }
+            
     
         } catch (error) {
             throw new Error('Error al guardar datos de bancos y cuentas bancarias:' + error);
@@ -121,6 +122,36 @@ class conciliacionService {
         return conciliacionRepository.findCuentasBancariasByConciliacionId(conciliacionId);
         
     }
+
+    async getCuentasBancariasAllDataByUserId(id){
+
+        try{
+            const AllData = [];
+            const conciliaciones = await this.getConciliacionesByUserId(id);
+
+        
+
+
+            for (const conciliacion of conciliaciones){
+
+                const cuenta = await this.getCuentasBancariasByConciliacionId(conciliacion.id);
+
+                AllData.push({conciliacion : conciliacion, cuentas : cuenta})
+
+
+            }
+        return AllData;
+
+        } catch (error){
+
+            throw(error);
+        }
+
+        
+        
+    }
+
+
 
     async getMovimientosByCuentaId(cuentaId) {
 

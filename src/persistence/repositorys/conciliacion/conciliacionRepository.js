@@ -135,7 +135,7 @@ class conciliacionRepository {
     }
     async findCuentasBancariasByConciliacionId(conciliacionId) {
         try {
-            return prisma.CuentasBancarias.findMany({
+            return prisma.cuentasBancarias.findMany({
                 where: { conciliacion_id: conciliacionId }
             });
         } catch (error) {

@@ -11,7 +11,8 @@ import {
   updateUserConciliacion,
   updateCuentaBancariaById,
   createCuentaLink,
-  getCuentaLinkById
+  getCuentaLinkById,
+  getCuentasBancariasAllDataByUserId
 } from '../../controllers/conciliacion/conciliacionController.js';
 
 const router = Router();
@@ -39,6 +40,9 @@ router.get('/movimiento/:id', getMovimientosById);
 
 // Obtener todas las conciliaciones por user ID
 router.get('/conciliaciones/:userId', getConciliacionesByUserId);
+
+// Obtener todas las conciliaciones por user ID
+router.get('/alldata/:userId', getCuentasBancariasAllDataByUserId);
 
 // Obtener las cuentas bancarias por conciliacionID
 router.get('/cuentas/:conciliacionId', getCuentasBancariasByConciliacionId);
