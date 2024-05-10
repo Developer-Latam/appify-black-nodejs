@@ -7,6 +7,7 @@ import { isValidPassword } from "../../utils/password/hashPass.js";
 import jwt from "jsonwebtoken"
 import "dotenv/config"
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
+import { sendEmailBienvenida } from "../../utils/email/emailService.js";
 //Clase que interactua con el Repository y se encarga de la logica de negocio
 class UserService {
     //Me trae un sub usuario por su id
@@ -316,6 +317,42 @@ class UserService {
         try {
             const response = await userRepository.userExistsById(id)
             return response
+        } catch (error) {
+            throw error
+        }
+    }
+    async sendEmailBienvenida(email) {
+        try {
+            const codigos = [
+                "S31D",
+                "M14C",
+                "P03L",
+                "A86M",
+                "C8HY",
+                "L85S",
+                "M21S",
+                "M20F",
+                "Q20G",
+                "P20S",
+            ]
+            // Selecciona un índice aleatorio dentro del rango de la longitud del array
+            const codigoAleatorio = codigos[Math.floor(Math.random() * codigos.length)];
+            const response = await sendEmailBienvenida(email, codigoAleatorio)
+            return response
+        } catch (error) {
+            throw error
+        }
+    }
+    //Realiza el registro de usuario
+    async signUpUsuarioBienvenida(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash) {
+        try {
+            //Verifica si existe, y si no, lo crea
+            const userExists = await UserRepository.userExists(email);
+            if(userExists){
+                throw new CustomError(409, 'El usuario ya existe', { email });
+            }
+            const result = await UserRepository.createUserAndSubuserBienvenida(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash);
+            return { ok: true, message: 'Usuario y subusuario creados exitosamente', result };
         } catch (error) {
             throw error
         }

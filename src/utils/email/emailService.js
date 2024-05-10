@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import "dotenv/config"
 import { getConfigPasswordTemplateHTML } from "./templateEmail/configYourPasswordTemplate.js"
 import { getHTMLBienvenidaYPassword } from "./templateEmail/BienvenidaPassword.js";
+import { getHTMLBienvenidaYCodigo } from "./templateEmail/bienvenidaCodigo.js";
 // la direccion de destino se envia a un email temporal sacado de "https://tempail.com/"
 const transporterGmail = createTransport({
     service: 'gmail',
@@ -27,6 +28,18 @@ export const sendEmail = async (email, userId) => {
         const linkDeConfiguracion = `https://preeminent-cajeta-b229d8.netlify.app/login?token=${token}`;
         // Genera el contenido HTML con el enlace incluido
         const htmlContent = getHTMLBienvenidaYPassword(linkDeConfiguracion);
+        createPasswordMessage.to = email;
+        createPasswordMessage.html = htmlContent;
+        const response = await transporterGmail.sendMail(createPasswordMessage);
+        return `Te llegara un mail a ${response.accepted}`
+    } catch (error) {
+        throw error
+    }
+}
+export const sendEmailBienvenida = async (email, codigo) => {
+    try {
+        // Genera el contenido HTML con el enlace incluido
+        const htmlContent = getHTMLBienvenidaYCodigo(codigo);
         createPasswordMessage.to = email;
         createPasswordMessage.html = htmlContent;
         const response = await transporterGmail.sendMail(createPasswordMessage);

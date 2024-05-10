@@ -141,6 +141,30 @@ export const getUserPrincipalValidation = async (req, res, next) => {
         ResponseHandler.HandleError(res, error);
     }
 }
+export const sendMailController = async (req, res, next) => {
+    try {
+        const {email} = req.body
+        const result = await userService.sendEmailBienvenida(email);
+        ResponseHandler.Ok(res, result);
+    } catch (error) {
+        ResponseHandler.HandleError(res, error);
+    }
+}
+//Realiza el registro del usuario 
+export const signUpUsuarioBienvenidaController = async (req, res) => {
+    const { nombre, apellido, email, celular, fecha_de_nacimiento, password, passwordConfirm, activo } = req.body;
+    const validationResult = validatePassword(password, passwordConfirm)
+    try {
+        if (!validationResult.isValid){
+            return ResponseHandler.HandleError(res, validationResult.message);
+        }
+        const passwordHash = createHash(password)
+        const result = await userService.signUpUsuarioBienvenida(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash, activo);
+        ResponseHandler.Ok(res, result)
+    } catch (error) {
+        ResponseHandler.HandleError(res, error)
+    }
+}
 // ENDPOINT PARA REALIZAR TEST DE FUNCION:
 //Realiza el registro del usuario 
 export const testController = async (req, res, next) => {

@@ -348,5 +348,48 @@ class UserRepository {
             handlePrismaError(error);
         }
     }
+    //Realiza la creacion de usuario y un sub usuario
+    async createUserAndSubuserBienvenida(nombre, apellido, email, celular, fecha_de_nacimiento, passwordHash) {
+        // Datos para el usuario principal
+        let userIDsuperUser = idgenerate("super-user")
+        let fecha = new Date(fecha_de_nacimiento)
+        let fecha_ISO = fecha.toISOString()
+        let userData = {
+            id: userIDsuperUser,
+            nombre,
+            apellido,
+            email,
+            celular,
+            fecha_de_nacimiento: fecha_ISO,
+            password: passwordHash,
+            activo: true,
+        };
+        // Datos para el subusuario
+        let subUserData = {
+            id: idgenerate("sub-user"), // Prefijo para distinguir el ID del subusuario
+            user: userIDsuperUser,
+            nombre,
+            apellido,
+            email,
+            celular,
+            fecha_de_nacimiento: fecha_ISO,
+            cargo: null,
+            ref_superusuario: 1,
+            checkeado: 1,
+            password: passwordHash,
+            activo: true,
+        };
+        // Preparando las operaciones para la transacción
+        const operations = [
+            prisma.usuarios.create({ data: userData }),
+            prisma.subusuarios.create({ data: subUserData })
+        ];
+        try {
+            const resultOp = await executeTransactions(operations)
+            return resultOp
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
 }
 export default new UserRepository()

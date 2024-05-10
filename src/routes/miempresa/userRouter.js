@@ -9,7 +9,9 @@ import { loginUser,
     getAllUsersInactController,
     testController,
     setpassForUser,
-    getUserPrincipalValidation
+    getUserPrincipalValidation,
+    sendMailController,
+    signUpUsuarioBienvenidaController
   } from '../../controllers/miempresa/userController.js';
 import "dotenv/config";
 import jwt from "jsonwebtoken";
@@ -30,6 +32,9 @@ router.put('/setPassForUser', setpassForUser)
 router.put('/set-password', setpassForSubUser)
 //ENDPOINT PARA EL SOCKET, VALIDA EL SUPER USER
 router.get('/validateSU/:id', getUserPrincipalValidation)
+//ENDPOINT DE ENVIO DE MAIL
+router.post('/send-mail', sendMailController)
+router.post('/register', signUpUsuarioBienvenidaController)
 // HARCODEADO DE LA AGOS AL PALOOOOOOOOO CHANCHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 router.put('/editar-subusuario', async (req, res) => {
