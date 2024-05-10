@@ -24,7 +24,7 @@ export const sendEmail = async (email, userId) => {
     try {
         const token = jwt.sign({userId}, process.env.SECRET_KEY_MAIL, {expiresIn: '24h'});
         // Construir el link con el token como parametro
-        const linkDeConfiguracion = `http://localhost:8080/user/setPassForUserPrincipal?token=${token}`;
+        const linkDeConfiguracion = `https://preeminent-cajeta-b229d8.netlify.app/login?token=${token}`;
         // Genera el contenido HTML con el enlace incluido
         const htmlContent = getHTMLBienvenidaYPassword(linkDeConfiguracion);
         createPasswordMessage.to = email;
