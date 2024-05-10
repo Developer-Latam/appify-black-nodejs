@@ -140,7 +140,7 @@ class UserRepository {
             email,
             celular,
             fecha_de_nacimiento: fecha_ISO,
-            cargo: null,
+            cargo: "Administrador",
             ref_superusuario: 1,
             checkeado: 1,
             password: passwordHash,
