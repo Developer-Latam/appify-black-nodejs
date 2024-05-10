@@ -108,7 +108,7 @@ class conciliacionRepository {
     }
     async findCuentasByCuentaId(cuentaId) {
         try {
-            return prisma.CuentasBancarias.findUnique({
+            return prisma.cuentasBancarias.findUnique({
                 where: { cuenta_id : cuentaId }
             });
         } catch (error) {
@@ -127,7 +127,7 @@ class conciliacionRepository {
     async findConciliacionesByUserId(userId) {
         try {
             return prisma.link_fintoc_bancos.findMany({
-                where: { user: userId }
+                where: { user : userId }
             });
         } catch (error) {
             handlePrismaError(error);

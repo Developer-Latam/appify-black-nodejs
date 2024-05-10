@@ -52,7 +52,7 @@ class conciliacionService {
                 };
                 await conciliacionRepository.createCuentaBancaria(cuentaData);
             }
-            
+
     
         } catch (error) {
             throw new Error('Error al guardar datos de bancos y cuentas bancarias:' + error);
@@ -112,7 +112,6 @@ class conciliacionService {
     }
 
     async getConciliacionesByUserId(userId) {
-
         return conciliacionRepository.findConciliacionesByUserId(userId);
 
     }
@@ -123,35 +122,32 @@ class conciliacionService {
         
     }
 
-    async getCuentasBancariasAllDataByUserId(id){
+    async getCuentasBancariasAllDataByUserId(userId){
 
         try{
             const AllData = [];
-            const conciliaciones = await this.getConciliacionesByUserId(id);
-
-        
+            const conciliaciones = await conciliacionRepository.findConciliacionesByUserId(userId);
 
 
             for (const conciliacion of conciliaciones){
+                //console.log(conciliacion)
 
-                const cuenta = await this.getCuentasBancariasByConciliacionId(conciliacion.id);
+                const cuenta = await conciliacionRepository.findCuentasBancariasByConciliacionId(conciliacion.id);
 
                 AllData.push({conciliacion : conciliacion, cuentas : cuenta})
 
 
             }
-        return AllData;
+        if (AllData.length === 0) {
+                throw new CustomError(404, "No se encontraron datos");
+        }
+    return AllData;
 
         } catch (error){
-
             throw(error);
         }
 
-        
-        
     }
-
-
 
     async getMovimientosByCuentaId(cuentaId) {
 

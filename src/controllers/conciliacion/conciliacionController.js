@@ -1,3 +1,4 @@
+import productRepository from "../../persistence/repositorys/miempresa/productRepository.js";
 import conciliacionService from "../../services/conciliacion/conciliacionService.js";
 import { ResponseHandler } from "../../utils/dependencys/injection.js";
 export const saveBankData = async (req, res) => {
@@ -31,8 +32,8 @@ export const createCuentaLink = async (req, res) => {
 };
 export const getLinkByUserId = async (req, res) => {
     try {
-        const userId = req.params;
-        await conciliacionService.getLinkByUserId(userId);
+        const userid = req.params;
+        await conciliacionService.getLinkByUserId(userid);
         ResponseHandler.Ok(res,'ok' );
     } catch (err) {
         ResponseHandler.HandleError(res, err)
@@ -41,9 +42,9 @@ export const getLinkByUserId = async (req, res) => {
 
 export const getCuentasBancariasAllDataByUserId = async (req, res) => {
     try {
-        const userId = req.params;
-        await conciliacionService.getCuentasBancariasAllDataByUserId(userId);
-        ResponseHandler.Ok(res,'ok' );
+        const {userId} = req.params;
+        const response = await conciliacionService.getCuentasBancariasAllDataByUserId(userId);
+        ResponseHandler.Ok(res, response);
     } catch (err) {
         ResponseHandler.HandleError(res, err)
     }
@@ -124,3 +125,4 @@ export const updateCuentaBancariaById = async (req, res) => {
         ResponseHandler.HandleError(res, err)
     }
 };
+
