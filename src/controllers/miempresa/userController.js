@@ -165,6 +165,20 @@ export const signUpUsuarioBienvenidaController = async (req, res) => {
         ResponseHandler.HandleError(res, error)
     }
 }
+//Recibe data y convierte a token y retorna 
+export const returnTokenController = async (req, res) => {
+    const { data } = req.body;
+    // Verificar que el objeto data existe y tiene propiedades
+    if (!data || Object.keys(data).length === 0) {
+        return res.status(400).json({ error: 'No data provided' });
+    }
+    try {
+        const token = jwt.sign({data}, process.env.SECRET_KEY_DATA, {expiresIn: '24h'})
+        ResponseHandler.Ok(res, token)
+    } catch (error) {
+        ResponseHandler.HandleError(res, error)
+    }
+}
 // ENDPOINT PARA REALIZAR TEST DE FUNCION:
 //Realiza el registro del usuario 
 export const testController = async (req, res, next) => {

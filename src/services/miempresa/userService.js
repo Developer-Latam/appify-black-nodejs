@@ -150,6 +150,7 @@ class UserService {
     async login(email, password) {
         try {
             const user = await UserRepository.findUserByEmail(email);
+            console.log(user);
             if (!user) {
                 throw new CustomError(401, "Authentication error", { detail: "Invalid credentials" });
             }

@@ -47,6 +47,7 @@ app.use(express.json())
 app.use('/init', initRouter)
 
 // Routers a Mi Empresa
+
 app.use('/user',userRouter)
 app.use('/proveedor', proveedorRouter)
 app.use('/listproducts', listrouter)

@@ -11,7 +11,8 @@ import { loginUser,
     setpassForUser,
     getUserPrincipalValidation,
     sendMailController,
-    signUpUsuarioBienvenidaController
+    signUpUsuarioBienvenidaController,
+    returnTokenController
   } from '../../controllers/miempresa/userController.js';
 import "dotenv/config";
 import jwt from "jsonwebtoken";
@@ -35,6 +36,7 @@ router.get('/validateSU/:id', getUserPrincipalValidation)
 //ENDPOINT DE ENVIO DE MAIL
 router.post('/send-mail', sendMailController)
 router.post('/register', signUpUsuarioBienvenidaController)
+router.post('/token', returnTokenController)
 // HARCODEADO DE LA AGOS AL PALOOOOOOOOO CHANCHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 router.put('/editar-subusuario', async (req, res) => {
