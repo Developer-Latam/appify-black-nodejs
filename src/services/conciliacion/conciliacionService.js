@@ -68,11 +68,13 @@ class conciliacionService {
         }
     }
 
-    async createCuentaLink(id) {
+    async createCuentaLink(data) {
 
         try{
 
-            return conciliacionRepository.createCuentaBancariaLinkConciliacion(id);
+            const idCuentaLink = idgenerate("Cuenta-link")
+
+            return conciliacionRepository.createCuentaBancariaLinkConciliacion({...data, id : idCuentaLink});
 
         } catch (error) {
 
