@@ -67,9 +67,9 @@ class conciliacionRepository {
                 await prisma.movimientos_cuenta.create({
                     data: data
                 });
-                console.log(`Movimiento con ID ${movimiento.id} insertado correctamente.`);
+                
             } else {
-                console.log(`Movimiento con ID ${movimiento.id} ya existe en la base de datos. Omitiendo inserción.`);
+                return (`Movimiento con ID ${movimiento.id} ya existe en la base de datos. Omitiendo inserción.`);
             }
         } catch (error) {
             handlePrismaError(error)
