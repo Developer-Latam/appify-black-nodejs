@@ -173,7 +173,7 @@ export const returnTokenController = async (req, res) => {
         return res.status(400).json({ error: 'No data provided' });
     }
     try {
-        const token = jwt.sign({data}, process.env.SECRET_KEY_DATA, {expiresIn: '24h'})
+        const token = jwt.sign({data}, process.env.SECRET_KEY_LOGIN, {expiresIn: '24h'})
         ResponseHandler.Ok(res, token)
     } catch (error) {
         ResponseHandler.HandleError(res, error)
