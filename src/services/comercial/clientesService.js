@@ -30,16 +30,22 @@ class ClientesService {
             // Crear los contactos
             const contactosPromises = contactoData.map(async (contacto) => {
                 const contactoId = idgenerate("contacto-cliente");
-                await contactoClienteRepository.createContacto({ ...contacto, cliente: cliente.id, id: contactoId });
+                const b = await contactoClienteRepository.createContacto({ ...contacto, cliente: cliente.id, id: contactoId });
+                return b
+                
             });
             const contactos = await Promise.all(contactosPromises);
+
     
             // Crear los puntos de despacho
             const puntosDespachoPromises = puntoDespachoData.map(async (puntoDespacho) => {
                 const puntoDespachoId = idgenerate("punto-despacho");
-                await puntoDespachoClienteRepository.createPuntoDespacho({ ...puntoDespacho, cliente: cliente.id, id: puntoDespachoId });
+                const a = await puntoDespachoClienteRepository.createPuntoDespacho({ ...puntoDespacho, cliente: cliente.id, id: puntoDespachoId });
+                return a
+                
             });
             const puntosDespacho = await Promise.all(puntosDespachoPromises);
+
     
             return {cliente, contactos, puntosDespacho};
         } catch (error) {
