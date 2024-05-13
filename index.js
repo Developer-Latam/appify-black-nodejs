@@ -97,7 +97,7 @@ app.use('/cuentas', cuentasRouter)
 app.use('/mp', mpRouter)
 
 app.get('/', (req, res) => {
-    res.json('Estoy desplegado hijo, pruebame');
+    res.json('Estoy desplegado hijo, pruebame 👉👌');
 });
 
 
@@ -107,5 +107,4 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(specs))
 app.listen(PORT, ()=>{
     console.log(`server listen on ${PORT}`)
 });
-
 
