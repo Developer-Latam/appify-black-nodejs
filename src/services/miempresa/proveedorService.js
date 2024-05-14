@@ -17,11 +17,11 @@ class proveedorService {
             }
             //Si no existe, crea el proveedor
             const id = idgenerate("prov")
-            await proveedorRepository.createProveedor(
+            const proveedor = await proveedorRepository.createProveedor(
             id, user, rut, razon_social, activo, giro, condicion_de_pago, nombre_fantasia, cuenta_contable,
             persona, direccion, email, comuna, telefono, ciudad, banco, nombre_beneficiario,
             nombre_cuenta, rut_beneficiario, nro_cta_corriente, correo_cobranzas);
-            return { ok: true, message: 'Proveedor creado exitosamente'}  
+            return proveedor  
         } catch (error) {
             throw (error)
         }
