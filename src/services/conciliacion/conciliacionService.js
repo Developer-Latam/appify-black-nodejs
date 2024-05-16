@@ -20,6 +20,7 @@ class conciliacionService {
                 user: username // Incluye el username aquí
             };
             await conciliacionRepository.createLink(linkData);
+            console.log(jsonData)
     
             if (Array.isArray(accounts)) {
                 // Iterar sobre cada movimiento en la lista
