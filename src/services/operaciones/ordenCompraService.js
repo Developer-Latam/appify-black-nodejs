@@ -24,14 +24,14 @@ class ordenCompraService {
             let servicios = [], productos = [];
             
             if (Array.isArray(item_servicio)) {
-                for (const item of item_servicio_proyecto) {
+                for (const item of item_servicio) {
                     servicios.push(await itemProdServOrdenCompraService.createServiceItem({...item, idOrdenCompra: ordencompra.id}));
                 }
             } else if (item_servicio) {
                 servicios.push(await itemProdServOrdenCompraService.createServiceItem({...item_servicio, idOrdenCompra: ordencompra.id}));
             }
             if (Array.isArray(item_producto)) {
-                for (const item of item_producto_proyecto) {
+                for (const item of item_producto) {
                     productos.push(await itemProdServOrdenCompraService.createitemProducto({...item, idOrdenCompra: ordencompra.id}));
                 }
             } else if (item_producto) {
