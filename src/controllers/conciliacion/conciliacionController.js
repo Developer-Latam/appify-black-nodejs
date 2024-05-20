@@ -2,6 +2,7 @@ import productRepository from "../../persistence/repositorys/miempresa/productRe
 import conciliacionService from "../../services/conciliacion/conciliacionService.js";
 import { ResponseHandler } from "../../utils/dependencys/injection.js";
 import axios from "axios";
+import "dotenv/config";
 
 export const saveBankData = async (req, res) => {
   try {
@@ -96,6 +97,7 @@ export const getMovimientosFintoc = async (req, res) => {
         },
       }
     );
+    console.log("response", response);
     res.json(response.data);
   } catch (error) {
     console.error("Error fetching movements:", error);
