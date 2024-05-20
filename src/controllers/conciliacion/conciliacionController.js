@@ -82,7 +82,7 @@ export const getMovimientosById = async (req, res) => {
 export const getMovimientosFintoc = async (req, res) => {
   const account_id = req.query.account_id;
   try {
-    const respuesta = await axios.get(
+    const response = await axios.get(
       `https://api.fintoc.com/v1/accounts/${account_id}/movements`,
       {
         params: {
@@ -91,14 +91,15 @@ export const getMovimientosFintoc = async (req, res) => {
           until: req.query.until,
         },
         headers: {
-          Authorization: `Bearer ${process.env.SK_LIVE_FINTOC}`,
+          Authorization: process.env.SK_LIVE_FINTOC,
           Accept: "application/json",
         },
       }
     );
-    ResponseHandler.Ok(res, respuesta.data);
-  } catch (err) {
-    ResponseHandler.HandleError(res, err);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error fetching movements:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
