@@ -20,7 +20,7 @@ class ordenCompraService {
                 item_producto,
                 item_servicio
             } = data;
-            const ordencompra = await this.createProject(orden_compra);
+            const ordencompra = await this.createOrdenCompra(orden_compra);
             let servicios = [], productos = [];
             
             if (Array.isArray(item_servicio)) {
