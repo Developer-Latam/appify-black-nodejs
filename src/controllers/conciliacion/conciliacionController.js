@@ -91,7 +91,7 @@ export const getMovimientosFintoc = async (req, res) => {
           until: req.query.until,
         },
         headers: {
-          Authorization: process.env.SK_LIVE_FINTOC,
+          Authorization: `Bearer ${process.env.SK_LIVE_FINTOC}`,
           Accept: "application/json",
         },
       }
