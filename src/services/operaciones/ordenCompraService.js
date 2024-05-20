@@ -65,18 +65,30 @@ class ordenCompraService {
         try{
             const ordenes = await this.getOrdenCompraByUserId(id);
             const formattedOrdenes = [];
+            const formattedProd = [];
+            const formattedServ = [];
 
             for (const orden of ordenes) {
                 const proveedor = await proveedorService.getProveedorById(orden.idProvedor);
-                const itemproductosproveedor = await ordenCompraRepository.findProductosByProovedorId(proveedor.id)
-                const productos = [];
-
+                //const itemproductosproveedor = await ordenCompraRepository.findProductosByProovedorId(proveedor.id)
+                //const productos = [];
+                /*
                 for (const producto of itemproductosproveedor){
                     let productillo = await ProductService.getProductById(producto.idProducto)
 
-                    productos.push(productillo);
+                    formattedProd.push(productillo);
                 }
-                formattedOrdenes.push({ordenes: ordenes, proveedor : proveedor,productos : productos})
+
+                 ACA VA PARA SERVICIOS
+
+                for (const servicio of itemserviciosproveedor){
+                    let servicillo = await ProductService.getProductById(servicio.idServicio)
+
+                    formattedServ.push(servicillo);
+                }*/
+
+
+                formattedOrdenes.push({orden:orden, proveedor: proveedor.razon_social})
             }
 
         return formattedOrdenes;
