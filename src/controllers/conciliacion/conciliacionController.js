@@ -96,7 +96,7 @@ export const getMovimientosFintoc = async (req, res) => {
         },
       }
     );
-    ResponseHandler.Ok(res, respuesta);
+    ResponseHandler.Ok(res, respuesta.data);
   } catch (err) {
     ResponseHandler.HandleError(res, err);
   }
