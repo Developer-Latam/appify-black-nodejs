@@ -101,7 +101,7 @@ export const getMovimientosFintoc = async (req, res) => {
     );
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error 1" });
   }
 };
 
