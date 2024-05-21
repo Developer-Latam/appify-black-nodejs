@@ -82,7 +82,6 @@ export const getMovimientosById = async (req, res) => {
 
 export const getMovimientosFintoc = async (req, res) => {
   const account_id = req.query.account_id;
-  console.log(req);
   try {
     const response = await axios.get(
       `https://api.fintoc.com/v1/accounts/${account_id}/movements`,
