@@ -98,9 +98,9 @@ export const getMovimientosFintoc = async (req, res) => {
         },
       }
     );
-    res.json(response.data);
+    ResponseHandler.Ok(res, response.data);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    ResponseHandler.HandleError(res, err);
   }
 };
 
