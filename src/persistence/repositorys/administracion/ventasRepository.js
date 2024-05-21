@@ -406,7 +406,7 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
-    createFV (idFV,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
+    createFV (idFV,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot}){
             try {
                 return prisma.factura_venta.create({
                     data: {
@@ -421,7 +421,8 @@ class VentasRepository {
                         condicion_de_pago,
                         centro_beneficio,
                         observacion,
-                        nota_interna
+                        nota_interna,
+                        ot
                     }
                 })
             } catch (error) {
@@ -485,7 +486,33 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
-    createFVE (idFVE,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
+    createOTinFV (idFV,itemsOT){
+        try {
+            const op = itemsOT.map(item => prisma.orden_trabajo_FV.create({
+                data: {
+                    idOrdenT: item.idOrdenT,
+                    idFacturaVenta: idFV
+                }
+            }));
+            return op
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    createOTinFVE (idFVE,itemsOT){
+        try {
+            const op = itemsOT.map(item => prisma.orden_trabajo_FVE.create({
+                data: {
+                    idOrdenT: item.idOrdenT,
+                    idFacturaVentaExcenta: idFVE
+                }
+            }));
+            return op
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    createFVE (idFVE,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot}){
         try {
             return prisma.factura_venta_excenta.create({
                 data: {
@@ -500,7 +527,8 @@ class VentasRepository {
                     condicion_de_pago,
                     centro_beneficio,
                     observacion,
-                    nota_interna
+                    nota_interna,
+                    ot
                 }
             })
         } catch (error) {

@@ -266,6 +266,7 @@ model factura_venta {
   centro_beneficio  String    @db.VarChar(100)
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
+  ot                Boolean
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")
@@ -285,6 +286,7 @@ model factura_venta_excenta {
   centro_beneficio  String    @db.VarChar(100)
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
+  ot                Boolean
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")
@@ -1517,4 +1519,22 @@ model cuentasBancarias {
   activo           Boolean? @default(false)
 
   @@index([conciliacion_id], map: "link_fintoc_bancos")
+}
+
+model orden_trabajo_FV {
+  id             Int    @id @default(autoincrement())
+  idOrdenT       String @db.VarChar(100)
+  idFacturaVenta String @db.VarChar(100)
+
+  @@index([idFacturaVenta], map: "factura_venta")
+  @@index([idOrdenT], map: "orden_trabajo")
+}
+
+model orden_trabajo_FVE {
+  id                    Int    @id @default(autoincrement())
+  idOrdenT              String @db.VarChar(100)
+  idFacturaVentaExcenta String @db.VarChar(100)
+
+  @@index([idFacturaVentaExcenta], map: "factura_venta_excenta")
+  @@index([idOrdenT], map: "orden_trabajo")
 }

@@ -7,6 +7,7 @@ export const createFVController = async (req, res) => {
             factura_venta: req.body.factura_venta,
             item_servicio_factura_venta: req.body.item_servicio_factura_venta,
             item_producto_factura_venta: req.body.item_producto_factura_venta,
+            orden_trabajo_FV: req.body.orden_trabajo_FV
         };
         const result = await ventasService.createFV(data);
         ResponseHandler.Ok(res, result)
@@ -38,6 +39,7 @@ export const createFVEController = async (req, res) => {
             factura_venta_excenta: req.body.factura_venta_excenta,
             item_servicio_factura_venta_excenta: req.body.item_servicio_factura_venta_excenta,
             item_producto_factura_venta_excenta: req.body.item_producto_factura_venta_excenta,
+            orden_trabajo_FVE: req.body.orden_trabajo_FVE
         };
         const result = await ventasService.createFVE(data);
         ResponseHandler.Ok(res, result)

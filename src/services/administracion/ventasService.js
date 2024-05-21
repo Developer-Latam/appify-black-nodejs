@@ -389,6 +389,7 @@ class VentasService {
                 factura_venta,
                 item_servicio_factura_venta,
                 item_producto_factura_venta,
+                orden_trabajo_FV
             } = data;
             //Validacion para asegurarse que al menos 1 de los dos items venga en la creacion de la factura
             if(!item_servicio_factura_venta && !item_producto_factura_venta){
@@ -399,6 +400,10 @@ class VentasService {
             let operations = []
             operations.push(ventasRepository.createDocVentas(idDV, documento_venta));
             operations.push(ventasRepository.createFV(idFV, idDV, factura_venta ));
+            if(factura_venta.ot === true && orden_trabajo_FV.length > 0){
+                const itemsOT = ventasRepository.createOTinFV(idFV, orden_trabajo_FV)
+                operations.push(...itemsOT)
+            }
             // Agregar a operaciones para ítems de servicio si existen
             if (item_servicio_factura_venta && item_servicio_factura_venta.length > 0) {
                  // Invocar la función y obtener la promesa Prisma
@@ -515,6 +520,7 @@ class VentasService {
                 factura_venta_excenta,
                 item_servicio_factura_venta_excenta,
                 item_producto_factura_venta_excenta,
+                orden_trabajo_FVE
             } = data;
             //Validacion para asegurarse que al menos 1 de los dos items venga en la creacion de la factura
             if(!item_servicio_factura_venta_excenta && !item_producto_factura_venta_excenta){
@@ -524,7 +530,11 @@ class VentasService {
             const idDV = idgenerate("DV")
             let operations = []
             operations.push(ventasRepository.createDocVentas(idDV, documento_venta));
-            operations.push(ventasRepository.createFVE(idFVE, idDV, factura_venta_excenta ));
+            operations.push(ventasRepository.createFVE(idFVE, idDV, factura_venta_excenta));
+            if (factura_venta_excenta.ot === true && orden_trabajo_FVE.length > 0) {
+                const itemsOT = ventasRepository.createOTinFVE(idFVE, orden_trabajo_FVE)
+                operations.push(...itemsOT)
+            }
             // Agregar a operaciones para ítems de servicio si existen
             if (item_servicio_factura_venta_excenta && item_servicio_factura_venta_excenta.length > 0) {
                  // Invocar la función y obtener la promesa Prisma
