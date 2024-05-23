@@ -30,7 +30,7 @@ class comprasRepository {
             handlePrismaError(error)
         }
     }
-    createFC (idFC,idDC,{ proveedor,tipo_documento,numero_documento, fecha, condicion_de_pago, cuenta, notas}){
+    createFC (idFC,idDC,{ proveedor,neto, bruto,tipo_documento,numero_documento, fecha, condicion_de_pago, cuenta, notas}){
         try {
             return prisma.factura_compra.create({
                 data: {
@@ -41,6 +41,8 @@ class comprasRepository {
                     //numero que viene de SII
                     numero_documento,
                     fecha,
+                    neto,
+                    bruto,
                     condicion_de_pago,
                     cuenta,
                     notas,
@@ -153,7 +155,7 @@ class comprasRepository {
             handlePrismaError(error)
         }
     }
-    createNCoD_Compras (idNCoD,{idDoc,idProveedor,idVendedor,tipo_credito, tipo_debito, numero_documento,tipo_nota,fecha,motivo_referencia,centro_de_beneficio, observacion, nota_interna, anula_doc, corrige_monto}){
+    createNCoD_Compras (idNCoD,{idDoc,idProveedor,idVendedor,tipo_credito,neto,bruto, tipo_debito, numero_documento,tipo_nota,fecha,motivo_referencia,centro_de_beneficio, observacion, nota_interna, anula_doc, corrige_monto}){
         try {
             return prisma.notas_de_credito_debito_compras.create({
                 data: {
@@ -162,6 +164,8 @@ class comprasRepository {
                     idDoc,
                     idProveedor,
                     idVendedor,
+                    neto,
+                    bruto,
                     tipo_credito,
                     tipo_debito,
                     anula_doc,
@@ -192,7 +196,7 @@ class comprasRepository {
             handlePrismaError(error)
         }
     }
-    createFCE (idFCE,idDC,{idProveedor, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
+    createFCE (idFCE,idDC,{idProveedor,neto,bruto, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna}){
         try {
             return prisma.factura_compra_excenta.create({
                 data: {
@@ -200,6 +204,8 @@ class comprasRepository {
                     idDoc: idDC,
                     idProveedor,
                     tipo_documento,
+                    neto,
+                    bruto,
                     //numero que viene de SII
                     numero_documento,
                     fecha,

@@ -10,7 +10,8 @@ import {
     getNCODbyIdDocController,
     getItemsNCODbyIdNCODController,
     testController,
-    getAllDataComprasByUserId
+    getAllDataComprasByUserId,
+    getAllDataAgosComprasByUserId
 } from "../../controllers/administracion/comprasController.js";
 const router = Router()
 
@@ -34,7 +35,7 @@ router.get('/compras/NCOD/:tipoNota/:NCOD', getItemsNCODbyIdNCODController)
 
 router.get('/compras/DC', getAllDocumentosComprasController);
 router.get('/compras/DC/:user', getDocumentosCompraByUserController);
-router.get('/compras/alldata/:user', getAllDataComprasByUserId);
+router.get('/compras/alldata/:user', getAllDataAgosComprasByUserId);
 
 
 

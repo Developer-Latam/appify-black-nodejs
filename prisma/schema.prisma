@@ -247,6 +247,8 @@ model factura_compra {
   condicion_de_pago String   @db.VarChar(100)
   cuenta            String   @db.VarChar(100)
   notas             String?  @db.Text
+  neto              Float    @db.Float
+  bruto             Float    @db.Float
 
   @@index([proveedor], map: "proveedores")
   @@index([condicion_de_pago], map: "condicion_pago")
@@ -633,6 +635,8 @@ model notas_de_credito_debito_compras {
   centro_de_beneficio String    @db.VarChar(50)
   observacion         String?   @db.Text
   nota_interna        String?   @db.Text
+  neto                Float     @db.Float
+  bruto               Float     @db.Float
 
   @@index([idVendedor], map: "subusuarios")
   @@index([idProveedor], map: "proveedores")
@@ -1453,6 +1457,8 @@ model factura_compra_excenta {
   centro_beneficio  String    @db.VarChar(100)
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
+  neto              Float     @db.Float
+  bruto             Float     @db.Float
 
   @@index([condicion_de_pago], map: "condicion_pago")
   @@index([idDoc], map: "documento_compra")
