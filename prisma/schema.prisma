@@ -267,6 +267,8 @@ model factura_venta {
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
   ot                Boolean
+  neto              Float     @db.Float
+  bruto             Float     @db.Float
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")
@@ -287,6 +289,8 @@ model factura_venta_excenta {
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
   ot                Boolean
+  neto              Float     @db.Float
+  bruto             Float     @db.Float
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")
@@ -605,6 +609,8 @@ model notas_de_credito_debito {
   nota_interna        String?   @db.Text
   anula_doc           Boolean
   corrige_monto       Boolean
+  neto                Float     @db.Float
+  bruto               Float     @db.Float
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")

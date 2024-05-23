@@ -13,6 +13,7 @@ import { createDDController,
     createFVController, 
     createFVEController,
     createNCoDConItemsController,
+    getAllDataAgosVentasByUserId,
     testController
 } from "../../controllers/administracion/ventasController.js";
 const router = Router()
@@ -38,7 +39,7 @@ router.get('/ventas/DV', getAllDocumentosVentaController);
 router.get('/ventas/DV/:user', getDocumentosVentaByUserController);
 
 // Obtener todos los datos
-router.get('/ventas/alldata/:user', getAllDataVentasByUserId);
+router.get('/ventas/alldata/:user', getAllDataAgosVentasByUserId);
 
 
 router.post('/ventas/DD', createDDController)

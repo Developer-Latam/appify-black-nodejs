@@ -139,6 +139,17 @@ export const getAllDataVentasByUserId  = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
+
+export const getAllDataAgosVentasByUserId  = async (req, res) => {
+    try {
+        const {user} = req.params
+        const documentos = await ventasService.getAllDataAgosVentasByUserId(user);
+        ResponseHandler.Ok(res, documentos)
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
+
 export const getAllDocumentosDespachoController  = async (req, res) => {
     try {
         const documentosDespacho = await ventasService.getAllDocDespacho();
