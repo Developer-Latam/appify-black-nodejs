@@ -406,7 +406,7 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
-    createFV (idFV,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot}){
+    createFV (idFV,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot,neto,bruto}){
             try {
                 return prisma.factura_venta.create({
                     data: {
@@ -422,6 +422,8 @@ class VentasRepository {
                         centro_beneficio,
                         observacion,
                         nota_interna,
+                        neto,
+                        bruto,
                         ot
                     }
                 })
@@ -512,7 +514,7 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
-    createFVE (idFVE,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot}){
+    createFVE (idFVE,idDV,{idCliente, tipo_documento,neto,bruto, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot}){
         try {
             return prisma.factura_venta_excenta.create({
                 data: {
@@ -525,6 +527,8 @@ class VentasRepository {
                     fecha,
                     idVendedor,
                     condicion_de_pago,
+                    neto,
+                    bruto,
                     centro_beneficio,
                     observacion,
                     nota_interna,
@@ -590,7 +594,7 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
-    createNCoD (idNCoD,{idDoc,idCliente,idVendedor,tipo_credito, tipo_debito, numero_documento,tipo_nota,fecha,motivo_referencia,centro_de_beneficio, observacion, nota_interna, anula_doc, corrige_monto}){
+    createNCoD (idNCoD,{idDoc,idCliente,idVendedor,tipo_credito,neto,bruto, tipo_debito, numero_documento,tipo_nota,fecha,motivo_referencia,centro_de_beneficio, observacion, nota_interna, anula_doc, corrige_monto}){
         try {
             return prisma.notas_de_credito_debito.create({
                 data: {
@@ -601,6 +605,8 @@ class VentasRepository {
                     idVendedor,
                     tipo_credito,
                     tipo_debito,
+                    neto,
+                    bruto,
                     //numero que viene de SII
                     numero_documento,
                     fecha,
