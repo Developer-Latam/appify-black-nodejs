@@ -28,6 +28,7 @@ import cuentasRouter from './src/routes/administracion/cuentasRouter.js'
 import comprasRouter from './src/routes/administracion/comprasRouter.js'
 import initRouter from './src/routes/initConfig/initConfigRouter.js'
 import mpRouter from './src/routes/mpRouter.js'
+import dteRouter from './src/routes/dte/dteRouter.js'
 import cors from 'cors';
 import swaggerUI  from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
@@ -95,6 +96,9 @@ app.use('/cuentas', cuentasRouter)
 
 //Router mercado pago 
 app.use('/mp', mpRouter)
+
+//Router a DTE
+app.use('/dte', dteRouter)
 
 app.get('/', (req, res) => {
     res.json('Estoy desplegado hijo, pruebame 👉👌');

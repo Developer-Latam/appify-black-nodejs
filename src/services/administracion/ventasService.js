@@ -460,6 +460,7 @@ class VentasService {
             const result = await executeTransactions(operations)
             return { message: "Transacciones FV completas con éxito", result };
         } catch (error) {
+            console.log(error)
             throw error;
         }
     }
