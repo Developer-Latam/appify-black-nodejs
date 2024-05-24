@@ -181,25 +181,158 @@ class VentasService {
 
     async getAllDataAgosVentasByUserId(id) {
         try {
-            const FV = await prisma.$queryRaw`SELECT factura_venta.fecha, factura_venta.id AS idFactura,factura_venta.condicion_de_pago,factura_venta.bruto AS Bruto, factura_venta.neto AS Neto, documento_venta.numero_documento, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
+            const FV = await prisma.$queryRaw`SELECT factura_venta.ot,factura_venta.fecha, factura_venta.id AS idFactura,factura_venta.condicion_de_pago,factura_venta.bruto AS Bruto, factura_venta.neto AS Neto, documento_venta.numero_documento, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
             FROM factura_venta 
             JOIN documento_venta ON factura_venta.idDoc = documento_venta.id 
             JOIN clientes ON clientes.id = factura_venta.idCliente
             WHERE documento_venta.user = ${id};`;
-
-            const FVE = await prisma.$queryRaw`SELECT factura_venta_excenta.fecha, factura_venta_excenta.id AS idFactura,factura_venta_excenta.condicion_de_pago,factura_venta_excenta.bruto AS Bruto, factura_venta_excenta.neto AS Neto, documento_venta.numero_documento, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
+     
+            const FVE = await prisma.$queryRaw`SELECT factura_venta_excenta.ot,factura_venta_excenta.fecha, factura_venta_excenta.id AS idFactura,factura_venta_excenta.condicion_de_pago,factura_venta_excenta.bruto AS Bruto, factura_venta_excenta.neto AS Neto, documento_venta.numero_documento, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
             FROM factura_venta_excenta 
             JOIN documento_venta ON factura_venta_excenta.idDoc = documento_venta.id 
             JOIN clientes ON clientes.id = factura_venta_excenta.idCliente
             WHERE documento_venta.user = ${id};`;
-
-
+     
+     
             const NCOD = await prisma.$queryRaw`SELECT notas_de_credito_debito.fecha, notas_de_credito_debito.tipo_credito, notas_de_credito_debito.tipo_debito, notas_de_credito_debito.id AS idNota, notas_de_credito_debito.bruto AS Bruto,notas_de_credito_debito.neto AS Neto, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
             FROM notas_de_credito_debito 
             JOIN documento_venta ON notas_de_credito_debito.idDoc = documento_venta.id 
             JOIN clientes ON clientes.id = notas_de_credito_debito.idCliente 
             WHERE documento_venta.user = ${id};`
-            return ({factura_venta: FV, factura_venta_excenta: FVE, notas: NCOD});
+     
+            let FV_data = [];
+     
+            for (const item of FV) {
+     
+                let objData;
+                const idFactura = item.idFactura;
+                const ot = item.ot
+                if(ot === 1){
+                    //si tiene 
+                    const proyectos = await prisma.$queryRaw`
+                        SELECT proyectos.id AS idProyecto,orden_trabajo.id AS idOT  
+                        FROM proyectos 
+                        JOIN orden_trabajo ON proyectos.id = orden_trabajo.idProyecto 
+                        JOIN orden_trabajo_FV ON orden_trabajo_FV.idOrdenT = orden_trabajo.id 
+                        WHERE orden_trabajo_FV.idFacturaVenta = ${idFactura}
+                    `;
+     
+                    let productos = [];
+                    let servicios = [];
+     
+                    for (const proyecto of proyectos){
+     
+                        const idProyecto = proyecto.idProyecto
+     
+                        const productos_items = await prisma.$queryRaw`
+                            SELECT productos.nombre, item_producto_proyecto.cantidad, item_producto_proyecto.total, item_producto_proyecto.precio, item_producto_proyecto.impuesto, item_producto_proyecto.porcentaje_descuento, 
+                            ${proyecto.idOT} as idOT 
+                            FROM item_producto_proyecto JOIN productos ON item_producto_proyecto.idProducto = productos.id WHERE item_producto_proyecto.idProyecto = ${idProyecto}
+                        `
+                        const servicios_items = await prisma.$queryRaw`
+                            SELECT servicios.nombre, item_servicio_proyecto.cantidad, item_servicio_proyecto.total, item_servicio_proyecto.precio, item_servicio_proyecto.impuesto, item_servicio_proyecto.porcentaje_descuento, 
+                            ${proyecto.idOT} as idOT  
+                            FROM item_servicio_proyecto JOIN servicios ON item_servicio_proyecto.idServicio = servicios.id WHERE item_servicio_proyecto.idProyecto = ${idProyecto}
+                        `
+     
+                        productos = [...productos,productos_items]
+                        servicios = [...servicios,servicios_items]
+                    }
+     
+                    objData = {
+                        ...item, 
+                        productos_servicios:{
+                            productos,
+                            servicios
+                        }
+                    }
+     
+                }else{
+                    //no tiene
+                    const productos = await prisma.$queryRaw`
+                        SELECT item_producto_factura_venta.codigo, item_producto_factura_venta.cantidad, item_producto_factura_venta.unitario,  item_producto_factura_venta.neto, item_producto_factura_venta.notas, productos.nombre FROM item_producto_factura_venta JOIN productos ON item_producto_factura_venta.idProducto = productos.id WHERE idFactura = ${idFactura};
+                    `;
+                    const servicios = await prisma.$queryRaw`
+                        SELECT item_servicio_factura_venta.codigo, item_servicio_factura_venta.cantidad, item_servicio_factura_venta.unitario,  item_servicio_factura_venta.neto, item_servicio_factura_venta.notas, servicios.nombre FROM item_servicio_factura_venta JOIN servicios ON item_servicio_factura_venta.idServicio = servicios.id WHERE idFactura =  ${idFactura};
+                    `;
+                    objData = {
+                        ...item, 
+                        productos_servicios:{
+                            productos,
+                            servicios
+                        }
+                    }
+                }
+     
+                FV_data.push(objData)
+            }
+     
+            let FVE_data = [];
+     
+            for (const item of FVE) {
+                let objData;
+                const idFactura = item.idFactura;
+                const ot = item.ot
+                if( ot === 1 ){
+                    //si tiene 
+                    const proyectos = await prisma.$queryRaw`
+                        SELECT proyectos.id AS idProyecto,orden_trabajo.id AS idOT  
+                        FROM proyectos 
+                        JOIN orden_trabajo ON proyectos.id = orden_trabajo.idProyecto 
+                        JOIN orden_trabajo_FVE ON orden_trabajo_FVE.idOrdenT = orden_trabajo.id 
+                        WHERE orden_trabajo_FVE.idFacturaVentaExcenta = ${idFactura}
+                    `;
+     
+                    let productos = [];
+                    let servicios = [];
+     
+                    for (const proyecto of proyectos){
+     
+                        const idProyecto = proyecto.idProyecto
+     
+                        const productos_items = await prisma.$queryRaw`
+                            SELECT productos.nombre, item_producto_proyecto.cantidad, item_producto_proyecto.total, item_producto_proyecto.precio, item_producto_proyecto.impuesto, item_producto_proyecto.porcentaje_descuento, 
+                            ${proyecto.idOT} as idOT 
+                            FROM item_producto_proyecto JOIN productos ON item_producto_proyecto.idProducto = productos.id WHERE item_producto_proyecto.idProyecto = ${idProyecto}
+                        `
+                        const servicios_items = await prisma.$queryRaw`
+                            SELECT servicios.nombre, item_servicio_proyecto.cantidad, item_servicio_proyecto.total, item_servicio_proyecto.precio, item_servicio_proyecto.impuesto, item_servicio_proyecto.porcentaje_descuento, 
+                            ${proyecto.idOT} as idOT  
+                            FROM item_servicio_proyecto JOIN servicios ON item_servicio_proyecto.idServicio = servicios.id WHERE item_servicio_proyecto.idProyecto = ${idProyecto}
+                        `
+     
+                        productos = [...productos,productos_items]
+                        servicios = [...servicios,servicios_items]
+                    }
+     
+                    objData = {
+                        ...item, 
+                        productos_servicios:{
+                            productos,
+                            servicios
+                        }
+                    }
+                }else{
+                    const productos = await prisma.$queryRaw`
+                        SELECT item_producto_factura_venta_excenta.codigo, item_producto_factura_venta_excenta.cantidad, item_producto_factura_venta_excenta.unitario,  item_producto_factura_venta_excenta.neto, item_producto_factura_venta_excenta.notas, productos.nombre FROM item_producto_factura_venta_excenta JOIN productos ON item_producto_factura_venta_excenta.idProducto = productos.id WHERE idFactura = ${idFactura};
+                    `;
+                    const servicios = await prisma.$queryRaw`
+                        SELECT item_servicio_factura_venta_excenta.codigo, item_servicio_factura_venta_excenta.cantidad, item_servicio_factura_venta_excenta.unitario, item_servicio_factura_venta_excenta.unitario, item_servicio_factura_venta_excenta.neto, item_servicio_factura_venta_excenta.notas, servicios.nombre FROM item_servicio_factura_venta_excenta JOIN servicios ON item_servicio_factura_venta_excenta.idServicio = servicios.id WHERE idFactura = ${idFactura};
+                    `;
+     
+                    objData = {
+                        ...item, 
+                        productos_servicios:{
+                            productos,
+                            servicios
+                        }
+                    }
+                }
+                // Puedes hacer algo con additionalData aquí
+                FVE_data.push(objData)
+            }
+     
+            return ({factura_venta: FV_data, factura_venta_excenta: FVE_data, notas: NCOD});
         }catch(error){
             handlePrismaError(error)
         }
@@ -216,7 +349,7 @@ class VentasService {
             } = datitos;
 
             for (const fv in factura_venta) {
-                
+
             }
 
         }catch(err) {
