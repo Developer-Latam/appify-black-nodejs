@@ -235,8 +235,8 @@ class VentasService {
                             FROM item_servicio_proyecto JOIN servicios ON item_servicio_proyecto.idServicio = servicios.id WHERE item_servicio_proyecto.idProyecto = ${idProyecto}
                         `
      
-                        productos = [...productos,productos_items]
-                        servicios = [...servicios,servicios_items]
+                        productos = [...productos,...productos_items]
+                        servicios = [...servicios,...servicios_items]
                     }
      
                     objData = {
@@ -301,8 +301,8 @@ class VentasService {
                             FROM item_servicio_proyecto JOIN servicios ON item_servicio_proyecto.idServicio = servicios.id WHERE item_servicio_proyecto.idProyecto = ${idProyecto}
                         `
      
-                        productos = [...productos,productos_items]
-                        servicios = [...servicios,servicios_items]
+                        productos = [...productos,...productos_items]
+                        servicios = [...servicios,...servicios_items]
                     }
      
                     objData = {
