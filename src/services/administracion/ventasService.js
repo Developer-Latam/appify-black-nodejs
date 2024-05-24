@@ -181,17 +181,118 @@ class VentasService {
 
     async getAllDataAgosVentasByUserId(id) {
         try {
-            const FV = await prisma.$queryRaw`SELECT factura_venta.fecha, factura_venta.id AS idFactura,factura_venta.condicion_de_pago,factura_venta.bruto AS Bruto, factura_venta.neto AS Neto, documento_venta.numero_documento, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
-            FROM factura_venta 
-            JOIN documento_venta ON factura_venta.idDoc = documento_venta.id 
-            JOIN clientes ON clientes.id = factura_venta.idCliente
-            WHERE documento_venta.user = ${id};`;
+            const FV = await prisma.$queryRaw`SELECT 
+            factura_venta.fecha, 
+            factura_venta.id AS idFactura,
+            factura_venta.condicion_de_pago,
+            factura_venta.bruto AS Bruto, 
+            factura_venta.neto AS Neto, 
+            documento_venta.numero_documento, 
+            clientes.razon_social AS cliente, 
+            documento_venta.id AS idDoc,
+            'producto' AS tipo,
+            productos.id AS id,
+            productos.nombre AS nombre,
+            productos.precio AS precio,
+            productos.iva AS iva,
+            productos.codigo AS codigo,
+            item_producto_factura_venta.cantidad AS cantidad,
+            item_producto_factura_venta.unitario AS unitario,
+            item_producto_factura_venta.bruto AS bruto,
+            item_producto_factura_venta.neto AS neto,
+            item_producto_factura_venta.notas AS notas
+        FROM factura_venta 
+        JOIN documento_venta ON factura_venta.idDoc = documento_venta.id 
+        JOIN clientes ON clientes.id = factura_venta.idCliente
+        LEFT JOIN item_producto_factura_venta ON factura_venta.id = item_producto_factura_venta.idFactura
+        LEFT JOIN productos ON item_producto_factura_venta.idProducto = productos.id
+        WHERE documento_venta.user = ${id}
+        
+        UNION ALL
+        
+        SELECT 
+            factura_venta.fecha, 
+            factura_venta.id AS idFactura,
+            factura_venta.condicion_de_pago,
+            factura_venta.bruto AS Bruto, 
+            factura_venta.neto AS Neto, 
+            documento_venta.numero_documento, 
+            clientes.razon_social AS cliente, 
+            documento_venta.id AS idDoc,
+            'servicio' AS tipo,
+            servicios.id AS id,
+            servicios.nombre AS nombre,
+            servicios.precio AS precio,
+            servicios.iva AS iva,
+            servicios.codigo AS codigo,
+            item_servicio_factura_venta.cantidad AS cantidad,
+            item_servicio_factura_venta.unitario AS unitario,
+            item_servicio_factura_venta.bruto AS bruto,
+            item_servicio_factura_venta.neto AS neto,
+            item_servicio_factura_venta.notas AS notas
+        FROM factura_venta 
+        JOIN documento_venta ON factura_venta.idDoc = documento_venta.id 
+        JOIN clientes ON clientes.id = factura_venta.idCliente
+        LEFT JOIN item_servicio_factura_venta ON factura_venta.id = item_servicio_factura_venta.idFacturaVenta
+        LEFT JOIN servicios ON item_servicio_factura_venta.idServicio = servicios.id
+        WHERE documento_venta.user = ${id};`;
 
-            const FVE = await prisma.$queryRaw`SELECT factura_venta_excenta.fecha, factura_venta_excenta.id AS idFactura,factura_venta_excenta.condicion_de_pago,factura_venta_excenta.bruto AS Bruto, factura_venta_excenta.neto AS Neto, documento_venta.numero_documento, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
-            FROM factura_venta_excenta 
-            JOIN documento_venta ON factura_venta_excenta.idDoc = documento_venta.id 
-            JOIN clientes ON clientes.id = factura_venta_excenta.idCliente
-            WHERE documento_venta.user = ${id};`;
+            const FVE = await prisma.$queryRaw`SELECT 
+        factura_venta_excenta.fecha, 
+        factura_venta_excenta.id AS idFactura,
+        factura_venta_excenta.condicion_de_pago,
+        factura_venta_excenta.bruto AS Bruto, 
+        factura_venta_excenta.neto AS Neto, 
+        documento_venta.numero_documento, 
+        clientes.razon_social AS cliente, 
+        documento_venta.id AS idDoc,
+        'producto' AS tipo,
+        productos.id AS id,
+        productos.nombre AS nombre,
+        productos.precio AS precio,
+        productos.iva AS iva,
+        productos.codigo AS codigo,
+        item_producto_factura_venta.cantidad AS cantidad,
+        item_producto_factura_venta.unitario AS unitario,
+        item_producto_factura_venta.bruto AS bruto,
+        item_producto_factura_venta.neto AS neto,
+        item_producto_factura_venta.notas AS notas
+    FROM factura_venta_excenta 
+    JOIN documento_venta ON factura_venta_excenta.idDoc = documento_venta.id 
+    JOIN clientes ON clientes.id = factura_venta_excenta.idCliente
+    LEFT JOIN item_producto_factura_venta ON factura_venta_excenta.id = item_producto_factura_venta.idFactura
+    LEFT JOIN productos ON item_producto_factura_venta.idProducto = productos.id
+    WHERE documento_venta.user = ${id}
+
+    UNION ALL
+
+    SELECT 
+        factura_venta_excenta.fecha, 
+        factura_venta_excenta.id AS idFactura,
+        factura_venta_excenta.condicion_de_pago,
+        factura_venta_excenta.bruto AS Bruto, 
+        factura_venta_excenta.neto AS Neto, 
+        documento_venta.numero_documento, 
+        clientes.razon_social AS cliente, 
+        documento_venta.id AS idDoc,
+        'servicio' AS tipo,
+        servicios.id AS id,
+        servicios.nombre AS nombre,
+        servicios.precio AS precio,
+        servicios.iva AS iva,
+        servicios.codigo AS codigo,
+        item_servicio_factura_venta.cantidad AS cantidad,
+        item_servicio_factura_venta.unitario AS unitario,
+        item_servicio_factura_venta.bruto AS bruto,
+        item_servicio_factura_venta.neto AS neto,
+        item_servicio_factura_venta.notas AS notas
+    FROM factura_venta_excenta 
+    JOIN documento_venta ON factura_venta_excenta.idDoc = documento_venta.id 
+    JOIN clientes ON clientes.id = factura_venta_excenta.idCliente
+    LEFT JOIN item_servicio_factura_venta ON factura_venta_excenta.id = item_servicio_factura_venta.idFactura
+    LEFT JOIN servicios ON item_servicio_factura_venta.idServicio = servicios.id
+    WHERE documento_venta.user = ${id};`;
+
 
             const NCOD = await prisma.$queryRaw`SELECT notas_de_credito_debito.fecha, notas_de_credito_debito.tipo_credito, notas_de_credito_debito.tipo_debito, notas_de_credito_debito.id AS idNota, notas_de_credito_debito.bruto AS Bruto,notas_de_credito_debito.neto AS Neto, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
             FROM notas_de_credito_debito 
