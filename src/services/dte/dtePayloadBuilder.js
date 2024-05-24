@@ -1,9 +1,9 @@
 class DtePayloadBuilder {
-    static buildDtePayload(encabezado, detalle, referencia) {
+    static buildDtePayload(TipoDTE,encabezado, detalle, referencia) {
         return {
             Encabezado: {
                 IdDoc: {
-                    TipoDTE: encabezado.TipoDTE,
+                    TipoDTE: TipoDTE,
                     FchEmis: encabezado.FchEmis,
                     Folio: encabezado.Folio
                 },

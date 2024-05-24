@@ -1,17 +1,29 @@
 import { ResponseHandler } from "../../utils/dependencys/injection.js";
+import { crearFacturaSimple } from "../../services/dte/dteFunctions.js";
 import dteTemporal from "../../services/dte/dteTemporal.js";
 import DtePayloadBuilder from "../../services/dte/dtePayloadBuilder.js";
 import dteReal from "../../services/dte/dteReal.js";
 export const emitirDTEtemporalController = async (req, res) => {
     try {
-        const {encabezado, detalle, referencia} = req.body
-        const payload = DtePayloadBuilder.buildDtePayload(encabezado, detalle, referencia)
-        const result = await dteTemporal.postData(payload);
-        ResponseHandler.Ok(res, result)
+        const factura = crearFacturaSimple(req.body);
+        //console.log(JSON.stringify(factura, null, 2));
+        const dte0 = await dteTemporal.postData(factura);
+        //console.log("DEBUG DEL DTE TEMPORAL POST", dte0);
+        const dte1 = await dteReal.emit(dte0);
+        //console.log("DEBUG DEL DTE REAL POST", dte1);
+        ResponseHandler.Ok(res, dte1)
     } catch (error) {
         ResponseHandler.HandleError(res,error)
     }
 }
+// export const emitirDTEtemporalController = async (req, res) => {
+//     try {
+//         const result = await dteTemporal.postData(req.body);
+//         ResponseHandler.Ok(res, result)
+//     } catch (error) {
+//         ResponseHandler.HandleError(res,error)
+//     }
+// }
 
 export const testDTEtemporalPARAMS = async (req, res) => {
     try {
@@ -56,10 +68,13 @@ export const testDTEtemporalPDF = async (req, res) => {
     try {
         const {codigo, dte, emisor, receptor} = req.query;
         const pdfBuffer = await dteTemporal.getPdf(codigo, dte, emisor, receptor);
-        
+         // Agregar la marca de agua
+        const watermarkedPdfBuffer = await dteTemporal.addWatermark(pdfBuffer, 'NO VÁLIDO COMO FACTURA');
+        // Convertir el Uint8Array a un Buffer de Node y enviar como respuesta
+        const bufferToSend = Buffer.from(watermarkedPdfBuffer);
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'attachment; filename="documento.pdf"');
-        res.send(pdfBuffer); // Envía el buffer directament
+        res.send(bufferToSend);
     } catch (error) {
         ResponseHandler.HandleError(res,error)
     }

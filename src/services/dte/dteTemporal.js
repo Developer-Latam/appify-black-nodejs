@@ -1,5 +1,6 @@
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 import axios from "axios";
+import { PDFDocument, rgb, degrees } from 'pdf-lib';
 import 'dotenv/config'
 class dteTemporal {
     constructor() {
@@ -61,6 +62,27 @@ class dteTemporal {
             throw new CustomError(500, "Error fetching data from API",  error.message);
         }
     }
+    async addWatermark(pdfBuffer, watermarkText, watermarkText2) {
+        // Cargar el PDF en pdf-lib
+        const pdfDoc = await PDFDocument.load(pdfBuffer);
+        // Obtener las páginas del PDF
+        const pages = pdfDoc.getPages();
+        // Añadir la marca de agua a cada página
+        pages.forEach(page => {
+            const { width, height } = page.getSize();
+            page.drawText(watermarkText, {
+                x: width / 4,
+                y: height / 4,
+                size: 35,
+                color: rgb(0.75, 0.75, 0.75),
+                rotate: degrees(45),
+                opacity: 0.5,
+            });
+        });
+        // Serializar el PDF a un nuevo buffer
+        return await pdfDoc.save();
+    }
+    
     async delete(codigo, dte, emisor, receptor) {
         const params = {
             codigo: codigo,

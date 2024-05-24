@@ -26,6 +26,7 @@
     "mysql2": "^3.9.2",
     "nodemailer": "^6.9.12",
     "open": "^10.1.0",
+    "pdf-lib": "^1.17.1",
     "prisma": "^5.11.0",
     "server-destroy": "^1.0.1",
     "swagger-jsdoc": "^6.2.8",
