@@ -42,6 +42,16 @@ export const getLinkByUserId = async (req, res) => {
   }
 };
 
+export const unlinkCuentaBancariaById = async (req, res) => {
+  try {
+    const userid = req.params;
+    await conciliacionService.deleteLinkByUserId(userid);
+    ResponseHandler.Ok(res, "ok");
+  } catch (err) {
+    ResponseHandler.HandleError(res, err);
+  }
+};
+
 export const getCuentasBancariasAllDataByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
