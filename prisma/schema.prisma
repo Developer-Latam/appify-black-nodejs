@@ -247,6 +247,8 @@ model factura_compra {
   condicion_de_pago String   @db.VarChar(100)
   cuenta            String   @db.VarChar(100)
   notas             String?  @db.Text
+  neto              Float    @db.Float
+  bruto             Float    @db.Float
 
   @@index([proveedor], map: "proveedores")
   @@index([condicion_de_pago], map: "condicion_pago")
@@ -266,6 +268,9 @@ model factura_venta {
   centro_beneficio  String    @db.VarChar(100)
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
+  ot                Boolean
+  neto              Float     @db.Float
+  bruto             Float     @db.Float
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")
@@ -285,6 +290,9 @@ model factura_venta_excenta {
   centro_beneficio  String    @db.VarChar(100)
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
+  ot                Boolean
+  neto              Float     @db.Float
+  bruto             Float     @db.Float
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")
@@ -603,6 +611,8 @@ model notas_de_credito_debito {
   nota_interna        String?   @db.Text
   anula_doc           Boolean
   corrige_monto       Boolean
+  neto                Float     @db.Float
+  bruto               Float     @db.Float
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")
@@ -625,6 +635,8 @@ model notas_de_credito_debito_compras {
   centro_de_beneficio String    @db.VarChar(50)
   observacion         String?   @db.Text
   nota_interna        String?   @db.Text
+  neto                Float     @db.Float
+  bruto               Float     @db.Float
 
   @@index([idVendedor], map: "subusuarios")
   @@index([idProveedor], map: "proveedores")
@@ -1445,6 +1457,8 @@ model factura_compra_excenta {
   centro_beneficio  String    @db.VarChar(100)
   observacion       String?   @db.Text
   nota_interna      String?   @db.Text
+  neto              Float     @db.Float
+  bruto             Float     @db.Float
 
   @@index([condicion_de_pago], map: "condicion_pago")
   @@index([idDoc], map: "documento_compra")
@@ -1517,4 +1531,22 @@ model cuentasBancarias {
   activo           Boolean? @default(false)
 
   @@index([conciliacion_id], map: "link_fintoc_bancos")
+}
+
+model orden_trabajo_FV {
+  id             Int    @id @default(autoincrement())
+  idOrdenT       String @db.VarChar(100)
+  idFacturaVenta String @db.VarChar(100)
+
+  @@index([idFacturaVenta], map: "factura_venta")
+  @@index([idOrdenT], map: "orden_trabajo")
+}
+
+model orden_trabajo_FVE {
+  id                    Int    @id @default(autoincrement())
+  idOrdenT              String @db.VarChar(100)
+  idFacturaVentaExcenta String @db.VarChar(100)
+
+  @@index([idFacturaVentaExcenta], map: "factura_venta_excenta")
+  @@index([idOrdenT], map: "orden_trabajo")
 }

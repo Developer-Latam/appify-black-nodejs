@@ -268,6 +268,32 @@ class ComprasService {
         return comprasRepository.getFCEDetailsbyDC(id)
     }
 
+    async getAllDataAgosComprasByUserId(id){
+        try {
+            const FC = await prisma.$queryRaw`SELECT factura_compra.fecha, factura_compra.id AS idFactura,factura_compra.condicion_de_pago,factura_compra.bruto AS Bruto, factura_compra.neto AS Neto, documento_compra.numero_documento, clientes.razon_social AS cliente, documento_compra.id AS idDoc 
+            FROM factura_compra 
+            JOIN documento_compra ON factura_compra.idDoc = documento_compra.id 
+            JOIN clientes ON clientes.id = factura_compra.idCliente
+            WHERE documento_compra.user = ${id};`;
+
+            const FCE = await prisma.$queryRaw`SELECT factura_compra_excenta.fecha, factura_compra_excenta.id AS idFactura,factura_compra_excenta.condicion_de_pago,factura_compra_excenta.bruto AS Bruto, factura_compra_excenta.neto AS Neto, documento_compra.numero_documento, clientes.razon_social AS cliente, documento_compra.id AS idDoc 
+            FROM factura_compra_excenta 
+            JOIN documento_compra ON factura_compra_excenta.idDoc = documento_compra.id 
+            JOIN clientes ON clientes.id = factura_compra_excenta.idCliente
+            WHERE documento_compra.user = ${id};`;
+
+            const NCOD = await prisma.$queryRaw`SELECT notas_de_credito_debito_compras.fecha, notas_de_credito_debito_compras.tipo_credito, notas_de_credito_debito_compras.tipo_debito, notas_de_credito_debito_compras.id AS idNota, notas_de_credito_debito_compras.bruto AS Bruto,notas_de_credito_debito_compras.neto AS Neto, clientes.razon_social AS cliente, documento_compra.id AS idDoc 
+            FROM notas_de_credito_debito_compras 
+            JOIN documento_compra ON notas_de_credito_debito_compras.idDoc = documento_compra.id 
+            JOIN clientes ON clientes.id = notas_de_credito_debito_compras.idCliente 
+            WHERE documento_compra.user = ${id};`
+            return ({factura_venta: FV, factura_venta_excenta: FVE, notas: NCOD});
+        }catch(error){
+            handlePrismaError(error)
+        }
+    }
+    
+
     async getAllDataComprasByUserId(id) {
         try {
             let documentos = await this.getDCByUser(id);

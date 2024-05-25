@@ -13,6 +13,15 @@ class cobrosService {
                 cobroFunction = this.createCobroFVE;
             } else if (data.cobros_factura_nota_credito) {
                 cobroFunction = this.createCobroNC;
+            } else if (data.cobros && !data.cobros_factura_nota_credito) {
+                cobroFunction = cobrosRepository.createCobros;
+                
+            }else if (data.cobros && !data.cobros_factura_venta) {
+                cobroFunction = cobrosRepository.createCobros;
+                
+            }else if (data.cobros && !data.cobros_factura_venta_excenta) {
+                cobroFunction = cobrosRepository.createCobros;
+                
             } else {
                 throw new CustomError(400, "Bad Request", 'Tipo de cobro no válido en los datos recibidos');
             }
