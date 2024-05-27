@@ -46,7 +46,7 @@ export const unlinkCuentaBancariaById = async (req, res) => {
   try {
     const userid = req.params;
     await conciliacionService.unlinkCuentaBancariaById(userid);
-    ResponseHandler.Ok(res, "ok");
+    ResponseHandler.Ok(res, res);
   } catch (err) {
     ResponseHandler.HandleError(res, err);
   }
