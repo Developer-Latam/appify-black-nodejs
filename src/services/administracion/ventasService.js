@@ -181,20 +181,20 @@ class VentasService {
 
     async getAllDataAgosVentasByUserId(id) {
         try {
-            const FV = await prisma.$queryRaw`SELECT factura_venta.ot,factura_venta.fecha, factura_venta.id AS idFactura,factura_venta.condicion_de_pago,factura_venta.bruto AS Bruto, factura_venta.neto AS Neto, documento_venta.numero_documento, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
+            const FV = await prisma.$queryRaw`SELECT factura_venta.idCliente,factura_venta.ot,factura_venta.fecha, factura_venta.id AS idFactura,factura_venta.condicion_de_pago,factura_venta.bruto AS Bruto, factura_venta.neto AS Neto, documento_venta.numero_documento, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
             FROM factura_venta 
             JOIN documento_venta ON factura_venta.idDoc = documento_venta.id 
             JOIN clientes ON clientes.id = factura_venta.idCliente
             WHERE documento_venta.user = ${id};`;
      
-            const FVE = await prisma.$queryRaw`SELECT factura_venta_excenta.ot,factura_venta_excenta.fecha, factura_venta_excenta.id AS idFactura,factura_venta_excenta.condicion_de_pago,factura_venta_excenta.bruto AS Bruto, factura_venta_excenta.neto AS Neto, documento_venta.numero_documento, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
+            const FVE = await prisma.$queryRaw`SELECT factura_venta_excenta.idCliente,factura_venta_excenta.ot,factura_venta_excenta.fecha, factura_venta_excenta.id AS idFactura,factura_venta_excenta.condicion_de_pago,factura_venta_excenta.bruto AS Bruto, factura_venta_excenta.neto AS Neto, documento_venta.numero_documento, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
             FROM factura_venta_excenta 
             JOIN documento_venta ON factura_venta_excenta.idDoc = documento_venta.id 
             JOIN clientes ON clientes.id = factura_venta_excenta.idCliente
             WHERE documento_venta.user = ${id};`;
      
      
-            const NCOD = await prisma.$queryRaw`SELECT notas_de_credito_debito.fecha, notas_de_credito_debito.tipo_credito, notas_de_credito_debito.tipo_debito, notas_de_credito_debito.id AS idNota, notas_de_credito_debito.bruto AS Bruto,notas_de_credito_debito.neto AS Neto, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
+            const NCOD = await prisma.$queryRaw`SELECT notas_de_credito_debito.idCliente,notas_de_credito_debito.fecha, notas_de_credito_debito.tipo_credito, notas_de_credito_debito.tipo_debito, notas_de_credito_debito.id AS idNota, notas_de_credito_debito.bruto AS Bruto,notas_de_credito_debito.neto AS Neto, clientes.razon_social AS cliente, documento_venta.id AS idDoc 
             FROM notas_de_credito_debito 
             JOIN documento_venta ON notas_de_credito_debito.idDoc = documento_venta.id 
             JOIN clientes ON clientes.id = notas_de_credito_debito.idCliente 
