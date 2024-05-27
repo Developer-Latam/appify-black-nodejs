@@ -4,13 +4,13 @@ import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../../utils/id/idGenerate.js";
 
 class VentasRepository {
-    createDocVentas (idDV, {user}){
+    createDocVentas (idDV, folio, {user}){
         try {
             return prisma.documento_venta.create({
                 data: {
                     id: idDV,
                     user,
-                    numero_documento: "numero que viene de SII"
+                    numero_documento: folio
                 }
             })
         } catch (error) {
@@ -406,7 +406,7 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
-    createFV (idFV,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot,neto,bruto}){
+    createFV (idFV,idDV, folio,{idCliente, tipo_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot,neto,bruto}){
             try {
                 return prisma.factura_venta.create({
                     data: {
@@ -415,7 +415,7 @@ class VentasRepository {
                         idCliente,
                         tipo_documento,
                         //numero que viene de SII
-                        numero_documento,
+                        numero_documento: folio,
                         fecha,
                         idVendedor,
                         condicion_de_pago,

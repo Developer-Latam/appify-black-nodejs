@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken"
 import "dotenv/config"
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 import { sendEmailBienvenida } from "../../utils/email/emailService.js";
+import ItemSistemaRepository from '../../persistence/repositorys/miempresa/configs/sistemaRepository.js'
 //Clase que interactua con el Repository y se encarga de la logica de negocio
 class UserService {
     //Me trae un sub usuario por su id
@@ -150,7 +151,6 @@ class UserService {
     async login(email, password) {
         try {
             const user = await UserRepository.findUserByEmail(email);
-            console.log(user);
             if (!user) {
                 throw new CustomError(401, "Authentication error", { detail: "Invalid credentials" });
             }
@@ -166,13 +166,17 @@ class UserService {
             } else {
                 permisos = "all";
             }
+            //Agregar las configs de sistema y empresa al token
+            const dataEmpresaUser = await ItemSistemaRepository.getEmpresaYSistemaByUserId(user.user)
             // Incluir toda la información del usuario y sus permisos en el token
             const tokenData = {
                 id: user.id,
                 email: user.email,
                 userType: user.ref_superusuario === 0 ? 'subusuario' : 'superusuario',
                 permisos: permisos,
-                data: user
+                data: user,
+                empresaId: dataEmpresaUser[0].empresa,
+                RUT: dataEmpresaUser[0].RUT
             };
             const token = jwt.sign(tokenData, process.env.SECRET_KEY_LOGIN); // Utiliza una clave secreta adecuada
             // Devolver la información del usuario junto con el token

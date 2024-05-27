@@ -42,18 +42,7 @@ export const emitirDTERealController = async (req, res) => {
         ResponseHandler.HandleError(res,error)
     }
 }
-export const testDTERealPDF = async (req, res) => {
-    try {
-        const { dte, emisor, folio} = req.query;
-        const pdfBuffer = await dteReal.getPdf( dte, emisor, folio);
-        
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename="documento.pdf"');
-        res.send(pdfBuffer); // Envía el buffer directament
-    } catch (error) {
-        ResponseHandler.HandleError(res,error)
-    }
-}
+
 export const dteUpdStatusSII = async (req, res) => {
     try {
         const {tipo, folio, emisor} = req.query;
@@ -64,7 +53,7 @@ export const dteUpdStatusSII = async (req, res) => {
     }
 }
 //ESTA RUTA ES LA QUE VA A QUEDAR, NO SE TOCA, EL QUE LA TOCA LO MATO, y despues lo culeo
-export const testDTEtemporalPDF = async (req, res) => {
+export const getDTEtemporalPDFController = async (req, res) => {
     try {
         const {codigo, dte, emisor, receptor} = req.query;
         const pdfBuffer = await dteTemporal.getPdf(codigo, dte, emisor, receptor);
@@ -75,6 +64,17 @@ export const testDTEtemporalPDF = async (req, res) => {
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'attachment; filename="documento.pdf"');
         res.send(bufferToSend);
+    } catch (error) {
+        ResponseHandler.HandleError(res,error)
+    }
+}
+export const getDTERealPDF = async (req, res) => {
+    try {
+        const { dte, emisor, folio} = req.query;
+        const pdfBuffer = await dteReal.getPdf( dte, emisor, folio);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename="documento.pdf"');
+        res.send(pdfBuffer); // Envía el buffer directament
     } catch (error) {
         ResponseHandler.HandleError(res,error)
     }

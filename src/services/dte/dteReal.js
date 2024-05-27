@@ -20,7 +20,6 @@ class dteReal {
     }
     async emit(payload) {
         try {
-            console.log(payload)
             const response = await axios.post(`${this.apiUrl}/dte-real`,  payload);
             return response.data;
         } catch (error) {

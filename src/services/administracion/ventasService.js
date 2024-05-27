@@ -6,6 +6,7 @@ import clientesRepository from "../../persistence/repositorys/comercial/clientes
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 import { prisma } from "../../utils/dependencys/injection.js";
 import handlePrismaError from "../../utils/httpRes/handlePrismaError.js";
+import DTEService from "../dte/DTEService.js";
 class VentasService {
     async getAllFV(){
         try {
@@ -582,17 +583,24 @@ class VentasService {
                 factura_venta,
                 item_servicio_factura_venta,
                 item_producto_factura_venta,
-                orden_trabajo_FV
+                orden_trabajo_FV,
+                emisor
             } = data;
+            let folio;
             //Validacion para asegurarse que al menos 1 de los dos items venga en la creacion de la factura
             if(!item_servicio_factura_venta && !item_producto_factura_venta){
                 throw new CustomError(400, "Bad Request", "Se requiere al menos un item de servicio o producto para realizar la factura de venta")
             }
+            if(!emisor){
+                throw new CustomError(400, "Bad Request", "Para realizar la op FV se debe indicar campo emisor")
+            }
+            const dteCreated = await DTEService.createFV(data)
+            folio = dteCreated.folio
             const idFV = idgenerate("FV")
             const idDV = idgenerate("DV")
             let operations = []
-            operations.push(ventasRepository.createDocVentas(idDV, documento_venta));
-            operations.push(ventasRepository.createFV(idFV, idDV, factura_venta ));
+            operations.push(ventasRepository.createDocVentas(idDV, folio, documento_venta));
+            operations.push(ventasRepository.createFV(idFV, idDV, folio, factura_venta ));
             if(factura_venta.ot === true && orden_trabajo_FV.length > 0){
                 const itemsOT = ventasRepository.createOTinFV(idFV, orden_trabajo_FV)
                 operations.push(...itemsOT)
@@ -613,7 +621,6 @@ class VentasService {
             const result = await executeTransactions(operations)
             return { message: "Transacciones FV completas con éxito", result };
         } catch (error) {
-            console.log(error)
             throw error;
         }
     }

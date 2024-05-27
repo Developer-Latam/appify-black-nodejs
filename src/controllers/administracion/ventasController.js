@@ -3,6 +3,7 @@ import ventasService from "../../services/administracion/ventasService.js";
 export const createFVController = async (req, res) => {
     try {
         const data = {
+            emisor : req.body.emisor,
             documento_venta: req.body.documento_venta,
             factura_venta: req.body.factura_venta,
             item_servicio_factura_venta: req.body.item_servicio_factura_venta,
