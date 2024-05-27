@@ -42,6 +42,17 @@ export const getLinkByUserId = async (req, res) => {
   }
 };
 
+export const unlinkCuentaBancariaById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await conciliacionService.unlinkCuentaBancariaById(id);
+    ResponseHandler.Ok(res); // <- Aquí debería ser ResponseHandler.Ok(res);
+  } catch (err) {
+    ResponseHandler.HandleError(res, err);
+  }
+};
+
+
 export const getCuentasBancariasAllDataByUserId = async (req, res) => {
   try {
     const { userId } = req.params;

@@ -14,6 +14,7 @@ import {
   createCuentaLink,
   getCuentaLinkById,
   getCuentasBancariasAllDataByUserId,
+  unlinkCuentaBancariaById,
 } from "../../controllers/conciliacion/conciliacionController.js";
 
 const router = Router();
@@ -59,5 +60,8 @@ router.put("/update/:id", updateUserConciliacion);
 
 // Actualizar cuenta bancatia para activarla
 router.put("/bankUpdate/:id", updateCuentaBancariaById);
+
+// Borrar de cuentasBacarias y link_fintoc_bancos cuando desviculan , con id
+router.delete("/bankUnlink/:id", unlinkCuentaBancariaById);
 
 export default router;
