@@ -44,13 +44,14 @@ export const getLinkByUserId = async (req, res) => {
 
 export const unlinkCuentaBancariaById = async (req, res) => {
   try {
-    const userid = req.params;
-    await conciliacionService.unlinkCuentaBancariaById(userid);
-    ResponseHandler.Ok(res, res);
+    const { id } = req.params;
+    await conciliacionService.unlinkCuentaBancariaById(id);
+    ResponseHandler.Ok(res); // <- Aquí debería ser ResponseHandler.Ok(res);
   } catch (err) {
     ResponseHandler.HandleError(res, err);
   }
 };
+
 
 export const getCuentasBancariasAllDataByUserId = async (req, res) => {
   try {

@@ -108,20 +108,38 @@ class conciliacionRepository {
 
   async deleteCuentasByCuentaId(id) {
     try {
-      const result = await prisma.$transaction(async (prisma) => {
-        const deletedLinkFintocBancos = await prisma.link_fintoc_bancos.delete({
-          where: { id: id },
-        });
-        const deletedCuentasBancarias = await prisma.cuentasBancarias.delete({
-          where: { conciliacion_id: id },
-        });
-        return { deletedLinkFintocBancos, deletedCuentasBancarias };
+      const result = [];
+      
+      // Eliminar enlaces asociados
+      const deletedLinkFintocBancos = await prisma.link_fintoc_bancos.delete({
+        where: { id: id },
       });
+  
+      // Buscar cuentas bancarias asociadas a la conciliación
+      const cuentas = await this.findCuentasBancariasByConciliacionId(id);
+  
+      // Eliminar cuentas bancarias individualmente
+      for (const cuenta of cuentas) {
+        const deletedCuentaBancaria = await prisma.cuentasBancarias.delete({
+          where: { id: cuenta.id },
+        });
+        result.push(deletedCuentaBancaria);
+      }
+  
+      // Agregar resultados al array result
+      result.push(deletedLinkFintocBancos);
+  
+      // Retornar el array result
+      
       return result;
     } catch (error) {
+      console.log(error);
       handlePrismaError(error);
+      // Si ocurre un error, podrías lanzarlo nuevamente para que se maneje en niveles superiores
+      throw error;
     }
   }
+  
 
   async findLinkCuentasBancoConciliacionByCuentaId(id) {
     try {
