@@ -36,6 +36,7 @@ export const getFVbyIdDocController = async (req, res) => {
 export const createFVEController = async (req, res) => {
     try {
         const data = {
+            emisor: req.body.emisor,
             documento_venta: req.body.documento_venta,
             factura_venta_excenta: req.body.factura_venta_excenta,
             item_servicio_factura_venta_excenta: req.body.item_servicio_factura_venta_excenta,

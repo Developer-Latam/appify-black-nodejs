@@ -718,6 +718,7 @@ class VentasService {
     async createFVE(data) {
         try {
             const {
+                emisor,
                 documento_venta,
                 factura_venta_excenta,
                 item_servicio_factura_venta_excenta,
@@ -731,7 +732,9 @@ class VentasService {
             const idFVE = idgenerate("FVE")
             const idDV = idgenerate("DV")
             let operations = []
-            operations.push(ventasRepository.createDocVentas(idDV, documento_venta));
+            let folio;
+            folio = 0;
+            operations.push(ventasRepository.createDocVentas(idDV,folio, documento_venta));
             operations.push(ventasRepository.createFVE(idFVE, idDV, factura_venta_excenta));
             if (factura_venta_excenta.ot === true && orden_trabajo_FVE.length > 0) {
                 const itemsOT = ventasRepository.createOTinFVE(idFVE, orden_trabajo_FVE)
@@ -753,6 +756,7 @@ class VentasService {
             const result = await executeTransactions(operations)
             return { message: "Transacciones FVE completas con éxito", result };
         } catch (error) {
+            console.log(error)
             throw error;
         }
     }

@@ -277,6 +277,76 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
+    async getItemsByFVId(fvID) {
+        try {
+            // Obtener servicios
+            const servicios = await prisma.$queryRaw`SELECT
+                isv.id AS ItemServicioID,
+                isv.idServicio,
+                isv.codigo AS CodigoServicio,
+                isv.cantidad AS CantidadServicio,
+                isv.unitario AS PrecioUnitarioServicio,
+                isv.bruto AS BrutoServicio,
+                isv.neto AS NetoServicio,
+                isv.bonificacion AS BonificacionServicio,
+                isv.notas AS NotasServicio
+            FROM
+                factura_venta fv
+                LEFT JOIN item_servicio_factura_venta isv ON fv.id = isv.idFactura
+            WHERE
+                fv.id = ${fvID};`;
+            // Obtener productos
+            const productos = await prisma.$queryRaw`SELECT
+                ipv.id AS ItemProductoID,
+                ipv.idProducto,
+                ipv.codigo AS CodigoProducto,
+                ipv.cantidad AS CantidadProducto,
+                ipv.unitario AS PrecioUnitarioProducto,
+                ipv.bruto AS BrutoProducto,
+                ipv.neto AS NetoProducto,
+                ipv.bonificacion AS BonificacionProducto,
+                ipv.notas AS NotasProducto
+            FROM
+                factura_venta fv
+                LEFT JOIN item_producto_factura_venta ipv ON fv.id = ipv.idFactura
+            WHERE
+                fv.id = ${fvID};`;
+            return { servicios, productos };
+        } catch (error) {
+            handlePrismaError(error);
+        }
+    }
+    async getItemsByFVEId(fvID) {
+        try {
+            // Obtener servicios
+            const servicios = await prisma.$queryRaw`SELECT
+                isv.id AS ItemServicioID,
+                isv.idServicio,
+                isv.cantidad AS CantidadServicio,
+                isv.unitario AS PrecioUnitarioServicio,
+                isv.neto AS NetoServicio
+            FROM
+                factura_venta_excenta fv
+                LEFT JOIN item_servicio_factura_venta_excenta isv ON fv.id = isv.idFactura
+            WHERE
+                fv.id = ${fvID};`;
+            // Obtener productos
+            const productos = await prisma.$queryRaw`SELECT
+                ipv.id AS ItemProductoID,
+                ipv.idProducto AS idProducto,
+                ipv.cantidad AS CantidadProducto,
+                ipv.unitario AS PrecioUnitarioProducto,
+                ipv.neto AS NetoProducto
+            FROM
+                factura_venta_excenta fv
+                LEFT JOIN item_producto_factura_venta_excenta ipv ON fv.id = ipv.idFactura
+            WHERE
+                fv.id = ${fvID};`;
+            return { servicios, productos };
+        } catch (error) {
+            handlePrismaError(error);
+        }
+    }
     async notaFV_NCOD(NCOD){
         try {
             const notaFV_NCOD = await prisma.$queryRaw`SELECT
@@ -423,7 +493,7 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
-    createFV (idFV,idDV, folio,{idCliente, tipo_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot,neto,bruto}){
+    createFV (idFV,idDV, folio,{idCliente, tipo_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot,neto,bruto, pagado}){
             try {
                 return prisma.factura_venta.create({
                     data: {
@@ -441,7 +511,8 @@ class VentasRepository {
                         nota_interna,
                         neto,
                         bruto,
-                        ot
+                        ot,
+                        pagado
                     }
                 })
             } catch (error) {
@@ -547,7 +618,7 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
-    createFVE (idFVE,idDV,{idCliente, tipo_documento,neto,bruto, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot}){
+    createFVE (idFVE,idDV,{idCliente, tipo_documento,neto,bruto, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot, pagado}){
         try {
             return prisma.factura_venta_excenta.create({
                 data: {
@@ -565,7 +636,8 @@ class VentasRepository {
                     centro_beneficio,
                     observacion,
                     nota_interna,
-                    ot
+                    ot,
+                    pagado
                 }
             })
         } catch (error) {

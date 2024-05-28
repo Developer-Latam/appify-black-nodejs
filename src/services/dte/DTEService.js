@@ -117,18 +117,21 @@ class DTEService {
         try {
             let folio;
             let folioSII;
+            let dataAdapted;
             if(notas_de_credito_debito.tipo_debito === true){
                 folioSII = await this.getInfoFolios('56', emisor.RUT)
             }
             folioSII = await this.getInfoFolios('61', emisor.RUT)
             if (folioSII.tieneDisponible){
                 folio = folioSII.siguienteFolio
-                const dataAdapted = await this.dataAdapterNC(folio, data)
+            } else {
+                throw new CustomError(404, "Bad Request", "No hay folios disponibles para la factura")
+            }
                 //const dteTemp = await dteTemporal.postData(result)
                 //const dteR = await dteReal.emit(dteTemp)
                 //return dteR
-            } else {
-                throw new CustomError(404, "Bad Request", "No hay folios disponibles para la factura")
+            if(notas_de_credito_debito.anula_doc === true){
+                dataAdapted = await this.dataAdapterNC(folio, data)
             }
         } catch (error) {
             throw error
@@ -148,11 +151,18 @@ class DTEService {
         if (nota_factura_venta) {
             idReferencia = nota_factura_venta.idFacturaVenta;
             const fv = await ventasRepository.getFV_detailsDTE_ById(idReferencia)
+            const fvItems = await ventasRepository.getItemsByFVId(idReferencia)
+            const fvItemServ = fvItems.servicios
+            const fvItemProd = fvItems.productos
+            // console.log("debug servicio item", fvItemServ)
+            // console.log("debug producto item", fvItemProd)
             nroFolio = fv.numero_documento;
             nroDTEref = '33';
         } else if (nota_factura_venta_excenta) {
             idReferencia = nota_factura_venta_excenta.idFacturaVentaExcenta;
             const fve = await ventasRepository.getNotaFVE_detailsDTE_ById(idReferencia)
+            const fveItems = await ventasRepository.getItemsByFVEId(idReferencia)
+            console.log("debug producto item", fveItems)
             nroFolio = fve.numero_documento
             nroDTEref = '34';
         } else if (nota_credito_nota_NC) {
@@ -164,9 +174,7 @@ class DTEService {
             }
             nroDTEref = '56'                                          
         }
-        // Aquí asumimos que podemos obtener datos adicionales como el RUT del cliente desde un servicio o base de datos
         const cliente = await clientesService.getClienteById(notas_de_credito_debito.idCliente);
-        //console.log("debug cliente", cliente)
         if (!cliente) throw new CustomError(404, "Not Found", "Cliente no encontrado");
         const tipoDTE = notas_de_credito_debito.tipo_credito ? 61 : 56; // 61 para crédito, 56 para débito
         return {
