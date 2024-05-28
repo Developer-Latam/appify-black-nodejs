@@ -12,7 +12,7 @@ class ClientesService {
         try {
             const id = idgenerate("cliente");
             const superUserExist = await userRepository.userExistsById(data.user);
-            const clienteExist = await clientesRepository.clienteExistsByName(data.razon_social);
+            const clienteExist = await clientesRepository.clienteExistsByName(data.razon_social, data.user);
             
             if (clienteExist && superUserExist) {
                 throw new CustomError(400, "Bad Request", 'El nombre del cliente ya existe!')

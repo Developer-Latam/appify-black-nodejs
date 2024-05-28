@@ -18,7 +18,7 @@ class ProjectService {
             const id = idgenerate("project");
             //Verificar si existe el proyecto y el usuario para la empresa
             const superUserExist = await userRepository.userExistsById(data.user);
-            const proyectoExist = await ProjectRepository.projectExistsByName(data.nombre_etiqueta);
+            const proyectoExist = await ProjectRepository.projectExistsByName(data.nombre_etiqueta, data.user);
             if(proyectoExist && superUserExist){
                 throw new CustomError(400, "Bad Request",'Proyecto ya existente en la empresa')
             }
