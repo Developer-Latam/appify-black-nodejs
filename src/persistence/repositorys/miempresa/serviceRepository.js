@@ -20,11 +20,12 @@ class ServiceRepository {
         }
     }
     // Funcion para checkear que no exista el mismo servicio
-    async serviceExistsByName(nameService) {
+    async serviceExistsByName(nameService, user) {
         try {
             const nombre = await prisma.servicios.findFirst({
                 where: {
                     nombre : nameService,
+                    user : user
                 },
             })
             return nombre !== null;

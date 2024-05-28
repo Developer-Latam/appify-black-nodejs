@@ -43,11 +43,12 @@ class ProductRepository {
             handlePrismaError(error);
         }
     }
-    async productExistsByName(nameProduct) {
+    async productExistsByName(nameProduct,user) {
         try {
             const nombre = await prisma.productos.findFirst({
                 where: {
                     nombre : nameProduct,
+                    user : user
                 },
             })
             return nombre !== null;

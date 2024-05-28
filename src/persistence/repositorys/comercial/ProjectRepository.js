@@ -10,11 +10,12 @@ class ProjectRepository{
             handlePrismaError(error);
         }
     }
-    async projectExistsByName(nameProject) {
+    async projectExistsByName(nameProject,user) {
         try {
             const nombre = await prisma.proyectos.findFirst({
                 where: {
                     nombre_etiqueta : nameProject,
+                    user : user
                 },
             })
             return nombre !== null;

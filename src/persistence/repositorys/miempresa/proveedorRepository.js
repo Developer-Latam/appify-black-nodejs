@@ -36,11 +36,12 @@ class proveedorRepository {
         }
     }
     //Busca el proveedor por su rut y devuelve true o false
-    async proveedorExistsByRut(rutProveedor) {
+    async proveedorExistsByRut(rutProveedor, user) {
         try {
             const proveedor = await prisma.proveedores.findFirst({
                 where: {
                     rut: rutProveedor,
+                    user: user
                 },
             })
             return proveedor !== null;
