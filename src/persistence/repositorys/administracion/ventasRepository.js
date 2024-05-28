@@ -362,6 +362,23 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
+    async getNota_detailsDTE_ById(NCODid) {
+        try {
+            const notas = await prisma.notas_de_credito_debito.findUnique({
+                where: {
+                    id: NCODid,
+                },
+                select: {
+                    numero_documento: true,
+                    tipo_credito: true,
+                    tipo_debito: true
+                }
+            });
+            return notas ? notas : false;
+        }catch(error){
+            handlePrismaError(error)
+        }
+    }
     async getFVEDetailsbyDV(fveDVID) {
         try {
             const DV = await prisma.$queryRaw`SELECT
@@ -442,6 +459,22 @@ class VentasRepository {
                 }
             });
             return facturaVenta ? facturaVenta.id : null;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    async getFV_detailsDTE_ById(idFV){
+        try {
+            const facturaVenta = await prisma.factura_venta.findUnique({
+                where: {
+                    id: idFV
+                },
+                select: {
+                    tipo_documento: true,
+                    numero_documento: true
+                }
+            });
+            return facturaVenta ? facturaVenta : false;
         } catch (error) {
             handlePrismaError(error)
         }
@@ -550,6 +583,22 @@ class VentasRepository {
                 }
             });
             return facturaVentaExenta ? facturaVentaExenta.id : null;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    
+    async getNotaFVE_detailsDTE_ById(idFVE){
+        try {
+            const facturaVentaExenta = await prisma.factura_venta_excenta.findFirst({
+                where: {
+                    id: idFVE
+                },
+                select: {
+                    numero_documento: true 
+                }
+            });
+            return facturaVentaExenta ? facturaVentaExenta : false;
         } catch (error) {
             handlePrismaError(error)
         }

@@ -8,7 +8,7 @@ router.get('/test3', testDTEtemporalPARAMS)
 
 
 //ruta del pdf
-router.get('/pdf-dtetemp', getDTEtemporalPDFController)
+router.get('/pdf-dteTemp', getDTEtemporalPDFController)
 router.get('/pdf-dteReal', getDTERealPDF)
 //Actualizar estado en el SII del DTE
 router.get('/updStatus', dteUpdStatusSII)

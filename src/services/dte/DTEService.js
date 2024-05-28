@@ -5,6 +5,7 @@ import 'dotenv/config'
 import { crearFacturaConDescuento, crearFacturaSimple } from "./dteFunctions.js";
 import dteTemporal from "./dteTemporal.js";
 import dteReal from "./dteReal.js";
+import ventasRepository from "../../persistence/repositorys/administracion/ventasRepository.js";
 class DTEService {
     constructor() {
         this.apiUrl = `${process.env.URL_API_PY}`;
@@ -103,6 +104,107 @@ class DTEService {
             comunaReceptor: clienteAFacturar.cliente.comuna,
             detalles: detalles,
             referencias: []
+        };
+    }
+    async createNCODAnulaDoc(data) {
+        const {
+            emisor,
+            notas_de_credito_debito,
+            nota_factura_venta,
+            nota_factura_venta_excenta,
+            nota_credito_nota_NC
+        } = data
+        try {
+            let folio;
+            let folioSII;
+            if(notas_de_credito_debito.tipo_debito === true){
+                folioSII = await this.getInfoFolios('56', emisor.RUT)
+            }
+            folioSII = await this.getInfoFolios('61', emisor.RUT)
+            if (folioSII.tieneDisponible){
+                folio = folioSII.siguienteFolio
+                const dataAdapted = await this.dataAdapterNC(folio, data)
+                //const dteTemp = await dteTemporal.postData(result)
+                //const dteR = await dteReal.emit(dteTemp)
+                //return dteR
+            } else {
+                throw new CustomError(404, "Bad Request", "No hay folios disponibles para la factura")
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+    async dataAdapterNC(folio, data) {
+        const {
+            emisor,
+            notas_de_credito_debito,
+            nota_factura_venta,
+            nota_factura_venta_excenta,
+            nota_credito_nota_NC
+        } = data;
+        let idReferencia;
+        let nroFolio;
+        let nroDTEref;
+        if (nota_factura_venta) {
+            idReferencia = nota_factura_venta.idFacturaVenta;
+            const fv = await ventasRepository.getFV_detailsDTE_ById(idReferencia)
+            nroFolio = fv.numero_documento;
+            nroDTEref = '33';
+        } else if (nota_factura_venta_excenta) {
+            idReferencia = nota_factura_venta_excenta.idFacturaVentaExcenta;
+            const fve = await ventasRepository.getNotaFVE_detailsDTE_ById(idReferencia)
+            nroFolio = fve.numero_documento
+            nroDTEref = '34';
+        } else if (nota_credito_nota_NC) {
+            idReferencia = nota_credito_nota_NC.idNotadeCD;
+            const nc = await ventasRepository.getNota_detailsDTE_ById(idReferencia)
+            nroFolio = nc.numero_documento
+            if(nc.tipo_credito === true){
+                nroDTEref = '61';  
+            }
+            nroDTEref = '56'                                          
+        }
+        // Aquí asumimos que podemos obtener datos adicionales como el RUT del cliente desde un servicio o base de datos
+        const cliente = await clientesService.getClienteById(notas_de_credito_debito.idCliente);
+        //console.log("debug cliente", cliente)
+        if (!cliente) throw new CustomError(404, "Not Found", "Cliente no encontrado");
+        const tipoDTE = notas_de_credito_debito.tipo_credito ? 61 : 56; // 61 para crédito, 56 para débito
+        return {
+            Encabezado: {
+                IdDoc: {
+                    TipoDTE: tipoDTE,
+                    FchEmis: notas_de_credito_debito.fecha.split('T')[0],
+                    Folio: folio
+                },
+                Emisor: {
+                    RUTEmisor: `${emisor.RUT}-0`
+                },
+                Receptor: {
+                    RUTRecep: cliente?.cliente?.rut,
+                    RznSocRecep: cliente?.cliente?.razon_social,
+                    GiroRecep: cliente?.cliente?.giro,
+                    Contacto: cliente?.contactos[0]?.telefono,
+                    CorreoRecep: cliente?.contactos[0]?.email,
+                    DirRecep: cliente?.cliente?.direccion,
+                    CmnaRecep: cliente?.cliente?.comuna
+                },
+                Totales: {
+                    MntTotal: 0 // Este valor debería calcularse según la lógica de negocio relevante
+                }
+            },
+            Detalle: [
+                {
+                    NmbItem: "Descripción del item" // Deberás ajustar según la lógica de negocio
+                }
+            ],
+            Referencia: [
+                {
+                    TpoDocRef: nroDTEref,
+                    RazonRef: notas_de_credito_debito.motivo_referencia, // Ejemplo estático, ajustar según lógica de negocio
+                    FolioRef: nroFolio,
+                    CodRef: 2 // Código de referencia ajustado según lógica de negocio
+                }
+            ]
         };
     }
 }

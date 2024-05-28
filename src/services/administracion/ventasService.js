@@ -594,8 +594,9 @@ class VentasService {
             if(!emisor){
                 throw new CustomError(400, "Bad Request", "Para realizar la op FV se debe indicar campo emisor")
             }
-            const dteCreated = await DTEService.createFV(data)
-            folio = dteCreated.folio
+            // const dteCreated = await DTEService.createFV(data)
+            // folio = dteCreated.folio
+            folio = 0;
             const idFV = idgenerate("FV")
             const idDV = idgenerate("DV")
             let operations = []
@@ -759,6 +760,7 @@ class VentasService {
     async createNCoDyItems(data) {
         try {
             const {
+                emisor,
                 notas_de_credito_debito,
                 nota_factura_venta,
                 nota_factura_venta_excenta,
@@ -810,6 +812,8 @@ class VentasService {
             ) {
                 throw new CustomError(400, "Bad Request", "Solo se puede especificar una opción: nota_factura_venta, nota_factura_venta_excenta o nota_credito_nota_NC");
             }
+            const resultDTE = await DTEService.createNCODAnulaDoc(data)
+            console.log(resultDTE)
             let operations = [ventasRepository.createNCoD(idNCoD, notas_de_credito_debito)];
             const items = [
                 { item: nota_factura_venta, repository: ventasRepository.createNotaFV, idProperty: "idFacturaVenta" },
