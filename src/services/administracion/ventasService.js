@@ -101,6 +101,29 @@ class VentasService {
             throw error
         }
     }
+    async buscarFacturaAsociada(idReferencia) {
+        try {
+            const idDocumento = await ventasRepository.getDocAsociadoByIdNCOD(idReferencia);
+            if (!idDocumento) {
+                throw new CustomError(404, "Not Found", "No existe un documento asociado con este NCOD");
+            }
+            const prefix = idDocumento.split('-')[0];
+            switch (prefix) {
+                case 'NC':
+                    return await this.buscarFacturaAsociada(idDocumento); // Recursividad aquí
+                case 'FV':
+                    const fvItems = await ventasRepository.getItemsByFVId(idDocumento);
+                    return { tipo: 'FV', items: fvItems };
+                case 'FVE':
+                    const fveItems = await ventasRepository.getItemsByFVEId(idDocumento);
+                    return { tipo: 'FVE', items: fveItems };
+                default:
+                    throw new CustomError(400, "Bad Request", "Tipo de documento desconocido: " + prefix);
+            }
+        } catch (error) {
+            throw err
+        }
+    }
     async getFVoFVEbyDC(idDocumentoVenta){
         try {
             if (!idDocumentoVenta) {
@@ -756,7 +779,6 @@ class VentasService {
             const result = await executeTransactions(operations)
             return { message: "Transacciones FVE completas con éxito", result };
         } catch (error) {
-            console.log(error)
             throw error;
         }
     }
@@ -816,8 +838,7 @@ class VentasService {
             ) {
                 throw new CustomError(400, "Bad Request", "Solo se puede especificar una opción: nota_factura_venta, nota_factura_venta_excenta o nota_credito_nota_NC");
             }
-            const resultDTE = await DTEService.createNCODAnulaDoc(data)
-            console.log(resultDTE)
+            const resultDTE = await DTEService.createNCOD(data)
             let operations = [ventasRepository.createNCoD(idNCoD, notas_de_credito_debito)];
             const items = [
                 { item: nota_factura_venta, repository: ventasRepository.createNotaFV, idProperty: "idFacturaVenta" },
@@ -834,7 +855,8 @@ class VentasService {
             }
             }
             const result = await executeTransactions(operations);
-            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result };
+            
+            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result, resultDTE };
         } catch (error) {
             console.log(error)
             throw error;
@@ -843,6 +865,7 @@ class VentasService {
     async createNCoDyItemsCorrigeMonto(idNCoD, data) {
         try {
             const {
+                emisor,
                 notas_de_credito_debito,
                 item_servicio_nota_credito,
                 item_producto_nota_credito,
@@ -860,6 +883,7 @@ class VentasService {
             if (!item_servicio_nota_credito && !item_producto_nota_credito && !item_servicio_nota_credito_NC && !item_producto_nota_credito_NC && !item_servicio_factura_venta && !item_producto_factura_venta && !item_servicio_factura_venta_excenta && !item_producto_factura_venta_excenta) {
                 throw new CustomError(400, "Bad Request", "Se requiere al menos un item de servicio o producto para realizar este movimiento");
             }
+            const resultDTE = await DTEService.createNCOD(data)
             let operations = [ventasRepository.createNCoD(idNCoD, notas_de_credito_debito)];
             // Determinar el conjunto de datos a procesar
             if (item_servicio_nota_credito || item_producto_nota_credito || item_servicio_nota_credito_NC || item_producto_nota_credito_NC) {
@@ -904,6 +928,7 @@ class VentasService {
             const result = await executeTransactions(operations);
             return { message: "Transacciones (NOTA DE CREDITO/DEBITO - CORRIGE MONTO) completas con éxito", result };
         } catch (error) {
+            console.log(error)
             throw error;
         }
     }

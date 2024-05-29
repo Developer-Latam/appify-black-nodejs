@@ -5,6 +5,7 @@ import 'dotenv/config'
 import { crearFacturaConDescuento, crearFacturaSimple } from "./dteFunctions.js";
 import dteTemporal from "./dteTemporal.js";
 import dteReal from "./dteReal.js";
+import ventasService from "../administracion/ventasService.js";
 import ventasRepository from "../../persistence/repositorys/administracion/ventasRepository.js";
 class DTEService {
     constructor() {
@@ -106,13 +107,21 @@ class DTEService {
             referencias: []
         };
     }
-    async createNCODAnulaDoc(data) {
+    async createNCOD(data) {
         const {
             emisor,
             notas_de_credito_debito,
             nota_factura_venta,
             nota_factura_venta_excenta,
-            nota_credito_nota_NC
+            nota_credito_nota_NC,
+            item_servicio_nota_credito,
+            item_producto_nota_credito,
+            item_servicio_nota_credito_NC,
+            item_producto_nota_credito_NC,
+            item_servicio_factura_venta,
+            item_producto_factura_venta,
+            item_servicio_factura_venta_excenta,
+            item_producto_factura_venta_excenta
         } = data
         try {
             let folio;
@@ -127,17 +136,22 @@ class DTEService {
             } else {
                 throw new CustomError(404, "Bad Request", "No hay folios disponibles para la factura")
             }
-                //const dteTemp = await dteTemporal.postData(result)
-                //const dteR = await dteReal.emit(dteTemp)
-                //return dteR
             if(notas_de_credito_debito.anula_doc === true){
-                dataAdapted = await this.dataAdapterNC(folio, data)
+                dataAdapted = await this.dataAdapterNC_ANULA_DOC(folio, data)
+                console.log("DATA LISTA PARA HACER NOTA", dataAdapted)
+                
+            } else if (notas_de_credito_debito.corrige_monto === true){
+                dataAdapted = await this.dataAdapterNC_CORRIGE_MONTOS(folio, data)
+                console.log("DATA LISTA PARA HACER NOTA", dataAdapted)
             }
+            // const dteTemp = await dteTemporal.postData(result)
+            // const dteR = await dteReal.emit(dteTemp)
+            return dteR
         } catch (error) {
             throw error
         }
     }
-    async dataAdapterNC(folio, data) {
+    async dataAdapterNC_ANULA_DOC(folio, data) {
         const {
             emisor,
             notas_de_credito_debito,
@@ -148,26 +162,24 @@ class DTEService {
         let idReferencia;
         let nroFolio;
         let nroDTEref;
+        let itemsDocAsoc;
         if (nota_factura_venta) {
             idReferencia = nota_factura_venta.idFacturaVenta;
             const fv = await ventasRepository.getFV_detailsDTE_ById(idReferencia)
-            const fvItems = await ventasRepository.getItemsByFVId(idReferencia)
-            const fvItemServ = fvItems.servicios
-            const fvItemProd = fvItems.productos
-            // console.log("debug servicio item", fvItemServ)
-            // console.log("debug producto item", fvItemProd)
+            itemsDocAsoc = await ventasRepository.getItemsByFVId(idReferencia)
             nroFolio = fv.numero_documento;
             nroDTEref = '33';
         } else if (nota_factura_venta_excenta) {
             idReferencia = nota_factura_venta_excenta.idFacturaVentaExcenta;
             const fve = await ventasRepository.getNotaFVE_detailsDTE_ById(idReferencia)
-            const fveItems = await ventasRepository.getItemsByFVEId(idReferencia)
-            console.log("debug producto item", fveItems)
+            itemsDocAsoc = await ventasRepository.getItemsByFVEId(idReferencia)
             nroFolio = fve.numero_documento
             nroDTEref = '34';
         } else if (nota_credito_nota_NC) {
             idReferencia = nota_credito_nota_NC.idNotadeCD;
             const nc = await ventasRepository.getNota_detailsDTE_ById(idReferencia)
+            const resultado = await ventasService.buscarFacturaAsociada(idReferencia);
+            itemsDocAsoc = resultado.items;
             nroFolio = nc.numero_documento
             if(nc.tipo_credito === true){
                 nroDTEref = '61';  
@@ -177,6 +189,8 @@ class DTEService {
         const cliente = await clientesService.getClienteById(notas_de_credito_debito.idCliente);
         if (!cliente) throw new CustomError(404, "Not Found", "Cliente no encontrado");
         const tipoDTE = notas_de_credito_debito.tipo_credito ? 61 : 56; // 61 para crédito, 56 para débito
+        // Transformar los items asociados para el detalle
+        let detalles = this.transformarItemsADetalle(itemsDocAsoc);
         return {
             Encabezado: {
                 IdDoc: {
@@ -200,11 +214,7 @@ class DTEService {
                     MntTotal: 0 // Este valor debería calcularse según la lógica de negocio relevante
                 }
             },
-            Detalle: [
-                {
-                    NmbItem: "Descripción del item" // Deberás ajustar según la lógica de negocio
-                }
-            ],
+            Detalle: detalles,
             Referencia: [
                 {
                     TpoDocRef: nroDTEref,
@@ -215,6 +225,111 @@ class DTEService {
             ]
         };
     }
+    async dataAdapterNC_CORRIGE_MONTOS(folio, data) {
+        const {
+            emisor,
+            notas_de_credito_debito,
+            item_servicio_nota_credito,
+            item_producto_nota_credito,
+            item_servicio_nota_credito_NC,
+            item_producto_nota_credito_NC,
+            item_servicio_factura_venta,
+            item_producto_factura_venta,
+            item_servicio_factura_venta_excenta,
+            item_producto_factura_venta_excenta
+        } = data;
+        let idReferencia;
+        let nroFolio;
+        let nroDTEref;
+        let itemsDocAsoc;
+        if ( item_servicio_nota_credito || item_producto_nota_credito || item_servicio_nota_credito_NC || item_producto_nota_credito_NC ) {
+            
+        } else if (item_servicio_factura_venta || item_producto_factura_venta ) {
+            idReferencia = notas_de_credito_debito.idDoc;
+            const fv = await ventasRepository.getFV_DetailsDTE_byDV(idReferencia)
+            console.log("DEBUG DE ITEM FV BY idDoc",fv)
+            
+            nroFolio = fv.numero_documento
+            nroDTEref = '33';
+        } else if (nota_credito_nota_NC) {
+            idReferencia = nota_credito_nota_NC.idNotadeCD;
+            const nc = await ventasRepository.getNota_detailsDTE_ById(idReferencia)
+            const resultado = await ventasService.buscarFacturaAsociada(idReferencia);
+            itemsDocAsoc = resultado.items;
+            nroFolio = nc.numero_documento
+            if(nc.tipo_credito === true){
+                nroDTEref = '61';  
+            }
+            nroDTEref = '56'                                          
+        }
+        const cliente = await clientesService.getClienteById(notas_de_credito_debito.idCliente);
+        if (!cliente) throw new CustomError(404, "Not Found", "Cliente no encontrado");
+        const tipoDTE = notas_de_credito_debito.tipo_credito ? 61 : 56; // 61 para crédito, 56 para débito
+        // Transformar los items asociados para el detalle
+        let detalles = this.transformarItemsADetalle(itemsDocAsoc);
+        return {
+            Encabezado: {
+                IdDoc: {
+                    TipoDTE: tipoDTE,
+                    FchEmis: notas_de_credito_debito.fecha.split('T')[0],
+                    Folio: folio
+                },
+                Emisor: {
+                    RUTEmisor: `${emisor.RUT}-0`
+                },
+                Receptor: {
+                    RUTRecep: cliente?.cliente?.rut,
+                    RznSocRecep: cliente?.cliente?.razon_social,
+                    GiroRecep: cliente?.cliente?.giro,
+                    Contacto: cliente?.contactos[0]?.telefono,
+                    CorreoRecep: cliente?.contactos[0]?.email,
+                    DirRecep: cliente?.cliente?.direccion,
+                    CmnaRecep: cliente?.cliente?.comuna
+                },
+                Totales: {
+                    MntTotal: 0 // Este valor debería calcularse según la lógica de negocio relevante
+                }
+            },
+            Detalle: detalles,
+            Referencia: [
+                {
+                    TpoDocRef: nroDTEref,
+                    RazonRef: notas_de_credito_debito.motivo_referencia, // Ejemplo estático, ajustar según lógica de negocio
+                    FolioRef: nroFolio,
+                    CodRef: 2 // Código de referencia ajustado según lógica de negocio
+                }
+            ]
+        };
+    }
+    transformarItemsADetalle(itemsDocAsoc) {
+        const detalles = [];
+        // Procesar servicios si existen
+        if (itemsDocAsoc.servicios && itemsDocAsoc.servicios.length > 0) {
+            itemsDocAsoc.servicios.forEach(servicio => {
+                if (servicio.cantidad && servicio.unitario) { // Asegurarse de que la cantidad y el unitario no son null
+                    detalles.push({
+                        NmbItem: servicio.nombre || servicio.codigo,
+                        QtyItem: servicio.cantidad,
+                        PrcItem: servicio.unitario
+                    });
+                }
+            });
+        }
+        // Procesar productos si existen
+        if (itemsDocAsoc.productos && itemsDocAsoc.productos.length > 0) {
+            itemsDocAsoc.productos.forEach(producto => {
+                if (producto.cantidad && producto.unitario) { // Asegurarse de que la cantidad y el unitario no son null
+                    detalles.push({
+                        NmbItem: producto.nombre || producto.codigo,
+                        QtyItem: producto.cantidad,
+                        PrcItem: producto.unitario
+                    });
+                }
+            });
+        }
+        return detalles;
+    }
+    
 }
 
 export default new DTEService()

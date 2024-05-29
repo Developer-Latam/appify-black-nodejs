@@ -279,69 +279,73 @@ class VentasRepository {
     }
     async getItemsByFVId(fvID) {
         try {
-            // Obtener servicios
-            const servicios = await prisma.$queryRaw`SELECT
-                isv.id AS ItemServicioID,
+            // Obtener servicios con nombre
+            const servicios = (await prisma.$queryRaw`SELECT
                 isv.idServicio,
-                isv.codigo AS CodigoServicio,
-                isv.cantidad AS CantidadServicio,
-                isv.unitario AS PrecioUnitarioServicio,
-                isv.bruto AS BrutoServicio,
-                isv.neto AS NetoServicio,
-                isv.bonificacion AS BonificacionServicio,
-                isv.notas AS NotasServicio
+                isv.codigo,
+                isv.cantidad,
+                isv.unitario,
+                srv.nombre
             FROM
                 factura_venta fv
                 LEFT JOIN item_servicio_factura_venta isv ON fv.id = isv.idFactura
+                LEFT JOIN servicios srv ON isv.idServicio = srv.id
             WHERE
-                fv.id = ${fvID};`;
-            // Obtener productos
-            const productos = await prisma.$queryRaw`SELECT
-                ipv.id AS ItemProductoID,
+                fv.id = ${fvID};`).filter(servicio => 
+                    servicio.idServicio !== null && servicio.cantidad !== null && servicio.unitario !== null
+                ); // Filtramos para asegurar que los campos clave no son null
+            // Obtener productos con nombre
+            const productos = (await prisma.$queryRaw`SELECT
                 ipv.idProducto,
-                ipv.codigo AS CodigoProducto,
-                ipv.cantidad AS CantidadProducto,
-                ipv.unitario AS PrecioUnitarioProducto,
-                ipv.bruto AS BrutoProducto,
-                ipv.neto AS NetoProducto,
-                ipv.bonificacion AS BonificacionProducto,
-                ipv.notas AS NotasProducto
+                ipv.codigo,
+                ipv.cantidad,
+                ipv.unitario,
+                prd.nombre
             FROM
                 factura_venta fv
                 LEFT JOIN item_producto_factura_venta ipv ON fv.id = ipv.idFactura
+                LEFT JOIN productos prd ON ipv.idProducto = prd.id
             WHERE
-                fv.id = ${fvID};`;
-            return { servicios, productos };
+                fv.id = ${fvID};`).filter(producto => 
+                    producto.idProducto !== null && producto.cantidad !== null && producto.unitario !== null
+                ); // Filtramos para asegurar que los campos clave no son null
+        return { servicios, productos };
         } catch (error) {
             handlePrismaError(error);
         }
     }
     async getItemsByFVEId(fvID) {
         try {
-            // Obtener servicios
-            const servicios = await prisma.$queryRaw`SELECT
-                isv.id AS ItemServicioID,
+            // Obtener servicios con nombre
+            const servicios = (await prisma.$queryRaw`SELECT
                 isv.idServicio,
-                isv.cantidad AS CantidadServicio,
-                isv.unitario AS PrecioUnitarioServicio,
-                isv.neto AS NetoServicio
+                isv.cantidad,
+                isv.unitario,
+                isv.codigo,
+                srv.nombre
             FROM
                 factura_venta_excenta fv
                 LEFT JOIN item_servicio_factura_venta_excenta isv ON fv.id = isv.idFactura
+                LEFT JOIN servicios srv ON isv.idServicio = srv.id
             WHERE
-                fv.id = ${fvID};`;
-            // Obtener productos
-            const productos = await prisma.$queryRaw`SELECT
-                ipv.id AS ItemProductoID,
-                ipv.idProducto AS idProducto,
-                ipv.cantidad AS CantidadProducto,
-                ipv.unitario AS PrecioUnitarioProducto,
-                ipv.neto AS NetoProducto
+                fv.id = ${fvID};`).filter(servicio => 
+                    servicio.idServicio !== null && servicio.cantidad !== null && servicio.unitario !== null
+                ); 
+            // Obtener productos con nombre
+            const productos = (await prisma.$queryRaw`SELECT
+                ipv.idProducto,
+                ipv.cantidad,
+                ipv.unitario,
+                ipv.codigo,
+                prd.nombre
             FROM
                 factura_venta_excenta fv
                 LEFT JOIN item_producto_factura_venta_excenta ipv ON fv.id = ipv.idFactura
+                LEFT JOIN productos prd ON ipv.idProducto = prd.id
             WHERE
-                fv.id = ${fvID};`;
+                fv.id = ${fvID};`).filter(producto => 
+                    producto.idProducto !== null && producto.cantidad !== null && producto.unitario !== null
+                ); 
             return { servicios, productos };
         } catch (error) {
             handlePrismaError(error);
@@ -370,6 +374,46 @@ class VentasRepository {
         WHERE
             nf.idNotadeCD = ${NCOD};`;
             return notaFV_NCOD;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    async getDocAsociadoByIdNCOD(NCOD){
+        try {
+            // Primera consulta: Notas de factura de venta
+            const notaFV_NCOD = await prisma.$queryRaw`SELECT
+            fv.id AS FacturaVentaID
+            FROM
+            nota_factura_venta nf
+            INNER JOIN factura_venta fv ON nf.idFacturaVenta = fv.id
+            WHERE
+            nf.idNotadeCD = ${NCOD};`;
+            if (notaFV_NCOD.length > 0) {
+            return notaFV_NCOD[0].FacturaVentaID;
+            }
+            // Segunda consulta: Notas de factura de venta exenta
+            const notaFVE_NCOD = await prisma.$queryRaw`SELECT
+            fv.id AS FacturaVentaExentaID
+            FROM
+            nota_factura_venta_excenta nf
+            INNER JOIN factura_venta_excenta fv ON nf.idFacturaVentaExcenta = fv.id
+            WHERE
+            nf.idNotadeCD = ${NCOD};`;
+            if (notaFVE_NCOD.length > 0) {
+            return notaFVE_NCOD[0].FacturaVentaExentaID;
+            }
+            // Tercera consulta: Notas de crédito débito
+            const notaDEncod_NCOD = await prisma.$queryRaw`SELECT
+            ncd.id AS NotaID
+            FROM
+            notas_de_credito_debito ncd
+            INNER JOIN nota_credito_nota_NC nc ON ncd.id = nc.idNotadeCD
+            WHERE
+            nc.idNotadeCD = ${NCOD};`;
+            if (notaDEncod_NCOD.length > 0) {
+            return notaDEncod_NCOD[0].NotaID;
+            }
+            return false;
         } catch (error) {
             handlePrismaError(error)
         }
@@ -415,6 +459,31 @@ class VentasRepository {
                 LEFT JOIN item_producto_factura_venta ipv ON fv.id = ipv.idFactura
             WHERE
                 dv.id = ${fvDVID};`;
+            return DV;
+        }catch(error){
+            handlePrismaError(error)
+        }
+    }
+    async getFV_DetailsDTE_byDV(DVID) {
+        try {
+            const DV = await prisma.$queryRaw`SELECT
+            fv.id AS FacturaVentaID,
+            fv.numero_documento,
+            isv.idServicio,
+            isv.codigo,
+            isv.cantidad,
+            isv.unitario,
+            ipv.idProducto,
+            ipv.codigo,
+            ipv.cantidad,
+            ipv.unitario
+            FROM
+                documento_venta dv
+                INNER JOIN factura_venta fv ON dv.id = fv.idDoc
+                LEFT JOIN item_servicio_factura_venta isv ON fv.id = isv.idFactura
+                LEFT JOIN item_producto_factura_venta ipv ON fv.id = ipv.idFactura
+            WHERE
+                dv.id = ${DVID};`;
             return DV;
         }catch(error){
             handlePrismaError(error)
