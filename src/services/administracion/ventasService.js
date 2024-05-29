@@ -6,6 +6,7 @@ import clientesRepository from "../../persistence/repositorys/comercial/clientes
 import userRepository from "../../persistence/repositorys/miempresa/userRepository.js";
 import { prisma } from "../../utils/dependencys/injection.js";
 import handlePrismaError from "../../utils/httpRes/handlePrismaError.js";
+import DTEService from "../dte/DTEService.js";
 class VentasService {
     async getAllFV(){
         try {
@@ -225,12 +226,12 @@ class VentasService {
                         const idProyecto = proyecto.idProyecto
      
                         const productos_items = await prisma.$queryRaw`
-                            SELECT productos.nombre, item_producto_proyecto.cantidad, item_producto_proyecto.total, item_producto_proyecto.precio, item_producto_proyecto.impuesto, item_producto_proyecto.porcentaje_descuento, 
+                            SELECT productos.id,productos.nombre, item_producto_proyecto.cantidad, item_producto_proyecto.total, item_producto_proyecto.precio, item_producto_proyecto.impuesto, item_producto_proyecto.porcentaje_descuento, 
                             ${proyecto.idOT} as idOT 
                             FROM item_producto_proyecto JOIN productos ON item_producto_proyecto.idProducto = productos.id WHERE item_producto_proyecto.idProyecto = ${idProyecto}
                         `
                         const servicios_items = await prisma.$queryRaw`
-                            SELECT servicios.nombre, item_servicio_proyecto.cantidad, item_servicio_proyecto.total, item_servicio_proyecto.precio, item_servicio_proyecto.impuesto, item_servicio_proyecto.porcentaje_descuento, 
+                            SELECT servicios.id,servicios.nombre, item_servicio_proyecto.cantidad, item_servicio_proyecto.total, item_servicio_proyecto.precio, item_servicio_proyecto.impuesto, item_servicio_proyecto.porcentaje_descuento, 
                             ${proyecto.idOT} as idOT  
                             FROM item_servicio_proyecto JOIN servicios ON item_servicio_proyecto.idServicio = servicios.id WHERE item_servicio_proyecto.idProyecto = ${idProyecto}
                         `
@@ -250,10 +251,10 @@ class VentasService {
                 }else{
                     //no tiene
                     const productos = await prisma.$queryRaw`
-                        SELECT item_producto_factura_venta.codigo, item_producto_factura_venta.cantidad, item_producto_factura_venta.unitario,  item_producto_factura_venta.neto, item_producto_factura_venta.notas, productos.nombre FROM item_producto_factura_venta JOIN productos ON item_producto_factura_venta.idProducto = productos.id WHERE idFactura = ${idFactura};
+                        SELECT productos.id,item_producto_factura_venta.codigo, item_producto_factura_venta.cantidad, item_producto_factura_venta.unitario,  item_producto_factura_venta.neto, item_producto_factura_venta.notas, productos.nombre FROM item_producto_factura_venta JOIN productos ON item_producto_factura_venta.idProducto = productos.id WHERE idFactura = ${idFactura};
                     `;
                     const servicios = await prisma.$queryRaw`
-                        SELECT item_servicio_factura_venta.codigo, item_servicio_factura_venta.cantidad, item_servicio_factura_venta.unitario,  item_servicio_factura_venta.neto, item_servicio_factura_venta.notas, servicios.nombre FROM item_servicio_factura_venta JOIN servicios ON item_servicio_factura_venta.idServicio = servicios.id WHERE idFactura =  ${idFactura};
+                        SELECT servicios.id,item_servicio_factura_venta.codigo, item_servicio_factura_venta.cantidad, item_servicio_factura_venta.unitario,  item_servicio_factura_venta.neto, item_servicio_factura_venta.notas, servicios.nombre FROM item_servicio_factura_venta JOIN servicios ON item_servicio_factura_venta.idServicio = servicios.id WHERE idFactura =  ${idFactura};
                     `;
                     objData = {
                         ...item, 
@@ -291,12 +292,12 @@ class VentasService {
                         const idProyecto = proyecto.idProyecto
      
                         const productos_items = await prisma.$queryRaw`
-                            SELECT productos.nombre, item_producto_proyecto.cantidad, item_producto_proyecto.total, item_producto_proyecto.precio, item_producto_proyecto.impuesto, item_producto_proyecto.porcentaje_descuento, 
+                            SELECT productos.id,productos.nombre, item_producto_proyecto.cantidad, item_producto_proyecto.total, item_producto_proyecto.precio, item_producto_proyecto.impuesto, item_producto_proyecto.porcentaje_descuento, 
                             ${proyecto.idOT} as idOT 
                             FROM item_producto_proyecto JOIN productos ON item_producto_proyecto.idProducto = productos.id WHERE item_producto_proyecto.idProyecto = ${idProyecto}
                         `
                         const servicios_items = await prisma.$queryRaw`
-                            SELECT servicios.nombre, item_servicio_proyecto.cantidad, item_servicio_proyecto.total, item_servicio_proyecto.precio, item_servicio_proyecto.impuesto, item_servicio_proyecto.porcentaje_descuento, 
+                            SELECT servicios.id,servicios.nombre, item_servicio_proyecto.cantidad, item_servicio_proyecto.total, item_servicio_proyecto.precio, item_servicio_proyecto.impuesto, item_servicio_proyecto.porcentaje_descuento, 
                             ${proyecto.idOT} as idOT  
                             FROM item_servicio_proyecto JOIN servicios ON item_servicio_proyecto.idServicio = servicios.id WHERE item_servicio_proyecto.idProyecto = ${idProyecto}
                         `
@@ -314,10 +315,10 @@ class VentasService {
                     }
                 }else{
                     const productos = await prisma.$queryRaw`
-                        SELECT item_producto_factura_venta_excenta.codigo, item_producto_factura_venta_excenta.cantidad, item_producto_factura_venta_excenta.unitario,  item_producto_factura_venta_excenta.neto, item_producto_factura_venta_excenta.notas, productos.nombre FROM item_producto_factura_venta_excenta JOIN productos ON item_producto_factura_venta_excenta.idProducto = productos.id WHERE idFactura = ${idFactura};
+                        SELECT productos.id,item_producto_factura_venta_excenta.codigo, item_producto_factura_venta_excenta.cantidad, item_producto_factura_venta_excenta.unitario,  item_producto_factura_venta_excenta.neto, item_producto_factura_venta_excenta.notas, productos.nombre FROM item_producto_factura_venta_excenta JOIN productos ON item_producto_factura_venta_excenta.idProducto = productos.id WHERE idFactura = ${idFactura};
                     `;
                     const servicios = await prisma.$queryRaw`
-                        SELECT item_servicio_factura_venta_excenta.codigo, item_servicio_factura_venta_excenta.cantidad, item_servicio_factura_venta_excenta.unitario, item_servicio_factura_venta_excenta.unitario, item_servicio_factura_venta_excenta.neto, item_servicio_factura_venta_excenta.notas, servicios.nombre FROM item_servicio_factura_venta_excenta JOIN servicios ON item_servicio_factura_venta_excenta.idServicio = servicios.id WHERE idFactura = ${idFactura};
+                        SELECT servicios.id,item_servicio_factura_venta_excenta.codigo, item_servicio_factura_venta_excenta.cantidad, item_servicio_factura_venta_excenta.unitario, item_servicio_factura_venta_excenta.unitario, item_servicio_factura_venta_excenta.neto, item_servicio_factura_venta_excenta.notas, servicios.nombre FROM item_servicio_factura_venta_excenta JOIN servicios ON item_servicio_factura_venta_excenta.idServicio = servicios.id WHERE idFactura = ${idFactura};
                     `;
      
                     objData = {
@@ -582,17 +583,25 @@ class VentasService {
                 factura_venta,
                 item_servicio_factura_venta,
                 item_producto_factura_venta,
-                orden_trabajo_FV
+                orden_trabajo_FV,
+                emisor
             } = data;
+            let folio;
             //Validacion para asegurarse que al menos 1 de los dos items venga en la creacion de la factura
             if(!item_servicio_factura_venta && !item_producto_factura_venta){
                 throw new CustomError(400, "Bad Request", "Se requiere al menos un item de servicio o producto para realizar la factura de venta")
             }
+            if(!emisor){
+                throw new CustomError(400, "Bad Request", "Para realizar la op FV se debe indicar campo emisor")
+            }
+            // const dteCreated = await DTEService.createFV(data)
+            // folio = dteCreated.folio
+            folio = 0;
             const idFV = idgenerate("FV")
             const idDV = idgenerate("DV")
             let operations = []
-            operations.push(ventasRepository.createDocVentas(idDV, documento_venta));
-            operations.push(ventasRepository.createFV(idFV, idDV, factura_venta ));
+            operations.push(ventasRepository.createDocVentas(idDV, folio, documento_venta));
+            operations.push(ventasRepository.createFV(idFV, idDV, folio, factura_venta ));
             if(factura_venta.ot === true && orden_trabajo_FV.length > 0){
                 const itemsOT = ventasRepository.createOTinFV(idFV, orden_trabajo_FV)
                 operations.push(...itemsOT)
@@ -613,7 +622,6 @@ class VentasService {
             const result = await executeTransactions(operations)
             return { message: "Transacciones FV completas con éxito", result };
         } catch (error) {
-            console.log(error)
             throw error;
         }
     }
@@ -752,6 +760,7 @@ class VentasService {
     async createNCoDyItems(data) {
         try {
             const {
+                emisor,
                 notas_de_credito_debito,
                 nota_factura_venta,
                 nota_factura_venta_excenta,
@@ -803,6 +812,8 @@ class VentasService {
             ) {
                 throw new CustomError(400, "Bad Request", "Solo se puede especificar una opción: nota_factura_venta, nota_factura_venta_excenta o nota_credito_nota_NC");
             }
+            const resultDTE = await DTEService.createNCODAnulaDoc(data)
+            console.log(resultDTE)
             let operations = [ventasRepository.createNCoD(idNCoD, notas_de_credito_debito)];
             const items = [
                 { item: nota_factura_venta, repository: ventasRepository.createNotaFV, idProperty: "idFacturaVenta" },

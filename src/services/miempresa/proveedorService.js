@@ -11,7 +11,7 @@ class proveedorService {
         //Verificar si existe el proveedor y el usuario para la empresa
         try {
             const superUserExist = await userRepository.userExistsById(user)
-            const proveedorExist = await proveedorRepository.proveedorExistsByRut(rut)
+            const proveedorExist = await proveedorRepository.proveedorExistsByRut(rut, user)
             if(proveedorExist || !superUserExist){
                 throw new CustomError(400, 'Proveedor ya existente o usuario no válido');
             }

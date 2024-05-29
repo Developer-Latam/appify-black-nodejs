@@ -4,13 +4,13 @@ import { CustomError } from "../../../utils/httpRes/handlerResponse.js";
 import { idgenerate } from "../../../utils/id/idGenerate.js";
 
 class VentasRepository {
-    createDocVentas (idDV, {user}){
+    createDocVentas (idDV, folio, {user}){
         try {
             return prisma.documento_venta.create({
                 data: {
                     id: idDV,
                     user,
-                    numero_documento: "numero que viene de SII"
+                    numero_documento: folio
                 }
             })
         } catch (error) {
@@ -362,6 +362,23 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
+    async getNota_detailsDTE_ById(NCODid) {
+        try {
+            const notas = await prisma.notas_de_credito_debito.findUnique({
+                where: {
+                    id: NCODid,
+                },
+                select: {
+                    numero_documento: true,
+                    tipo_credito: true,
+                    tipo_debito: true
+                }
+            });
+            return notas ? notas : false;
+        }catch(error){
+            handlePrismaError(error)
+        }
+    }
     async getFVEDetailsbyDV(fveDVID) {
         try {
             const DV = await prisma.$queryRaw`SELECT
@@ -406,7 +423,7 @@ class VentasRepository {
             handlePrismaError(error)
         }
     }
-    createFV (idFV,idDV,{idCliente, tipo_documento, numero_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot,neto,bruto}){
+    createFV (idFV,idDV, folio,{idCliente, tipo_documento,fecha, idVendedor, condicion_de_pago, centro_beneficio, observacion, nota_interna, ot,neto,bruto}){
             try {
                 return prisma.factura_venta.create({
                     data: {
@@ -415,7 +432,7 @@ class VentasRepository {
                         idCliente,
                         tipo_documento,
                         //numero que viene de SII
-                        numero_documento,
+                        numero_documento: folio,
                         fecha,
                         idVendedor,
                         condicion_de_pago,
@@ -442,6 +459,22 @@ class VentasRepository {
                 }
             });
             return facturaVenta ? facturaVenta.id : null;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    async getFV_detailsDTE_ById(idFV){
+        try {
+            const facturaVenta = await prisma.factura_venta.findUnique({
+                where: {
+                    id: idFV
+                },
+                select: {
+                    tipo_documento: true,
+                    numero_documento: true
+                }
+            });
+            return facturaVenta ? facturaVenta : false;
         } catch (error) {
             handlePrismaError(error)
         }
@@ -550,6 +583,22 @@ class VentasRepository {
                 }
             });
             return facturaVentaExenta ? facturaVentaExenta.id : null;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+    
+    async getNotaFVE_detailsDTE_ById(idFVE){
+        try {
+            const facturaVentaExenta = await prisma.factura_venta_excenta.findFirst({
+                where: {
+                    id: idFVE
+                },
+                select: {
+                    numero_documento: true 
+                }
+            });
+            return facturaVentaExenta ? facturaVentaExenta : false;
         } catch (error) {
             handlePrismaError(error)
         }

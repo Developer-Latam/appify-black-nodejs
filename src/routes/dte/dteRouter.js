@@ -1,14 +1,16 @@
 import Router from 'express'
-import { emitirDTEtemporalController,dteUpdStatusSII,emitirDTERealController,testDTERealPDF, testDTEtemporalPDF, testDTEtemporalPARAMS } from '../../controllers/dte/docTemporalController.js'
+import { emitirDTEtemporalController,dteUpdStatusSII,emitirDTERealController,getDTERealPDF, getDTEtemporalPDFController, testDTEtemporalPARAMS } from '../../controllers/dte/docTemporalController.js'
 const router = Router()
-
+//RUTAS DE TEST
 router.get('/test', emitirDTEtemporalController)
 router.get('/testDTEReal', emitirDTERealController)
 router.get('/test3', testDTEtemporalPARAMS)
-router.get('/updStatus', dteUpdStatusSII)
+
 
 //ruta del pdf
-router.get('/test2', testDTEtemporalPDF)
-router.get('/pdf-dteReal', testDTERealPDF)
+router.get('/pdf-dteTemp', getDTEtemporalPDFController)
+router.get('/pdf-dteReal', getDTERealPDF)
+//Actualizar estado en el SII del DTE
+router.get('/updStatus', dteUpdStatusSII)
 
 export default router

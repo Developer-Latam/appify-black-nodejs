@@ -7,7 +7,7 @@ class ServiceService {
         try {
             const id = idgenerate("service");
             const superUserExist = await userRepository.userExistsById(data.user);
-            const serviceExist = await ServiceRepository.serviceExistsByName(data.nombre);
+            const serviceExist = await ServiceRepository.serviceExistsByName(data.nombre, data.user);
             if(serviceExist && superUserExist){
                 throw new CustomError(400, "Bad Request", 'Servicio ya existente en la empresa')
             }

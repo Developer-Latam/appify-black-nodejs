@@ -98,11 +98,12 @@ class ClientesRepository {
         }
     }
     // Funcion para checkear que no exista el mismo servicio
-    async clienteExistsByName(nameCliente) {
+    async clienteExistsByName(nameCliente,user) {
         try {
             const nombre = await prisma.clientes.findFirst({
                 where: {
                     razon_social : nameCliente,
+                    user : user
                 },
             })
             return nombre !== null;

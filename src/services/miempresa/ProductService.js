@@ -7,7 +7,7 @@ class ProductService {
         try {
             const id = idgenerate("product");
             const superUserExist = await userRepository.userExistsById(data.user);
-            const productoExist = await ProductRepository.productExistsByName(data.nombre);
+            const productoExist = await ProductRepository.productExistsByName(data.nombre, data.user);
             
             if (productoExist && superUserExist) {
                 throw new CustomError(400, "Bad Request",'Producto ya existente en la empresa');
