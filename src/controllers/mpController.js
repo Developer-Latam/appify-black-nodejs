@@ -40,15 +40,12 @@ export const preferencesMp = async (req, res, next) => {
           },
         ],
         back_urls: {
-          success:
-            "https://desire-virue-council-cal.trycloudflare.com/mp/feedback",
-          failure:
-            "https://desire-virue-council-cal.trycloudflare.com/mp/feedback",
-          pending:
-            "https://desire-virue-council-cal.trycloudflare.com/mp/feedback",
+          success: "https://appify-black-side.vercel.app/mp/feedback",
+          failure: "https://appify-black-side.vercel.app/mp/feedback",
+          pending: "https://appify-black-side.vercel.app/mp/feedback",
         },
         auto_return: "approved",
-        notification_url: `https://desire-virue-council-cal.trycloudflare.com/mp/feedback`,
+        notification_url: `https://appify-black-side.vercel.app/mp/feedback`,
       },
     })
     .then((result) => {
@@ -61,31 +58,37 @@ export const preferencesMp = async (req, res, next) => {
 };
 
 export const feedbackMp = async (req, res, next) => {
-  console.log("entre a feedback req.query:", req.query);
-  const { query } = req;
-  const topic = query.topic || query.type;
-  console.log("topic:");
-  console.log(topic);
-  if (topic === "payment") {
-    const paymentId = query.id || query["data.id"];
-    await registerPay(paymentId /* , params.rut, params.idDoc, params.monto */);
-  }
+  try {
+    console.log("entre a feedback req.query:", req.query);
+    const { query } = req;
+    const topic = query.topic || query.type;
+    console.log("topic:");
+    console.log(topic);
+    if (topic === "payment") {
+      const paymentId = query.id || query["data.id"];
+      await registerPay(
+        paymentId /* , params.rut, params.idDoc, params.monto */
+      );
+    }
 
-  return res.status(200).send("OK");
-  /* console.log("entre a feedback req:", req); */
-  /* const { query } = req; */
-  /*const topic = query.topic || query.type;
+    ResponseHandler.Ok(res, 200, "OK");
+  } catch (error) {
+    /* console.log("entre a feedback req:", req); */
+    /* const { query } = req; */
+    /*const topic = query.topic || query.type;
   console.log("query:", { query });
   console.log("topic:");
   console.log(topic); */
-  /* res.json({
+    /* res.json({
     Payment: req.query.payment_id,
     Status: req.query.status,
     MerchantOrder: req.query.merchant_order_id,
     Payment_type: req.query.payment_type,
   }); */
 
-  /* console.log("response feedback", res); */
+    /* console.log("response feedback", res); */
+    ResponseHandler.HandleError(res, error);
+  }
 };
 
 async function registerPay(paymentId /* , rut, idDoc, monto */) {
