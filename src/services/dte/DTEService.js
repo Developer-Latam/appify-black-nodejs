@@ -183,8 +183,9 @@ class DTEService {
             nroFolio = nc.numero_documento
             if(nc.tipo_credito === true){
                 nroDTEref = '61';  
-            }
-            nroDTEref = '56'                                          
+            }else {
+                nroDTEref = '56';
+            }                                        
         }
         const cliente = await clientesService.getClienteById(notas_de_credito_debito.idCliente);
         if (!cliente) throw new CustomError(404, "Not Found", "Cliente no encontrado");
@@ -242,28 +243,53 @@ class DTEService {
         let nroFolio;
         let nroDTEref;
         let itemsDocAsoc;
-        if ( item_servicio_nota_credito || item_producto_nota_credito || item_servicio_nota_credito_NC || item_producto_nota_credito_NC ) {
-            
-        } else if (item_servicio_factura_venta || item_producto_factura_venta ) {
+        if (item_servicio_factura_venta || item_producto_factura_venta) {
             idReferencia = notas_de_credito_debito.idDoc;
             const fv = await ventasRepository.getFV_DetailsDTE_byDV(idReferencia)
-            console.log("DEBUG DE ITEM FV BY idDoc",fv)
-            
-            nroFolio = fv.numero_documento
-            nroDTEref = '33';
-        } else if (nota_credito_nota_NC) {
-            idReferencia = nota_credito_nota_NC.idNotadeCD;
-            const nc = await ventasRepository.getNota_detailsDTE_ById(idReferencia)
-            const resultado = await ventasService.buscarFacturaAsociada(idReferencia);
-            itemsDocAsoc = resultado.items;
+            if (fv.length > 0) {
+                nroFolio = Array.isArray(fv) ? fv[0].numero_documento : fv.numero_documento;
+                nroDTEref = '33';
+            } else {
+                throw new CustomError(404, "Not Found", "No existe DOC ASOCIADO A ESE ID DOC")
+            }
+            itemsDocAsoc = await this.transformarDatosEntrantes(item_servicio_factura_venta, item_producto_factura_venta)
+        } else if (item_servicio_factura_venta_excenta || item_producto_factura_venta_excenta) {
+            idReferencia = notas_de_credito_debito.idDoc;
+            const fve = await ventasRepository.getFVE_DetailsDTE_byDV(idReferencia)
+            if (fve.length > 0) {
+                nroFolio = Array.isArray(fve) ? fve[0].numero_documento : fve.numero_documento;
+                nroDTEref = '34';
+            } else {
+                throw new CustomError(404, "Not Found", "No existe DOC ASOCIADO A ESE DOC-VENTA")
+            }
+            itemsDocAsoc = await this.transformarDatosEntrantes(item_servicio_factura_venta_excenta, item_producto_factura_venta_excenta)
+        } else if (item_servicio_nota_credito || item_producto_nota_credito) {
+            idReferencia = notas_de_credito_debito.idDoc;
+            let nc = await ventasRepository.getNCoDbyIdDoc(idReferencia)
+            nc = nc[0] 
+            itemsDocAsoc = await this.transformarDatosEntrantes(item_servicio_nota_credito, item_producto_nota_credito)
             nroFolio = nc.numero_documento
             if(nc.tipo_credito === true){
                 nroDTEref = '61';  
+            }else {
+                nroDTEref = '56';
             }
-            nroDTEref = '56'                                          
+        }else if(item_servicio_nota_credito_NC || item_producto_nota_credito_NC){
+            idReferencia = notas_de_credito_debito.idDoc
+            let nc = await ventasRepository.getNCoDbyIdDoc(idReferencia)
+            nc = nc[1]
+            itemsDocAsoc = await this.transformarDatosEntrantes(item_servicio_nota_credito_NC, item_producto_nota_credito_NC)
+            nroFolio = nc.numero_documento
+            if(nc.tipo_credito === true){
+                nroDTEref = '61';  
+            }else {
+                nroDTEref = '56';
+            }
         }
         const cliente = await clientesService.getClienteById(notas_de_credito_debito.idCliente);
-        if (!cliente) throw new CustomError(404, "Not Found", "Cliente no encontrado");
+        if (!cliente.cliente) {
+            throw new CustomError(404, "Not Found", "Cliente no encontrado");
+        }
         const tipoDTE = notas_de_credito_debito.tipo_credito ? 61 : 56; // 61 para crédito, 56 para débito
         // Transformar los items asociados para el detalle
         let detalles = this.transformarItemsADetalle(itemsDocAsoc);
@@ -329,7 +355,35 @@ class DTEService {
         }
         return detalles;
     }
-    
+    // Función para transformar los datos
+    async transformarDatosEntrantes(servicios = [], productos = []) {
+        // Mapeamos los servicios y resolvemos las promesas
+        const serviciosTransformados = await Promise.all(servicios.map(async servicio => {
+            const { servicio: nombreServicio } = await ventasRepository.getNameProdServByID(servicio.idServicio, null);
+            return {
+                idServicio: servicio.idServicio,
+                codigo: servicio.codigo || null,
+                cantidad: servicio.cantidad,
+                unitario: servicio.unitario,
+                nombre: nombreServicio || servicio.notas  // Usamos el nombre obtenido, fallback a las notas si no hay nombre
+            };
+        }));
+        // Mapeamos los productos y resolvemos las promesas
+        const productosTransformados = await Promise.all(productos.map(async producto => {
+            const { producto: nombreProducto } = await ventasRepository.getNameProdServByID(null, producto.idProducto);
+            return {
+                idProducto: producto.idProducto,
+                codigo: producto.codigo || null,
+                cantidad: producto.cantidad,
+                unitario: producto.unitario,
+                nombre: nombreProducto || producto.notas  // Usamos el nombre obtenido, fallback a las notas si no hay nombre
+            };
+        }));
+        return {
+            servicios: serviciosTransformados,
+            productos: productosTransformados
+        };
+    }
 }
 
 export default new DTEService()

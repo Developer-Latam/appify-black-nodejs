@@ -856,7 +856,7 @@ class VentasService {
             }
             const result = await executeTransactions(operations);
             
-            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result, resultDTE };
+            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result ,resultDTE };
         } catch (error) {
             console.log(error)
             throw error;

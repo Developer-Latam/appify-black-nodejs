@@ -314,6 +314,41 @@ class VentasRepository {
             handlePrismaError(error);
         }
     }
+    async getNameProdServByID(idServ, idProd){
+        try {
+            let response = {};
+            if (idServ) {
+                const servicio = await prisma.servicios.findFirst({
+                    where: {
+                        id: idServ
+                    },
+                    select: {
+                        nombre: true 
+                    }
+                });
+                if (servicio && servicio.nombre) {
+                    response.servicio = servicio.nombre;
+                }
+            }
+            if (idProd) {
+                const producto = await prisma.productos.findFirst({
+                    where: {
+                        id: idProd
+                    },
+                    select: {
+                        nombre: true 
+                    }
+                });
+                if (producto && producto.nombre) {
+                    response.producto = producto.nombre;
+                }
+            }
+            // Devuelve response si tiene al menos un campo (servicio o producto), de lo contrario devuelve false
+            return Object.keys(response).length ? response : false;
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
     async getItemsByFVEId(fvID) {
         try {
             // Obtener servicios con nombre
@@ -467,21 +502,34 @@ class VentasRepository {
     async getFV_DetailsDTE_byDV(DVID) {
         try {
             const DV = await prisma.$queryRaw`SELECT
-            fv.id AS FacturaVentaID,
+            fv.id,
             fv.numero_documento,
             isv.idServicio,
-            isv.codigo,
-            isv.cantidad,
-            isv.unitario,
-            ipv.idProducto,
-            ipv.codigo,
-            ipv.cantidad,
-            ipv.unitario
+            ipv.idProducto
             FROM
                 documento_venta dv
                 INNER JOIN factura_venta fv ON dv.id = fv.idDoc
                 LEFT JOIN item_servicio_factura_venta isv ON fv.id = isv.idFactura
                 LEFT JOIN item_producto_factura_venta ipv ON fv.id = ipv.idFactura
+            WHERE
+                dv.id = ${DVID};`;
+            return DV;
+        }catch(error){
+            handlePrismaError(error)
+        }
+    }
+    async getFVE_DetailsDTE_byDV(DVID) {
+        try {
+            const DV = await prisma.$queryRaw`SELECT
+            fv.id,
+            fv.numero_documento,
+            isv.idServicio,
+            ipv.idProducto
+            FROM
+                documento_venta dv
+                INNER JOIN factura_venta_excenta fv ON dv.id = fv.idDoc
+                LEFT JOIN item_servicio_factura_venta_excenta isv ON fv.id = isv.idFactura
+                LEFT JOIN item_producto_factura_venta_excenta ipv ON fv.id = ipv.idFactura
             WHERE
                 dv.id = ${DVID};`;
             return DV;
