@@ -1,7 +1,13 @@
-import { Router } from 'express';
-import { testMPController } from '../controllers/mpController.js';
-const router = Router()
+import { Router } from "express";
+import {
+  testMPController,
+  preferencesMp,
+  feedbackMp,
+} from "../controllers/mpController.js";
+const router = Router();
 
-router.get('/code', testMPController)
+router.get("/code", testMPController);
+router.post("/create_preference", preferencesMp);
+router.post("/feedback", feedbackMp);
 
-export default router
+export default router;
