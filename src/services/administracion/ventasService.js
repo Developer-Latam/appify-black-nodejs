@@ -617,9 +617,8 @@ class VentasService {
             if(!emisor){
                 throw new CustomError(400, "Bad Request", "Para realizar la op FV se debe indicar campo emisor")
             }
-            // const dteCreated = await DTEService.createFV(data)
-            // folio = dteCreated.folio
-            folio = 0;
+            const dteCreated = await DTEService.createFV(data)
+            folio = dteCreated.folio
             const idFV = idgenerate("FV")
             const idDV = idgenerate("DV")
             let operations = []
@@ -643,7 +642,7 @@ class VentasService {
             }
             //Ejecutar las operaciones en una transaction
             const result = await executeTransactions(operations)
-            return { message: "Transacciones FV completas con éxito", result };
+            return { message: "Transacciones FV completas con éxito", result, DTE: dteCreated };
         } catch (error) {
             throw error;
         }
@@ -838,7 +837,7 @@ class VentasService {
             ) {
                 throw new CustomError(400, "Bad Request", "Solo se puede especificar una opción: nota_factura_venta, nota_factura_venta_excenta o nota_credito_nota_NC");
             }
-            const resultDTE = await DTEService.createNCOD(data)
+            
             let operations = [ventasRepository.createNCoD(idNCoD, notas_de_credito_debito)];
             const items = [
                 { item: nota_factura_venta, repository: ventasRepository.createNotaFV, idProperty: "idFacturaVenta" },
@@ -855,8 +854,9 @@ class VentasService {
             }
             }
             const result = await executeTransactions(operations);
-            
-            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result ,resultDTE };
+            //Creacion del documento temporal y real con la data entrante
+            const resultDTE = await DTEService.createNCOD(data);
+            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result ,DTE: resultDTE };
         } catch (error) {
             console.log(error)
             throw error;
@@ -883,7 +883,7 @@ class VentasService {
             if (!item_servicio_nota_credito && !item_producto_nota_credito && !item_servicio_nota_credito_NC && !item_producto_nota_credito_NC && !item_servicio_factura_venta && !item_producto_factura_venta && !item_servicio_factura_venta_excenta && !item_producto_factura_venta_excenta) {
                 throw new CustomError(400, "Bad Request", "Se requiere al menos un item de servicio o producto para realizar este movimiento");
             }
-            const resultDTE = await DTEService.createNCOD(data)
+            
             let operations = [ventasRepository.createNCoD(idNCoD, notas_de_credito_debito)];
             // Determinar el conjunto de datos a procesar
             if (item_servicio_nota_credito || item_producto_nota_credito || item_servicio_nota_credito_NC || item_producto_nota_credito_NC) {
@@ -926,7 +926,8 @@ class VentasService {
             throw new CustomError(400, "Bad Request", "No se proporcionaron items válidos para procesar");
         }
             const result = await executeTransactions(operations);
-            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - CORRIGE MONTO) completas con éxito", result };
+            const resultDTE = await DTEService.createNCOD(data)
+            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - CORRIGE MONTO) completas con éxito", result, DTE: resultDTE };
         } catch (error) {
             console.log(error)
             throw error;
