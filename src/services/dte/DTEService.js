@@ -124,10 +124,10 @@ class DTEService {
                                 await this.dataAdapterNC_CORRIGE_MONTOS(folio, data);
             console.log("DATA LISTA PARA HACER NOTA", dataAdapted);
             // Las siguientes líneas están comentadas porque dependen de implementaciones específicas
-            const dteTemp = await dteTemporal.postData(dataAdapted)
-            console.log("debug dte temporal", dteTemp)
-            const dteR = await dteReal.emit(dteTemp)
-            console.log("debug dte real", dteR)
+            // const dteTemp = await dteTemporal.postData(dataAdapted)
+            // console.log("debug dte temporal", dteTemp)
+            // const dteR = await dteReal.emit(dteTemp)
+            // console.log("debug dte real", dteR)
             return dteR;
         } catch (error) {
             throw error
@@ -193,10 +193,13 @@ class DTEService {
                     CorreoRecep: cliente.contactos[0].email,
                     DirRecep: cliente.cliente.direccion,
                     CmnaRecep: cliente.cliente.comuna
+                },
+                Totales: {
+                    MntNeto: 0,
+                    TasaIVA: 19,
+                    IVA: 0,
+                    MntTotal: 0
                 }
-            },
-            Totales: {
-                MntTotal: 0
             },
             Detalle: detalles,
             Referencia: [{
@@ -264,9 +267,12 @@ class DTEService {
                         DirRecep: cliente.cliente.direccion,
                         CmnaRecep: cliente.cliente.comuna
                     },
-                },
-                Totales: {
-                    MntTotal: 0
+                    Totales: {
+                        MntNeto: 0,
+                        TasaIVA: 19,
+                        IVA: 0,
+                        MntTotal: 0
+                    }
                 },
                 Detalle: detalles,
                 Referencia: [{
