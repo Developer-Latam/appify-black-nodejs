@@ -1,5 +1,6 @@
-import { MercadoPagoConfig, Preference } from "mercadopago";
-console.log("mercadopag type:", typeof MercadoPagoConfig);
+import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
+import { ResponseHandler } from "../utils/dependencys/injection.js";
+import mpService from "../services/mpService.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const mercadopago = require("mercadopago");
@@ -18,46 +19,51 @@ export const testMPController = async (req, res, next) => {
 };
 
 export const preferencesMp = async (req, res, next) => {
-  const client = new MercadoPagoConfig({
-    accessToken: process.env.MP_ACCESS_TOKEN,
-  });
+  const { orderData, userLoggedData } = req.body;
+  const userId = userLoggedData.id;
+  console.log("Received order data:", orderData);
+  console.log("Received user logged data:", userLoggedData);
+  console.log("User ID:", userId);
+  try {
+    const client = new MercadoPagoConfig({
+      /* accessToken: process.env.MP_ACCESS_TOKEN, */
+      accessToken:
+        "APP_USR-1545338219587427-052910-e7616698dd014d5ff4a495b66b757de3-1677027160",
+    });
 
-  /*  const monto = req.body.amount; */
-  /* console.log(monto);*/
-  /*   console.log("entro create_preference", req);
-   */
-  const preference = new Preference(client);
+    const preference = new Preference(client);
 
-  preference
-    .create({
+    const result = await preference.create({
       body: {
         items: [
           {
-            title: req.body.description,
-            unit_price: Number(req.body.price),
-            quantity: Number(req.body.quantity),
+            title: orderData.description,
+            unit_price: Number(orderData.price),
+            quantity: Number(orderData.quantity),
             currecy_id: "CLP",
           },
         ],
         back_urls: {
-          success: "https://appify-black-side.vercel.app/mp/feedback",
-          failure: "https://appify-black-side.vercel.app/mp/feedback",
-          pending: "https://appify-black-side.vercel.app/mp/feedback",
+          success: "http://localhost:8080/mp/feedback",
+          failure: "http://localhost:8080/mp/feedback",
+          pending: "http://localhost:8080/mp/feedback",
         },
         auto_return: "approved",
-        notification_url: `https://appify-black-side.vercel.app/mp/feedback`,
+        notification_url: `https://enrollment-laptops-elegant-tom.trycloudflare.com/mp/feedback/${userId}`,
       },
-    })
-    .then((result) => {
-      const respuesta = result;
-      console.log(respuesta.id);
+    });
 
-      res.status(200).json({ id: respuesta.id });
-    })
-    .catch(console.log);
+    ResponseHandler.Ok(res, { id: result.id });
+  } catch (error) {
+    console.log(error);
+    ResponseHandler.HandleError(res, error);
+  }
 };
 
 export const feedbackMp = async (req, res, next) => {
+  const userId = req.params;
+  console.log("userId in feedback endpoint", userId);
+
   try {
     console.log("entre a feedback req.query:", req.query);
     const { query } = req;
@@ -66,65 +72,68 @@ export const feedbackMp = async (req, res, next) => {
     console.log(topic);
     if (topic === "payment") {
       const paymentId = query.id || query["data.id"];
+      await mpService.registerPay(paymentId, userId);
       await registerPay(
         paymentId /* , params.rut, params.idDoc, params.monto */
       );
     }
 
-    ResponseHandler.Ok(res, 200, "OK");
+    ResponseHandler.Ok(res, "OK");
   } catch (error) {
-    /* console.log("entre a feedback req:", req); */
-    /* const { query } = req; */
-    /*const topic = query.topic || query.type;
-  console.log("query:", { query });
-  console.log("topic:");
-  console.log(topic); */
-    /* res.json({
-    Payment: req.query.payment_id,
-    Status: req.query.status,
-    MerchantOrder: req.query.merchant_order_id,
-    Payment_type: req.query.payment_type,
-  }); */
-
-    /* console.log("response feedback", res); */
     ResponseHandler.HandleError(res, error);
   }
 };
 
-async function registerPay(paymentId /* , rut, idDoc, monto */) {
-  const data = await mercadopago.payment.findById(paymentId);
-  console.log("data.body registerPay:", data.body);
-  const date = new Date();
+///this would be in service
+async function registerPay(paymentId, userId /* , rut, idDoc, monto */) {
+  const client = new MercadoPagoConfig({
+    /* accessToken: process.env.MP_ACCESS_TOKEN, */
+    accessToken:
+      "APP_USR-1545338219587427-052910-e7616698dd014d5ff4a495b66b757de3-1677027160",
+  });
+  console.log("paymentid:", paymentId);
+  console.log("inside register pay");
 
-  if (data.body.status === "approved") {
-    console.log("pago aprobado");
-    try {
-      const idDocOf = idDoc.replace("-", "/");
-      console.log("respuesta de registros");
-      const [responseFact] = await connection.execute(
-        `SELECT * FROM pagos_marcados WHERE idCliente="${rut}" AND idDoc = "${idDocOf}" AND bruto = "${monto}" AND neto ="${monto}" AND fecha = "${date.getFullYear()}-${
-          date.getMonth() + 1
-        }-${date.getDate()}"`
-      );
+  try {
+    const payment = await new Payment(client).get({ id: paymentId });
+    /* console.log("payment :", payment); */
+    console.log("payment status :", payment.status);
+    console.log("payment payer :", payment.payer);
+    const date = new Date();
 
-      console.log(responseFact);
-
-      if (responseFact.length === 0) {
-        await connection.execute(
-          "INSERT INTO pagos_marcados(idCliente,idDoc,bruto,neto,fecha) VALUES (?,?,?,?,?)",
-          [
-            rut,
-            idDocOf,
-            monto,
-            monto,
-            `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-          ]
+    if (payment.status === "approved") {
+      console.log("pago aprobado");
+      //here registerPaymentInDataBase(payment, date) and this is in repository
+      /* try {
+        const idDocOf = idDoc.replace("-", "/");
+        console.log("respuesta de registros");
+        const [responseFact] = await connection.execute(
+          `SELECT * FROM pagos_marcados WHERE idCliente="${rut}" AND idDoc = "${idDocOf}" AND bruto = "${monto}" AND neto ="${monto}" AND fecha = "${date.getFullYear()}-${
+            date.getMonth() + 1
+          }-${date.getDate()}"`
         );
-      }
-      //Aca deberia ir el socket
-      io.emit("pegoRegister", { idDocOf, status: "apro" });
-    } catch (err) {
-      console.log(err);
+
+        console.log(responseFact);
+
+        if (responseFact.length === 0) {
+          await connection.execute(
+            "INSERT INTO pagos_marcados(idCliente,idDoc,bruto,neto,fecha) VALUES (?,?,?,?,?)",
+            [
+              rut,
+              idDocOf,
+              monto,
+              monto,
+              `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+            ]
+          );
+        }
+        // Emit the socket event
+        io.emit("pegoRegister", { idDocOf, status: "apro" });
+      } catch (err) {
+        console.log("Error during database operation:", err);
+      } */
     }
+  } catch (error) {
+    console.log("Error finding payment by ID:", error);
   }
 }
