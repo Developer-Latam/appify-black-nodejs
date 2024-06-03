@@ -59,8 +59,8 @@ export const preferencesMp = async (req, res, next) => {
 };
 
 export const feedbackMp = async (req, res, next) => {
-  const email = req.params;
-  console.log("email in feedback endpoint", email);
+  const id = req.params;
+  console.log("email in feedback endpoint", id);
 
   try {
     console.log("entre a feedback req.query:", req.query);
@@ -70,7 +70,7 @@ export const feedbackMp = async (req, res, next) => {
     console.log(topic);
     if (topic === "payment") {
       const paymentId = query.id || query["data.id"];
-      await mpService.registerPay(paymentId, email);
+      await mpService.registerPay(paymentId, id);
     }
 
     ResponseHandler.Ok(res, "OK");
