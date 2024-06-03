@@ -11,9 +11,7 @@ class mpService {
   async registerPay(paymentId, email) {
     try {
       const client = new MercadoPagoConfig({
-        /* accessToken: process.env.MP_ACCESS_TOKEN, */
-        accessToken:
-          "APP_USR-1545338219587427-052910-e7616698dd014d5ff4a495b66b757de3-1677027160",
+        accessToken: process.env.MP_ACCESS_TOKEN,
       });
       console.log("paymentid:", paymentId);
       console.log("inside register pay");
