@@ -1,4 +1,5 @@
 import { prisma } from "../../utils/dependencys/injection.js";
+import handlePrismaError from "../../utils/httpRes/handlePrismaError.js";
 import { CustomError } from "../../utils/httpRes/handlerResponse.js";
 async function executeTransactions(operations) {
     try {
@@ -7,7 +8,8 @@ async function executeTransactions(operations) {
         return result; // Puede que quieras retornar el resultado directamente sin formatearlo como string
     } catch (error) {
         //console.log(error)
-        throw new CustomError(500, 'Transaction failed', error);
+        //throw new CustomError(500, 'Transaction failed', error);
+        throw error
     }
 }
 export default executeTransactions;
