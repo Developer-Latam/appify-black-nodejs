@@ -271,6 +271,7 @@ model factura_venta {
   ot                Boolean
   neto              Float     @db.Float
   bruto             Float     @db.Float
+  pagado            Boolean
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")
@@ -293,6 +294,7 @@ model factura_venta_excenta {
   ot                Boolean
   neto              Float     @db.Float
   bruto             Float     @db.Float
+  pagado            Boolean
 
   @@index([idCliente], map: "clientes")
   @@index([idDoc], map: "documento_venta")

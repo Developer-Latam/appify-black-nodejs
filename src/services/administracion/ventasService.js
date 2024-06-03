@@ -101,6 +101,29 @@ class VentasService {
             throw error
         }
     }
+    async buscarFacturaAsociada(idReferencia) {
+        try {
+            const idDocumento = await ventasRepository.getDocAsociadoByIdNCOD(idReferencia);
+            if (!idDocumento) {
+                throw new CustomError(404, "Not Found", "No existe un documento asociado con este NCOD");
+            }
+            const prefix = idDocumento.split('-')[0];
+            switch (prefix) {
+                case 'NC':
+                    return await this.buscarFacturaAsociada(idDocumento); // Recursividad aquí
+                case 'FV':
+                    const fvItems = await ventasRepository.getItemsByFVId(idDocumento);
+                    return { tipo: 'FV', items: fvItems };
+                case 'FVE':
+                    const fveItems = await ventasRepository.getItemsByFVEId(idDocumento);
+                    return { tipo: 'FVE', items: fveItems };
+                default:
+                    throw new CustomError(400, "Bad Request", "Tipo de documento desconocido: " + prefix);
+            }
+        } catch (error) {
+            throw err
+        }
+    }
     async getFVoFVEbyDC(idDocumentoVenta){
         try {
             if (!idDocumentoVenta) {
@@ -594,9 +617,8 @@ class VentasService {
             if(!emisor){
                 throw new CustomError(400, "Bad Request", "Para realizar la op FV se debe indicar campo emisor")
             }
-            // const dteCreated = await DTEService.createFV(data)
-            // folio = dteCreated.folio
-            folio = 0;
+            const dteCreated = await DTEService.createFV(data)
+            folio = dteCreated.folio
             const idFV = idgenerate("FV")
             const idDV = idgenerate("DV")
             let operations = []
@@ -620,7 +642,7 @@ class VentasService {
             }
             //Ejecutar las operaciones en una transaction
             const result = await executeTransactions(operations)
-            return { message: "Transacciones FV completas con éxito", result };
+            return { message: "Transacciones FV completas con éxito", result, DTE: dteCreated };
         } catch (error) {
             throw error;
         }
@@ -718,6 +740,7 @@ class VentasService {
     async createFVE(data) {
         try {
             const {
+                emisor,
                 documento_venta,
                 factura_venta_excenta,
                 item_servicio_factura_venta_excenta,
@@ -731,7 +754,9 @@ class VentasService {
             const idFVE = idgenerate("FVE")
             const idDV = idgenerate("DV")
             let operations = []
-            operations.push(ventasRepository.createDocVentas(idDV, documento_venta));
+            let folio;
+            folio = 0;
+            operations.push(ventasRepository.createDocVentas(idDV,folio, documento_venta));
             operations.push(ventasRepository.createFVE(idFVE, idDV, factura_venta_excenta));
             if (factura_venta_excenta.ot === true && orden_trabajo_FVE.length > 0) {
                 const itemsOT = ventasRepository.createOTinFVE(idFVE, orden_trabajo_FVE)
@@ -812,8 +837,7 @@ class VentasService {
             ) {
                 throw new CustomError(400, "Bad Request", "Solo se puede especificar una opción: nota_factura_venta, nota_factura_venta_excenta o nota_credito_nota_NC");
             }
-            const resultDTE = await DTEService.createNCODAnulaDoc(data)
-            console.log(resultDTE)
+            
             let operations = [ventasRepository.createNCoD(idNCoD, notas_de_credito_debito)];
             const items = [
                 { item: nota_factura_venta, repository: ventasRepository.createNotaFV, idProperty: "idFacturaVenta" },
@@ -830,7 +854,9 @@ class VentasService {
             }
             }
             const result = await executeTransactions(operations);
-            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result };
+            //Creacion del documento temporal y real con la data entrante
+            const resultDTE = await DTEService.createNCOD(data);
+            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - ANULA DOC) completas con éxito", result ,DTE: resultDTE };
         } catch (error) {
             console.log(error)
             throw error;
@@ -839,6 +865,7 @@ class VentasService {
     async createNCoDyItemsCorrigeMonto(idNCoD, data) {
         try {
             const {
+                emisor,
                 notas_de_credito_debito,
                 item_servicio_nota_credito,
                 item_producto_nota_credito,
@@ -856,6 +883,7 @@ class VentasService {
             if (!item_servicio_nota_credito && !item_producto_nota_credito && !item_servicio_nota_credito_NC && !item_producto_nota_credito_NC && !item_servicio_factura_venta && !item_producto_factura_venta && !item_servicio_factura_venta_excenta && !item_producto_factura_venta_excenta) {
                 throw new CustomError(400, "Bad Request", "Se requiere al menos un item de servicio o producto para realizar este movimiento");
             }
+            
             let operations = [ventasRepository.createNCoD(idNCoD, notas_de_credito_debito)];
             // Determinar el conjunto de datos a procesar
             if (item_servicio_nota_credito || item_producto_nota_credito || item_servicio_nota_credito_NC || item_producto_nota_credito_NC) {
@@ -898,8 +926,10 @@ class VentasService {
             throw new CustomError(400, "Bad Request", "No se proporcionaron items válidos para procesar");
         }
             const result = await executeTransactions(operations);
-            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - CORRIGE MONTO) completas con éxito", result };
+            const resultDTE = await DTEService.createNCOD(data)
+            return { message: "Transacciones (NOTA DE CREDITO/DEBITO - CORRIGE MONTO) completas con éxito", result, DTE: resultDTE };
         } catch (error) {
+            console.log(error)
             throw error;
         }
     }
