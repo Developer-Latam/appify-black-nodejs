@@ -49,6 +49,8 @@ export const updateProject = async (req, res) => {
         ResponseHandler.HandleError(res, err)
     }
 };
+
+
 export const deleteProject = async (req, res) => {
     try {
         const { idProyecto } = req.params;

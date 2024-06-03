@@ -24,6 +24,7 @@ class ProjectService {
             }
             return ProjectRepository.createProject({ ...data, id: id });
         } catch (error) {
+            console.log(error)
             throw error;
         }
     }
@@ -208,6 +209,8 @@ class ProjectService {
             throw error;
         }
     }
+
+
     async deleteProject(id) {
         try {
             return ProjectRepository.deleteProject(id);

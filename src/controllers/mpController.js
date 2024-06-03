@@ -32,6 +32,8 @@ export const preferencesMp = async (req, res, next) => {
     });
 
     const preference = new Preference(client);
+    
+    const url = 'http://localhost:8080'
 
     const result = await preference.create({
       body: {
@@ -44,9 +46,9 @@ export const preferencesMp = async (req, res, next) => {
           },
         ],
         back_urls: {
-          success: "http://localhost:8080/mp/feedback",
-          failure: "http://localhost:8080/mp/feedback",
-          pending: "http://localhost:8080/mp/feedback",
+          success: `${url}/mp/feedback`,
+          failure: `${url}/mp/feedback`,
+          pending: `${url}/mp/feedback`
         },
         auto_return: "approved",
         notification_url: `https://enrollment-laptops-elegant-tom.trycloudflare.com/mp/feedback/${userId}`,
