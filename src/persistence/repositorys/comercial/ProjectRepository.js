@@ -7,6 +7,7 @@ class ProjectRepository{
                 data: data
             });
         } catch (error) {
+            console.log(error)
             handlePrismaError(error);
         }
     }
@@ -51,6 +52,7 @@ class ProjectRepository{
             handlePrismaError(error);
         }
     }
+
     async deleteProject(id) {
         try {
             return prisma.proyectos.delete({

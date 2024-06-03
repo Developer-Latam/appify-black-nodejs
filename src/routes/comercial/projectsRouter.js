@@ -5,7 +5,8 @@ import {
     updateProject,
     deleteProject,
     createProjectAll,
-    getAllDataProjectsbyUserId
+    getAllDataProjectsbyUserId,
+
 } from '../../controllers/comercial/ProjectsController.js';
 import { 
     createProjectPrestacion,
@@ -44,6 +45,8 @@ router.get('/alldata/:id', getAllDataProjectsbyUserId);
 // Actualizar un proyecto
 
 router.put('/project/:idProyecto', updateProject);
+
+
 
 // Eliminar un proyecto
 

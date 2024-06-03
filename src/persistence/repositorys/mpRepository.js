@@ -3,7 +3,7 @@ import handlePrismaError from "../../utils/httpRes/handlePrismaError.js";
 class mpRepository {
   async registerPay(data) {
     try {
-      return prisma.cuenta_banco_conciliacion.create({
+      return prisma.pagoMercadopago.create({
         data: data,
       });
     } catch (error) {
@@ -11,10 +11,10 @@ class mpRepository {
     }
   }
 
-  async findLinkByUserId(userid) {
+  async findLinkByUserId(id) {
     try {
-      return prisma.link_fintoc_bancos.findUnique({
-        where: { user: userid },
+      return prisma.pagoMercadopago.findUnique({
+        where: { id: id },
       });
     } catch (error) {
       handlePrismaError(error);

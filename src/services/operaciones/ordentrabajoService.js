@@ -33,9 +33,11 @@ class ordenTrabajoService {
     async getAllDataOrdenTrabajoByUserId(id) {
         try{
             const ordenes = await this.getOrdenTrabajoByUserId(id);
+
             const formattedOrdenes = [];
 
             for (const orden of ordenes) {
+                
                 const project = await ProjectService.getProjectById(orden.idProyecto)
                 const cliente = await clientesRepository.findClienteById(project[0].cliente.cliente.id)
                 const vendedor = await userService.getSubUserById(orden.idVendedor)

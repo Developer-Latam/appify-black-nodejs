@@ -5,6 +5,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const mercadopago = require("mercadopago");
 import "dotenv/config";
+import axios from "axios";
 
 export const testMPController = async (req, res, next) => {
   const { code } = req.query;
@@ -19,50 +20,55 @@ export const testMPController = async (req, res, next) => {
 };
 
 export const preferencesMp = async (req, res, next) => {
-  const { orderData, userLoggedData } = req.body;
-  const userId = userLoggedData.id;
+  console.log("Req body total", req.body);
+  const orderData = req.body.transaction_amount;
+  const email = req.body.payer.email;
   console.log("Received order data:", orderData);
-  console.log("Received user logged data:", userLoggedData);
-  console.log("User ID:", userId);
-  try {
-    const client = new MercadoPagoConfig({
-      /* accessToken: process.env.MP_ACCESS_TOKEN, */
-      accessToken:
-        "APP_USR-1545338219587427-052910-e7616698dd014d5ff4a495b66b757de3-1677027160",
-    });
+  console.log("Received email data:", email);
+  const { payer, token, transaction_amount } = req.body;
 
-    const preference = new Preference(client);
+  const data = {
+    preapproval_plan_id: "2c9380848fde7fa4018fdec39c5c0018",
+    external_reference: "YG-001",
+    payer_email: payer.email,
+    card_token_id: token,
+    auto_recurring: {
+      frequency: 1,
+      frequency_type: "months",
+      start_date: "2024-06-01T13:07:14.260Z",
+      end_date: "2025-06-06T15:59:52.581Z",
+      transaction_amount: transaction_amount,
+      currency_id: "CLP",
+    },
+    back_url: `https://scared-jonathan-respond-respected.trycloudflare.com/mp/feedback/${email}`,
+    status: "authorized",
+  };
 
-    const result = await preference.create({
-      body: {
-        items: [
-          {
-            title: orderData.description,
-            unit_price: Number(orderData.price),
-            quantity: Number(orderData.quantity),
-            currecy_id: "CLP",
-          },
-        ],
-        back_urls: {
-          success: "http://localhost:8080/mp/feedback",
-          failure: "http://localhost:8080/mp/feedback",
-          pending: "http://localhost:8080/mp/feedback",
+  const generarSuscripcion = () => {
+    axios
+      .post("https://api.mercadopago.com/preapproval", data, {
+        headers: {
+          Authorization:
+            "Bearer APP_USR-5142058413684084-060311-23980a0a13b1bf13a16af2f0c0515520-1677027160",
+          "Content-Type": "application/json",
         },
-        auto_return: "approved",
-        notification_url: `https://enrollment-laptops-elegant-tom.trycloudflare.com/mp/feedback/${userId}`,
-      },
-    });
-
-    ResponseHandler.Ok(res, { id: result.id });
-  } catch (error) {
-    console.log(error);
-    ResponseHandler.HandleError(res, error);
+      })
+      .then((response) => {
+        console.log("Respuesta:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error.response.data);
+      });
+  };
+  if (token) {
+    generarSuscripcion();
   }
+  res.status(200).send({ success: true });
 };
 
 export const feedbackMp = async (req, res, next) => {
-  const userId = req.params;
-  console.log("userId in feedback endpoint", userId);
+  const id = req.params;
+  console.log("email in feedback endpoint", id);
 
   try {
     console.log("entre a feedback req.query:", req.query);
@@ -72,10 +78,7 @@ export const feedbackMp = async (req, res, next) => {
     console.log(topic);
     if (topic === "payment") {
       const paymentId = query.id || query["data.id"];
-      await mpService.registerPay(paymentId, userId);
-      await registerPay(
-        paymentId /* , params.rut, params.idDoc, params.monto */
-      );
+      await mpService.registerPay(paymentId, id);
     }
 
     ResponseHandler.Ok(res, "OK");
@@ -83,57 +86,3 @@ export const feedbackMp = async (req, res, next) => {
     ResponseHandler.HandleError(res, error);
   }
 };
-
-///this would be in service
-async function registerPay(paymentId, userId /* , rut, idDoc, monto */) {
-  const client = new MercadoPagoConfig({
-    /* accessToken: process.env.MP_ACCESS_TOKEN, */
-    accessToken:
-      "APP_USR-1545338219587427-052910-e7616698dd014d5ff4a495b66b757de3-1677027160",
-  });
-  console.log("paymentid:", paymentId);
-  console.log("inside register pay");
-
-  try {
-    const payment = await new Payment(client).get({ id: paymentId });
-    /* console.log("payment :", payment); */
-    console.log("payment status :", payment.status);
-    console.log("payment payer :", payment.payer);
-    const date = new Date();
-
-    if (payment.status === "approved") {
-      console.log("pago aprobado");
-      //here registerPaymentInDataBase(payment, date) and this is in repository
-      /* try {
-        const idDocOf = idDoc.replace("-", "/");
-        console.log("respuesta de registros");
-        const [responseFact] = await connection.execute(
-          `SELECT * FROM pagos_marcados WHERE idCliente="${rut}" AND idDoc = "${idDocOf}" AND bruto = "${monto}" AND neto ="${monto}" AND fecha = "${date.getFullYear()}-${
-            date.getMonth() + 1
-          }-${date.getDate()}"`
-        );
-
-        console.log(responseFact);
-
-        if (responseFact.length === 0) {
-          await connection.execute(
-            "INSERT INTO pagos_marcados(idCliente,idDoc,bruto,neto,fecha) VALUES (?,?,?,?,?)",
-            [
-              rut,
-              idDocOf,
-              monto,
-              monto,
-              `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-            ]
-          );
-        }
-        // Emit the socket event
-        io.emit("pegoRegister", { idDocOf, status: "apro" });
-      } catch (err) {
-        console.log("Error during database operation:", err);
-      } */
-    }
-  } catch (error) {
-    console.log("Error finding payment by ID:", error);
-  }
-}

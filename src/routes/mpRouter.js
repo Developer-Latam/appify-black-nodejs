@@ -8,6 +8,9 @@ const router = Router();
 
 router.get("/code", testMPController);
 router.post("/create_preference", preferencesMp);
-router.post("/feedback/:userId", feedbackMp);
+
+// El id tiene que ser el email con el que empezo a crear el user
+
+router.post("/feedback/:id", feedbackMp);
 
 export default router;
