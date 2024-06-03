@@ -617,8 +617,9 @@ class VentasService {
             if(!emisor){
                 throw new CustomError(400, "Bad Request", "Para realizar la op FV se debe indicar campo emisor")
             }
-            const dteCreated = await DTEService.createFV(data)
-            folio = dteCreated.folio
+            // const dteCreated = await DTEService.createFV(data)
+            // folio = dteCreated.folio
+            folio = 0
             const idFV = idgenerate("FV")
             const idDV = idgenerate("DV")
             let operations = []
@@ -642,7 +643,7 @@ class VentasService {
             }
             //Ejecutar las operaciones en una transaction
             const result = await executeTransactions(operations)
-            return { message: "Transacciones FV completas con éxito", result, DTE: dteCreated };
+            return { message: "Transacciones FV completas con éxito", result /*,DTE: dteCreated*/ };
         } catch (error) {
             throw error;
         }
