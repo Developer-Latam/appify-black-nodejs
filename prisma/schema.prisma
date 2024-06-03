@@ -46,10 +46,10 @@ model clientes {
   user                    String   @db.VarChar(100)
   razon_social            String   @db.VarChar(200)
   rut                     String   @db.VarChar(30)
-  giro                    String?  @db.VarChar(200)
-  direccion               String?  @db.VarChar(200)
-  comuna                  String?  @db.VarChar(150)
-  ciudad                  String?  @db.VarChar(150)
+  giro                    String   @db.VarChar(200)
+  direccion               String   @db.VarChar(200)
+  comuna                  String   @db.VarChar(200)
+  ciudad                  String   @db.VarChar(200)
   suscripcion_a_encuestas Boolean?
   activo                  Boolean?
   condicion_de_pago       String   @db.VarChar(100)
@@ -1551,4 +1551,16 @@ model orden_trabajo_FVE {
 
   @@index([idFacturaVentaExcenta], map: "factura_venta_excenta")
   @@index([idOrdenT], map: "orden_trabajo")
+}
+
+model pagoMercadopago {
+  id              String   @id @db.VarChar(100)
+  currency_id     String   @db.VarChar(20)
+  date_approved   DateTime @db.Date
+  payer_email     String   @db.VarChar(200)
+  payer_phone     String   @db.VarChar(100)
+  payment_type_id String   @db.VarChar(50)
+  payer_rut       String   @db.VarChar(100)
+  duracion        DateTime @db.Date
+  register        Boolean
 }
