@@ -8,6 +8,6 @@ const router = Router();
 
 router.get("/code", testMPController);
 router.post("/create_preference", preferencesMp);
-router.post("/feedback/:userId", feedbackMp);
+router.post("/feedback/:email", feedbackMp);
 
 export default router;

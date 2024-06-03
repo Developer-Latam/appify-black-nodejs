@@ -8,7 +8,7 @@ const mercadopago = require("mercadopago");
 import "dotenv/config";
 
 class mpService {
-  async registerPay(paymentId, userId) {
+  async registerPay(paymentId, email) {
     try {
       const client = new MercadoPagoConfig({
         /* accessToken: process.env.MP_ACCESS_TOKEN, */
@@ -25,7 +25,7 @@ class mpService {
 
       if (payment.status === "approved") {
         console.log("RegisterPay - Payment Approved");
-        return await mpRepository.registerPay(userId,payment.payer);
+        return await mpRepository.registerPay(email, payment.payer);
       } else {
         throw new CustomError("400", "Payment not approved");
       }
