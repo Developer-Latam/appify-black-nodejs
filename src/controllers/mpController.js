@@ -5,6 +5,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const mercadopago = require("mercadopago");
 import "dotenv/config";
+import axios from "axios";
 
 export const testMPController = async (req, res, next) => {
   const { code } = req.query;
@@ -19,43 +20,50 @@ export const testMPController = async (req, res, next) => {
 };
 
 export const preferencesMp = async (req, res, next) => {
-  const { orderData, email } = req.body;
+  console.log("Req body total", req.body);
+  const orderData = req.body.transaction_amount;
+  const email = req.body.payer.email;
   console.log("Received order data:", orderData);
   console.log("Received email data:", email);
+  const { payer, token, transaction_amount } = req.body;
 
-  const url = "http://localhost:8080";
-  try {
-    const client = new MercadoPagoConfig({
-      accessToken: process.env.MP_ACCESS_TOKEN,
-    });
+  const data = {
+    preapproval_plan_id: "2c9380848fde7fa4018fdec39c5c0018",
+    external_reference: "YG-001",
+    payer_email: payer.email,
+    card_token_id: token,
+    auto_recurring: {
+      frequency: 1,
+      frequency_type: "months",
+      start_date: "2024-06-01T13:07:14.260Z",
+      end_date: "2025-06-06T15:59:52.581Z",
+      transaction_amount: transaction_amount,
+      currency_id: "CLP",
+    },
+    back_url: `https://scared-jonathan-respond-respected.trycloudflare.com/mp/feedback/${email}`,
+    status: "authorized",
+  };
 
-    const preference = new Preference(client);
-
-    const result = await preference.create({
-      body: {
-        items: [
-          {
-            title: orderData.description,
-            unit_price: Number(orderData.price),
-            quantity: Number(orderData.quantity),
-            currecy_id: "CLP",
-          },
-        ],
-        back_urls: {
-          success: `${url}/mp/feedback`,
-          failure: `${url}/mp/feedback`,
-          pending: `${url}/mp/feedback`,
+  const generarSuscripcion = () => {
+    axios
+      .post("https://api.mercadopago.com/preapproval", data, {
+        headers: {
+          Authorization:
+            "Bearer APP_USR-5142058413684084-060311-23980a0a13b1bf13a16af2f0c0515520-1677027160",
+          "Content-Type": "application/json",
         },
-        auto_return: "approved",
-        notification_url: `https://complicated-consent-deposit-informal.trycloudflare.com/mp/feedback/${email}`,
-      },
-    });
-
-    ResponseHandler.Ok(res, { id: result.id });
-  } catch (error) {
-    console.log(error);
-    ResponseHandler.HandleError(res, error);
+      })
+      .then((response) => {
+        console.log("Respuesta:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error.response.data);
+      });
+  };
+  if (token) {
+    generarSuscripcion();
   }
+  res.status(200).send({ success: true });
 };
 
 export const feedbackMp = async (req, res, next) => {
