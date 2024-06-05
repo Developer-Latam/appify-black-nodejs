@@ -7,6 +7,7 @@ class mpRepository {
         data: data,
       });
     } catch (error) {
+      console.log("error repository mp", error);
       handlePrismaError(error);
     }
   }

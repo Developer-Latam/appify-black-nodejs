@@ -34,7 +34,7 @@ export const preferencesMp = async (req, res, next) => {
       preapproval_plan_id: "2c9380848fde7fa4018fdec39c5c0018",
       payer_email: "test_user_422112672@testuser.com",
       card_token_id: token,
-      /*     back_url: `https://exhibits-hours-jvc-agrees.trycloudflare.com/mp/feedback/${email}`,
+      /*     back_url: `https://spas-moved-scripting-rx.trycloudflare.com/mp/feedback/${email}`,
        */
       status: "authorized",
     };
@@ -71,16 +71,17 @@ export const preferencesMp = async (req, res, next) => {
 export const feedbackMp = async (req, res, next) => {
   /* const email = req.params;
   console.log("email in feedback endpoint", email); */
-  console.log("req:", req);
-  console.log("req.body", req.body);
+  /* console.log("req:", req); */
+
+  console.log("req.body in feedback", req.body);
   /*   console.log("req params", req.params);
    */
   try {
+    const email = "lkulisz2@wecom.global";
     console.log("entre a feedback:");
     const { query } = req;
     const topic = query.topic || query.type;
-    console.log("topic:");
-    console.log(topic);
+    console.log("topic:", topic);
     if (topic === "payment") {
       const paymentId = query.id || query["data.id"];
       await mpService.registerPay(paymentId, email);
