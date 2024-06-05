@@ -11,6 +11,6 @@ router.post("/create_preference", preferencesMp);
 
 // El id tiene que ser el email con el que empezo a crear el user
 
-router.post("/feedback/:id", feedbackMp);
+router.post("/feedback/", feedbackMp);
 
 export default router;

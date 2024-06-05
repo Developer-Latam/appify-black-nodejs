@@ -1,4 +1,6 @@
 import express from "express";
+import http from "http";
+import { Server } from "socket.io";
 import userRouter from "./src/routes/miempresa/userRouter.js";
 import proveedorRouter from "./src/routes/miempresa/proovRouter.js";
 import listrouter from "./src/routes/miempresa/priceListRouter.js";
@@ -36,6 +38,13 @@ import { swaggerOpts } from "./src/docs/swaggerOpts.js";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 const app = express();
+const server = http.createServer(app);
+export const io = new Server(server, {
+  /* cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  }, */
+});
 const PORT = process.env.PORT || 8080;
 
 app.use(cors());
@@ -43,8 +52,6 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
-
-
 
 // CONFIGURACIONES INICIALES PARA UN USUARIO QUE CONTRATA EL SERVICIO
 app.use("/init", initRouter);
@@ -99,9 +106,12 @@ app.use("/mp", mpRouter);
 //Router a DTE
 app.use("/dte", dteRouter);
 
-
 app.get("/", (req, res) => {
   res.json("Estoy desplegado hijo, pruebame 👉👌");
+});
+
+io.on("connection", (socket) => {
+  console.log(`client conect ${socket.id}`);
 });
 
 // Routers a Calendario??

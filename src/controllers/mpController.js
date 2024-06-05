@@ -6,6 +6,7 @@ const require = createRequire(import.meta.url);
 const mercadopago = require("mercadopago");
 import "dotenv/config";
 import axios from "axios";
+import { io } from "../../index.js";
 
 export const testMPController = async (req, res, next) => {
   const { code } = req.query;
@@ -20,65 +21,69 @@ export const testMPController = async (req, res, next) => {
 };
 
 export const preferencesMp = async (req, res, next) => {
-  console.log("Req body total", req.body);
-  const orderData = req.body.transaction_amount;
-  const email = req.body.payer.email;
-  console.log("Received order data:", orderData);
-  console.log("Received email data:", email);
-  const { payer, token, transaction_amount } = req.body;
+  try {
+    /*   console.log("Req body total", req.body);
+     */
+    const orderData = req.body.transaction_amount;
+    const email = req.body.payer.email;
+    /* console.log("Received order data:", orderData);
+    console.log("Received email data:", email); */
+    const { payer, token, transaction_amount } = req.body;
 
-  const data = {
-    preapproval_plan_id: "2c9380848fde7fa4018fdec39c5c0018",
-    external_reference: "YG-001",
-    payer_email: payer.email,
-    card_token_id: token,
-    auto_recurring: {
-      frequency: 1,
-      frequency_type: "months",
-      start_date: "2024-06-01T13:07:14.260Z",
-      end_date: "2025-06-06T15:59:52.581Z",
-      transaction_amount: transaction_amount,
-      currency_id: "CLP",
-    },
-    back_url: `https://scared-jonathan-respond-respected.trycloudflare.com/mp/feedback/${email}`,
-    status: "authorized",
-  };
+    const data = {
+      preapproval_plan_id: "2c9380848fde7fa4018fdec39c5c0018",
+      payer_email: "test_user_422112672@testuser.com",
+      card_token_id: token,
+      /*     back_url: `https://exhibits-hours-jvc-agrees.trycloudflare.com/mp/feedback/${email}`,
+       */
+      status: "authorized",
+    };
 
-  const generarSuscripcion = () => {
-    axios
-      .post("https://api.mercadopago.com/preapproval", data, {
-        headers: {
-          Authorization:
-            "Bearer APP_USR-5142058413684084-060311-23980a0a13b1bf13a16af2f0c0515520-1677027160",
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
+    const generarSuscripcion = async () => {
+      try {
+        const response = await axios.post(
+          "https://api.mercadopago.com/preapproval",
+          data,
+          {
+            headers: {
+              Authorization: process.env.MP_ACCESS_TOKEN,
+            },
+          }
+        );
         console.log("Respuesta:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error.response.data);
-      });
-  };
-  if (token) {
-    generarSuscripcion();
+        /*  feedbackMp(response.data, email); */
+      } catch (error) {
+        console.error("Error:", error);
+        throw error; // Re-throw the error to be caught in the main try-catch block
+      }
+    };
+
+    if (token) {
+      await generarSuscripcion();
+    }
+
+    ResponseHandler.Ok(res, "Ok");
+  } catch (error) {
+    ResponseHandler.HandleError(res, error);
   }
-  res.status(200).send({ success: true });
 };
 
 export const feedbackMp = async (req, res, next) => {
-  const id = req.params;
-  console.log("email in feedback endpoint", id);
-
+  /* const email = req.params;
+  console.log("email in feedback endpoint", email); */
+  console.log("req:", req);
+  console.log("req.body", req.body);
+  /*   console.log("req params", req.params);
+   */
   try {
-    console.log("entre a feedback req.query:", req.query);
+    console.log("entre a feedback:");
     const { query } = req;
     const topic = query.topic || query.type;
     console.log("topic:");
     console.log(topic);
     if (topic === "payment") {
       const paymentId = query.id || query["data.id"];
-      await mpService.registerPay(paymentId, id);
+      await mpService.registerPay(paymentId, email);
     }
 
     ResponseHandler.Ok(res, "OK");
