@@ -29,11 +29,7 @@ class DTEService {
         }
     }
     async createFV(data) {
-        const {
-            emisor,
-            item_servicio_factura_venta,
-            item_producto_factura_venta
-        } = data
+        const { emisor } = data
         try {
             let folio;
             const rut = cleanRut(emisor.RUT)
@@ -41,18 +37,8 @@ class DTEService {
             if (folioSII.tieneDisponible){
                 folio = folioSII.siguienteFolio
                 const dataAdapted = await this.dataAdapterFV(folio, data)
-                  // Combinamos los items de servicio y producto
-                const items = (item_servicio_factura_venta || []).concat(item_producto_factura_venta || []);
-                // Verificamos si hay alguna bonificación mayor a 0 en cualquier item
-                const tieneBonificaciones = items.some(item => item.bonificacion && item.bonificacion > 0);
-                let result;
-                if (tieneBonificaciones) {
-                    result = await crearFacturaSimple(dataAdapted)
-                } else {
-                    result = await crearFacturaConDescuento(dataAdapted)
-                }
-                // const dteTemp = await dteTemporal.postData(result)
-                // const dteR = await dteReal.emit(dteTemp)
+                const dteTemp = await dteTemporal.postData(dataAdapted)
+                const dteR = await dteReal.emit(dteTemp)
                 return dteR
             } else {
                 throw new CustomError(404, "Bad Request", "No hay folios disponibles para la factura")
@@ -69,45 +55,46 @@ class DTEService {
                 item_servicio_factura_venta,
                 item_producto_factura_venta
             } = data;
-            // Obtenemos la información del cliente
-            const clienteAFacturar = await clientesService.getClienteById(factura_venta.idCliente);
-            if (!clienteAFacturar) throw new CustomError(404, "Not Found", "Cliente no encontrado");
+            const cliente = await clientesService.getClienteById(factura_venta.idCliente);
+            if (!cliente) throw new CustomError(404, "Not Found", "Cliente no encontrado");
             // Combinamos los items de servicio y producto
             const items = (item_servicio_factura_venta || []).concat(item_producto_factura_venta || []);
-            // Verificamos si hay alguna bonificación mayor a 0 en cualquier item
-            const tieneBonificaciones = items.some(item => item.bonificacion && item.bonificacion > 0);
-            // Adaptamos los detalles en función de si hay bonificaciones
-            const detalles = items.map(item => {
-                if (tieneBonificaciones) {
-                    return {
-                        NmbItem: item.notas, // Asumiendo que notas contiene el nombre del item
-                        QtyItem: item.cantidad,
-                        PrcItem: item.unitario,
-                        DescuentoPct: item.bonificacion
-                    };
-                } else {
-                    return {
-                        NmbItem: item.notas,
-                        QtyItem: item.cantidad,
-                        PrcItem: item.unitario
-                    };
-                }
-            });
+            // Dividir los items en servicios y productos
+            const servicios = items.filter(item => item.idServicio);
+            const productos = items.filter(item => item.idProducto);
+            //Review bonificaciones y formato de los items a detalle
+            const itemsDocAsoc = await this.transformarDatosEntrantes(servicios, productos)
+            const detalles = this.transformarItemsADetalle(itemsDocAsoc)
             // Estructura del objeto a retornar
+            const date = new Date(factura_venta.fecha);
             return {
-                tipoDTE: 33,
-                fechaEmision: new Date().toISOString().split('T')[0], // Usamos la fecha actual
-                folio: folio, // Extracción del folio desde el número_documento
-                rutEmisor: `${emisor.RUT}`, // Asumimos que el RUT necesita un dígito verificador
-                rutReceptor: clienteAFacturar.cliente.rut,
-                razonSocialReceptor: clienteAFacturar.cliente.razon_social,
-                giroReceptor: clienteAFacturar.cliente.giro,
-                contacto: clienteAFacturar.contactos[0]?.telefono, // Usar el primer contacto, manejo de posibles undefined
-                correoReceptor: clienteAFacturar.contactos[0]?.email,
-                direccionReceptor: clienteAFacturar.cliente.direccion,
-                comunaReceptor: clienteAFacturar.cliente.comuna,
-                detalles: detalles,
-                referencias: []
+                Encabezado: {
+                    IdDoc: {
+                        TipoDTE: 33,
+                        FchEmis: date.toISOString().split('T')[0],
+                        Folio: folio
+                    },
+                    Emisor: {
+                        RUTEmisor: `${emisor.RUT}`
+                    },
+                    Receptor: {
+                        RUTRecep: cliente.cliente.rut,
+                        RznSocRecep: cliente.cliente.razon_social,
+                        GiroRecep: cliente.cliente.giro,
+                        Contacto: cliente.contactos[0].telefono,
+                        CorreoRecep: cliente.contactos[0].email,
+                        DirRecep: cliente.cliente.direccion,
+                        CmnaRecep: cliente.cliente.comuna
+                    },
+                    Totales: {
+                        MntNeto: 0,
+                        TasaIVA: 19,
+                        IVA: 0,
+                        MntTotal: 0
+                    }
+                },
+                Detalle: detalles,
+                Referencia: []
             };
         } catch (error) {
             throw error
@@ -127,10 +114,10 @@ class DTEService {
                                 await this.dataAdapterNC_CORRIGE_MONTOS(folio, data);
             console.log("DATA LISTA PARA HACER NOTA", dataAdapted);
             // Las siguientes líneas están comentadas porque dependen de implementaciones específicas
-            // const dteTemp = await dteTemporal.postData(dataAdapted)
-            // console.log("debug dte temporal", dteTemp)
-            // const dteR = await dteReal.emit(dteTemp)
-            // console.log("debug dte real", dteR)
+            const dteTemp = await dteTemporal.postData(dataAdapted)
+            console.log("debug dte temporal", dteTemp)
+            const dteR = await dteReal.emit(dteTemp)
+            console.log("debug dte real", dteR)
             return dteR;
         } catch (error) {
             throw error
@@ -229,7 +216,7 @@ class DTEService {
                     const doc = Array.isArray(response) ? response[0] : response;
                     itemsDocAsoc = await this.transformarDatosEntrantes(...type.items.filter(item => item));
                     nroDTEref = type.refType === 'dynamic' ? (doc.tipo_credito ? '61' : '56') : type.refType;
-                    console.log("Items con descuentos: DEBUG", itemsDocAsoc);
+                    //console.log("Items con descuentos: DEBUG", itemsDocAsoc);
                     return { nroFolio: doc.numero_documento, nroDTEref, itemsDocAsoc };
                 }
             }
@@ -278,10 +265,10 @@ class DTEService {
                 },
                 Detalle: detalles,
                 Referencia: [{
-                    TpoDocRef: nroDTEref,
+                    TpoDocRef: Number(nroDTEref),
                     RazonRef: notas_de_credito_debito.motivo_referencia,
                     FolioRef: nroFolio,
-                    CodRef: 2
+                    CodRef: 3
                 }]
             };
         } catch (error) {
@@ -294,11 +281,16 @@ class DTEService {
         if (itemsDocAsoc.servicios && itemsDocAsoc.servicios.length > 0) {
             itemsDocAsoc.servicios.forEach(servicio => {
                 if (servicio.cantidad && servicio.unitario) { // Asegurarse de que la cantidad y el unitario no son null
-                    detalles.push({
+                    const detalleServicio = {
                         NmbItem: servicio.nombre || servicio.codigo,
                         QtyItem: servicio.cantidad,
                         PrcItem: servicio.unitario
-                    });
+                    };
+                    // Añadir DescuentoPct si la bonificación es mayor que 0
+                    if (servicio.bonificacion && servicio.bonificacion > 0) {
+                        detalleServicio.DescuentoPct = servicio.bonificacion;
+                    }
+                    detalles.push(detalleServicio);
                 }
             });
         }
@@ -306,11 +298,16 @@ class DTEService {
         if (itemsDocAsoc.productos && itemsDocAsoc.productos.length > 0) {
             itemsDocAsoc.productos.forEach(producto => {
                 if (producto.cantidad && producto.unitario) { // Asegurarse de que la cantidad y el unitario no son null
-                    detalles.push({
+                    const detalleProducto = {
                         NmbItem: producto.nombre || producto.codigo,
                         QtyItem: producto.cantidad,
                         PrcItem: producto.unitario
-                    });
+                    };
+                    // Añadir DescuentoPct si la bonificación es mayor que 0
+                    if (producto.bonificacion && producto.bonificacion > 0) {
+                        detalleProducto.DescuentoPct = producto.bonificacion;
+                    }
+                    detalles.push(detalleProducto);
                 }
             });
         }
