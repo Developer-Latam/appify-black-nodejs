@@ -7,6 +7,7 @@ import dteTemporal from "./dteTemporal.js";
 import dteReal from "./dteReal.js";
 import ventasService from "../administracion/ventasService.js";
 import ventasRepository from "../../persistence/repositorys/administracion/ventasRepository.js";
+import { cleanRut } from "../../utils/emisorRut/replaceRut.js";
 class DTEService {
     constructor() {
         this.apiUrl = `${process.env.URL_API_PY}`;
@@ -35,7 +36,8 @@ class DTEService {
         } = data
         try {
             let folio;
-            const folioSII = await this.getInfoFolios('33', emisor.RUT)
+            const rut = cleanRut(emisor.RUT)
+            const folioSII = await this.getInfoFolios('33', rut)
             if (folioSII.tieneDisponible){
                 folio = folioSII.siguienteFolio
                 const dataAdapted = await this.dataAdapterFV(folio, data)
@@ -49,8 +51,8 @@ class DTEService {
                 } else {
                     result = await crearFacturaConDescuento(dataAdapted)
                 }
-                const dteTemp = await dteTemporal.postData(result)
-                const dteR = await dteReal.emit(dteTemp)
+                // const dteTemp = await dteTemporal.postData(result)
+                // const dteR = await dteReal.emit(dteTemp)
                 return dteR
             } else {
                 throw new CustomError(404, "Bad Request", "No hay folios disponibles para la factura")
@@ -96,7 +98,7 @@ class DTEService {
                 tipoDTE: 33,
                 fechaEmision: new Date().toISOString().split('T')[0], // Usamos la fecha actual
                 folio: folio, // Extracción del folio desde el número_documento
-                rutEmisor: `${emisor.RUT}-0`, // Asumimos que el RUT necesita un dígito verificador
+                rutEmisor: `${emisor.RUT}`, // Asumimos que el RUT necesita un dígito verificador
                 rutReceptor: clienteAFacturar.cliente.rut,
                 razonSocialReceptor: clienteAFacturar.cliente.razon_social,
                 giroReceptor: clienteAFacturar.cliente.giro,
@@ -114,7 +116,8 @@ class DTEService {
     async createNCOD(data) {
         const { emisor, notas_de_credito_debito } = data;
         try {
-            let folioSII = await this.getInfoFolios(notas_de_credito_debito.tipo_debito ? '56' : '61', emisor.RUT);
+            const rut = cleanRut(emisor.RUT)
+            let folioSII = await this.getInfoFolios(notas_de_credito_debito.tipo_debito ? '56' : '61', rut);
             if (!folioSII.tieneDisponible) {
                 throw new CustomError(404, "Bad Request", "No hay folios disponibles para la factura");
             }
@@ -183,7 +186,7 @@ class DTEService {
                     Folio: `${folio}`
                 },
                 Emisor: {
-                    RUTEmisor: `${data.emisor.RUT}-0`
+                    RUTEmisor: `${data.emisor.RUT}`
                 },
                 Receptor: {
                     RUTRecep: cliente.cliente.rut,
@@ -223,11 +226,10 @@ class DTEService {
                 if (type.items.some(item => item)) {
                     const response = await ventasRepository[type.repoMethod](idReferencia);
                     if (!response.length) throw new CustomError(404, "Not Found", "Documento no encontrado");
-        
                     const doc = Array.isArray(response) ? response[0] : response;
                     itemsDocAsoc = await this.transformarDatosEntrantes(...type.items.filter(item => item));
-        
                     nroDTEref = type.refType === 'dynamic' ? (doc.tipo_credito ? '61' : '56') : type.refType;
+                    console.log("Items con descuentos: DEBUG", itemsDocAsoc);
                     return { nroFolio: doc.numero_documento, nroDTEref, itemsDocAsoc };
                 }
             }
@@ -256,7 +258,7 @@ class DTEService {
                         Folio: `${folio}`
                     },
                     Emisor: {
-                        RUTEmisor: `${emisor.RUT}-0`
+                        RUTEmisor: `${emisor.RUT}`
                     },
                     Receptor: {
                         RUTRecep: cliente.cliente.rut,
@@ -316,6 +318,8 @@ class DTEService {
     }
     // Función para transformar los datos
     async transformarDatosEntrantes(servicios = [], productos = []) {
+         // Función para añadir la bonificación si es mayor que 0
+        const agregarBonificacion = (bonificacion) => bonificacion > 0 ? { bonificacion } : {};
         // Mapear los servicios y resolver las promesas
         const serviciosTransformados = await Promise.all(servicios.map(async servicio => {
             const { servicio: nombreServicio } = await ventasRepository.getNameProdServByID(servicio.idServicio, null);
@@ -324,7 +328,8 @@ class DTEService {
                 codigo: servicio.codigo || null,
                 cantidad: servicio.cantidad,
                 unitario: servicio.unitario,
-                nombre: nombreServicio || servicio.notas  // Usamos el nombre obtenido, fallback a las notas si no hay nombre
+                nombre: nombreServicio || servicio.notas,  // Usamos el nombre obtenido, fallback a las notas si no hay nombre
+                ...agregarBonificacion(servicio.bonificacion)
             };
         }));
         // Mapear los productos y resolver las promesas
@@ -335,7 +340,8 @@ class DTEService {
                 codigo: producto.codigo || null,
                 cantidad: producto.cantidad,
                 unitario: producto.unitario,
-                nombre: nombreProducto || producto.notas  // Usamos el nombre obtenido, fallback a las notas si no hay nombre
+                nombre: nombreProducto || producto.notas,  // Usamos el nombre obtenido, fallback a las notas si no hay nombre,
+                ...agregarBonificacion(producto.bonificacion)  // Añadir bonificación condicionalmente
             };
         }));
         return {
