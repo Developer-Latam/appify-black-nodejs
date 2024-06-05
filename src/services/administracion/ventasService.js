@@ -617,8 +617,8 @@ class VentasService {
             if(!emisor){
                 throw new CustomError(400, "Bad Request", "Para realizar la op FV se debe indicar campo emisor")
             }
-            //const dteCreated = await DTEService.createFV(data)
-            //folio = dteCreated.folio
+            // const dteCreated = await DTEService.createFV(data)
+            // folio = dteCreated.folio
             folio = 0
             const idFV = idgenerate("FV")
             const idDV = idgenerate("DV")

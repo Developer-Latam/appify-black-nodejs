@@ -1,7 +1,6 @@
 import { prismaError } from "../dependencys/injection.js";
 import { CustomError } from "./handlerResponse.js";
 async function handlePrismaError(error) {
-    console.log("debug error prisma", error)
     if (error instanceof prismaError.PrismaClientValidationError) {
         // Error específico de Prisma por tipo de dato incorrecto
         throw new CustomError(400, 'Bad Request', 'Invalid value provided for one or more fields.');
@@ -18,7 +17,6 @@ async function handlePrismaError(error) {
         }
     } else {
         // Para cualquier otro tipo de error
-        console.log("ACA ESTA EL ERROR", error)
         throw new CustomError(500, "Internal Server Error", {error: error.message});
     }
 }
