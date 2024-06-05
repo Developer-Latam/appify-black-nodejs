@@ -153,6 +153,7 @@ class ProjectService {
             const formattedProjects = [];
             for (const project of projects) {
                 const cliente = await clientesService.getClienteById(project.cliente)
+                console.log(cliente)
                 const vendedor = await userService.getSubUserById(project.vendedor)
                 const itemproductos = await itemsProdServProjectService.getProductsItemByprojectId(project.id)
                 const itemservicios = await itemsProdServProjectService.getServiceItemByProjectId(project.id)
@@ -186,7 +187,7 @@ class ProjectService {
                     nombre: project.nombre_etiqueta,
                     estado: project.estado,
                     fecha: project.fecha,
-                    cliente: cliente.razon_social,
+                    cliente: cliente.cliente.razon_social,
                     vendedor:`${vendedor.nombre},${vendedor.apellido}`,
                     productos_servicios: {
                         productos: productos,

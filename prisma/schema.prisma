@@ -42,21 +42,22 @@ model categoria_cuenta {
 }
 
 model clientes {
-  id                      String   @id @db.VarChar(100)
-  user                    String   @db.VarChar(100)
-  razon_social            String   @db.VarChar(200)
-  rut                     String   @db.VarChar(30)
-  giro                    String   @db.VarChar(200)
-  direccion               String   @db.VarChar(200)
-  comuna                  String   @db.VarChar(200)
-  ciudad                  String   @db.VarChar(200)
+  id                      String    @id @db.VarChar(100)
+  user                    String    @db.VarChar(100)
+  razon_social            String    @db.VarChar(200)
+  rut                     String    @db.VarChar(30)
+  giro                    String    @db.VarChar(200)
+  direccion               String    @db.VarChar(200)
+  comuna                  String    @db.VarChar(200)
+  ciudad                  String    @db.VarChar(200)
   suscripcion_a_encuestas Boolean?
   activo                  Boolean?
-  condicion_de_pago       String   @db.VarChar(100)
-  linea_de_credito        Float?   @db.Float
+  condicion_de_pago       String    @db.VarChar(100)
+  linea_de_credito        Float?    @db.Float
   exension_de_impuestos   Boolean?
-  notas                   String?  @db.Text
-  pie_de_pagina           String?  @db.Text
+  notas                   String?   @db.Text
+  pie_de_pagina           String?   @db.Text
+  fecha_creado            DateTime? @default(now()) @db.Timestamp(0)
 
   @@index([user], map: "usuarios")
   @@index([condicion_de_pago], map: "condicion_pago")
