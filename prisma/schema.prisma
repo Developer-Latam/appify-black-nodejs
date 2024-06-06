@@ -1559,7 +1559,7 @@ model pagoMercadopago {
   currency_id     String   @db.VarChar(20)
   date_approved   DateTime @db.Date
   payer_email     String   @db.VarChar(200)
-  payer_phone     String   @db.VarChar(100)
+  payer_phone     String?  @db.VarChar(100)
   payment_type_id String   @db.VarChar(50)
   payer_rut       String   @db.VarChar(100)
   duracion        DateTime @db.Date

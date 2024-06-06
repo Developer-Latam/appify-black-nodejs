@@ -1,6 +1,7 @@
 import express from "express";
 import http from "http";
-import { Server } from "socket.io";
+import { Server as SocketIoServer } from "socket.io";
+import initializeSocket from "./src/socket/indexSocket.js";
 import userRouter from "./src/routes/miempresa/userRouter.js";
 import proveedorRouter from "./src/routes/miempresa/proovRouter.js";
 import listrouter from "./src/routes/miempresa/priceListRouter.js";
@@ -38,15 +39,17 @@ import { swaggerOpts } from "./src/docs/swaggerOpts.js";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 const app = express();
-const server = http.createServer(app);
-export const io = new Server(server, {
-  /* cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  }, */
-});
-const PORT = process.env.PORT || 8080;
+export const server = http.createServer(app);
 
+/* export const io = new SocketIoServer(server, {
+  cors: {
+    origin: "http://localhost:5173",
+  },
+  transports: ["websocket"],
+}); */
+const PORT = process.env.PORT || 8080;
+/* const SOCKET_PORT = process.env.SOCKET_PORT || 8081;
+ */
 app.use(cors());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -110,13 +113,21 @@ app.get("/", (req, res) => {
   res.json("Estoy desplegado hijo, pruebame 👉👌");
 });
 
-io.on("connection", (socket) => {
+/* io.on("connection", (socket) => {
   console.log(`client conect ${socket.id}`);
 });
 
+io.on("subscription-paid", (data) => {
+  console.log("message received from client to server:", data);
+}); */
 // Routers a Calendario??
 const specs = swaggerJSDoc(swaggerOpts);
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.listen(PORT, () => {
   console.log(`server listen on ${PORT}`);
 });
+
+/* server.listen(SOCKET_PORT, () => {
+  console.log(`Socket.IO server running on port ${SOCKET_PORT}`);
+});
+ */
