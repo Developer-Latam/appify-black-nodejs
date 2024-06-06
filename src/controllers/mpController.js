@@ -36,7 +36,7 @@ export const preferencesMp = async (req, res, next) => {
       preapproval_plan_id: "2c9380848fde7fa4018fdec39c5c0018",
       payer_email: "test_user_422112672@testuser.com",
       card_token_id: token,
-      /*     back_url: `https://connection-respiratory-ja-against.trycloudflare.com/mp/feedback/${email}`,
+      /*     back_url: `https://write-paying-gt-silver.trycloudflare.com/mp/feedback/${email}`,
        */
       status: "authorized",
     };
@@ -73,7 +73,7 @@ export const feedbackMp = async (req, res, next) => {
   try {
     /* const email = use  rEmail; */
     /*  console.log("req in feedback:", req); */
-    const email = "lkulisz5@wecom.global";
+    const email = "lkulisz6@wecom.global";
     console.log("entre a feedback:");
     const { query } = req;
     const topic = query.topic || query.type;

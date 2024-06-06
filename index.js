@@ -40,6 +40,7 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 const app = express();
 export const server = http.createServer(app);
+const io = initializeSocket(server);
 
 /* export const io = new SocketIoServer(server, {
   cors: {
@@ -48,8 +49,8 @@ export const server = http.createServer(app);
   transports: ["websocket"],
 }); */
 const PORT = process.env.PORT || 8080;
-/* const SOCKET_PORT = process.env.SOCKET_PORT || 8081;
- */
+const SOCKET_PORT = process.env.SOCKET_PORT || 8081;
+
 app.use(cors());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -127,7 +128,6 @@ app.listen(PORT, () => {
   console.log(`server listen on ${PORT}`);
 });
 
-/* server.listen(SOCKET_PORT, () => {
+server.listen(SOCKET_PORT, () => {
   console.log(`Socket.IO server running on port ${SOCKET_PORT}`);
 });
- */

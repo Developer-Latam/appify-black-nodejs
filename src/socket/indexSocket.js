@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 import mpRepository from "../persistence/repositorys/mpRepository.js";
 
 export default function initializeSocket(server) {
+  console.log("inside initializeSocket");
   const io = new Server(server, {
     cors: {
       origin: "http://localhost:5173",

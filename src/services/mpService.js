@@ -18,9 +18,9 @@ class mpService {
       });
       /*  console.log("client:", client); */
       console.log("paymentid:", paymentId);
-      console.log("endDate in mpService", endDate);
+      console.log("endDate in mpService:", endDate);
       const payment = await new Payment(client).get({ id: paymentId });
-      console.log("payment:", payment);
+      /* console.log("payment:", payment); */
       console.log("RegisterPay - Payment Status:", payment.status);
       console.log("RegisterPay - Payment Payer:", payment.payer);
 
