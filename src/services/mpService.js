@@ -2,9 +2,7 @@ import mpRepository from "../persistence/repositorys/mpRepository.js";
 import { CustomError } from "../utils/httpRes/handlerResponse.js";
 import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
 import { ResponseHandler } from "../utils/dependencys/injection.js";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const mercadopago = require("mercadopago");
+
 import "dotenv/config";
 
 class mpService {

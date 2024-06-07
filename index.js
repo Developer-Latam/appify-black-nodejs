@@ -39,7 +39,7 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 const app = express();
 export const server = http.createServer(app);
-const io = initializeSocket(server);
+//const io = initializeSocket(server);
 
 const PORT = process.env.PORT || 8080;
 const SOCKET_PORT = process.env.SOCKET_PORT || 8081;

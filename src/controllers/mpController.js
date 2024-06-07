@@ -1,8 +1,5 @@
 import { ResponseHandler } from "../utils/dependencys/injection.js";
 import mpService from "../services/mpService.js";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const mercadopago = require("mercadopago");
 import "dotenv/config";
 import axios from "axios";
 import initializeSocket from "../../src/socket/indexSocket.js";
@@ -19,21 +16,18 @@ export const testMPController = async (req, res, next) => {
     ResponseHandler.HandleError(res, error);
   }
 };
+
 let userEmail = "";
+
 export const preferencesMp = async (req, res, next) => {
   try {
     userEmail = req.body.payer.email;
-    /* const orderData = req.body.amount;
-    const email = req.body.payer.email;
-    console.log("Received order data:", orderData);
-    console.log("Received email data:", email); */
     const { payer, token, transaction_amount } = req.body;
-
     const data = {
       preapproval_plan_id: "2c9380848fde7fa4018ff336772906f5",
       payer_email: "test_user_422112672@testuser.com",
       card_token_id: token,
-      /*     back_url: `https://wound-owns-nil-toyota.trycloudflare.com/mp/feedback/${email}`,*/
+      /*     back_url: `https://promise-habits-olympic-dans.trycloudflare.com/mp/feedback/${email}`,*/
       status: "authorized",
     };
 
@@ -48,6 +42,7 @@ export const preferencesMp = async (req, res, next) => {
             },
           }
         );
+        ResponseHandler.Ok(res, "Ok");
       } catch (error) {
         console.error("Error:", error);
         throw error;
@@ -57,8 +52,6 @@ export const preferencesMp = async (req, res, next) => {
     if (token) {
       await generarSuscripcion();
     }
-
-    ResponseHandler.Ok(res, "Ok");
   } catch (error) {
     ResponseHandler.HandleError(res, error);
   }
@@ -67,7 +60,6 @@ export const preferencesMp = async (req, res, next) => {
 export const feedbackMp = async (req, res, next) => {
   try {
     const email = userEmail;
-    /* const email = "lkulisz12@wecom.global"; */
     console.log("entre a feedback:");
     const { query } = req;
     const topic = query.topic || query.type;
