@@ -1,4 +1,3 @@
-import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
 import { ResponseHandler } from "../utils/dependencys/injection.js";
 import mpService from "../services/mpService.js";
 import { createRequire } from "module";
@@ -8,7 +7,6 @@ import "dotenv/config";
 import axios from "axios";
 import initializeSocket from "../../src/socket/indexSocket.js";
 import { server } from "../../index.js";
-/* import { io } from "../../index.js"; */
 
 export const testMPController = async (req, res, next) => {
   const { code } = req.query;
@@ -24,8 +22,7 @@ export const testMPController = async (req, res, next) => {
 let userEmail = "";
 export const preferencesMp = async (req, res, next) => {
   try {
-    /*     console.log("Req body total in preferenceMp:", req.body);
-     */ userEmail = req.body.payer.email;
+    userEmail = req.body.payer.email;
     /* const orderData = req.body.amount;
     const email = req.body.payer.email;
     console.log("Received order data:", orderData);
@@ -36,8 +33,7 @@ export const preferencesMp = async (req, res, next) => {
       preapproval_plan_id: "2c9380848fde7fa4018fdec39c5c0018",
       payer_email: "test_user_422112672@testuser.com",
       card_token_id: token,
-      /*     back_url: `https://write-paying-gt-silver.trycloudflare.com/mp/feedback/${email}`,
-       */
+      /*     back_url: `https://milk-hitting-firm-designation.trycloudflare.com/mp/feedback/${email}`,*/
       status: "authorized",
     };
 
@@ -52,7 +48,6 @@ export const preferencesMp = async (req, res, next) => {
             },
           }
         );
-        /*  console.log("Respuesta:", response.data); */
       } catch (error) {
         console.error("Error:", error);
         throw error;
@@ -71,9 +66,8 @@ export const preferencesMp = async (req, res, next) => {
 
 export const feedbackMp = async (req, res, next) => {
   try {
-    /* const email = use  rEmail; */
-    /*  console.log("req in feedback:", req); */
-    const email = "lkulisz6@wecom.global";
+    /* const email = userEmail; */
+    const email = "lkulisz9@wecom.global";
     console.log("entre a feedback:");
     const { query } = req;
     const topic = query.topic || query.type;
@@ -89,11 +83,9 @@ export const feedbackMp = async (req, res, next) => {
     }
 
     ResponseHandler.Ok(res, "OK");
-    if (ResponseHandler.Ok) {
+    /* if (ResponseHandler.Ok) {
       initializeSocket(server);
-      /* io.emit("update", "desde el server, datos de update socket"); */
-    }
-    //aca
+    } */
   } catch (error) {
     ResponseHandler.HandleError(res, error);
   }

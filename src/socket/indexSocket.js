@@ -33,11 +33,6 @@ export default function initializeSocket(server) {
           });
         });
 
-        socket.on("chat message", (msg) => {
-          console.log(msg);
-          io.emit("chat message", msg + "fdsfdsfdssdsddsdsdss");
-        });
-
         const backendUpdate = "Pague";
         io.emit("backend update", backendUpdate);
       } else {
@@ -58,9 +53,4 @@ export default function initializeSocket(server) {
   });
 
   return io;
-}
-
-async function isValidSuperUser(superUserId) {
-  console.log("aa", superUserId);
-  return true;
 }

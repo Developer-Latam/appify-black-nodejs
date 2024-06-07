@@ -16,11 +16,9 @@ class mpService {
           "APP_USR-5142058413684084-060311-23980a0a13b1bf13a16af2f0c0515520-1677027160",
         options: { timeout: 5000 },
       });
-      /*  console.log("client:", client); */
       console.log("paymentid:", paymentId);
       console.log("endDate in mpService:", endDate);
       const payment = await new Payment(client).get({ id: paymentId });
-      /* console.log("payment:", payment); */
       console.log("RegisterPay - Payment Status:", payment.status);
       console.log("RegisterPay - Payment Payer:", payment.payer);
 

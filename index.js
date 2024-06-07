@@ -1,6 +1,5 @@
 import express from "express";
 import http from "http";
-import { Server as SocketIoServer } from "socket.io";
 import initializeSocket from "./src/socket/indexSocket.js";
 import userRouter from "./src/routes/miempresa/userRouter.js";
 import proveedorRouter from "./src/routes/miempresa/proovRouter.js";
@@ -42,12 +41,6 @@ const app = express();
 export const server = http.createServer(app);
 const io = initializeSocket(server);
 
-/* export const io = new SocketIoServer(server, {
-  cors: {
-    origin: "http://localhost:5173",
-  },
-  transports: ["websocket"],
-}); */
 const PORT = process.env.PORT || 8080;
 const SOCKET_PORT = process.env.SOCKET_PORT || 8081;
 
@@ -114,16 +107,9 @@ app.get("/", (req, res) => {
   res.json("Estoy desplegado hijo, pruebame 👉👌");
 });
 
-/* io.on("connection", (socket) => {
-  console.log(`client conect ${socket.id}`);
-});
-
-io.on("subscription-paid", (data) => {
-  console.log("message received from client to server:", data);
-}); */
-// Routers a Calendario??
 const specs = swaggerJSDoc(swaggerOpts);
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(specs));
+
 app.listen(PORT, () => {
   console.log(`server listen on ${PORT}`);
 });
@@ -131,3 +117,5 @@ app.listen(PORT, () => {
 server.listen(SOCKET_PORT, () => {
   console.log(`Socket.IO server running on port ${SOCKET_PORT}`);
 });
+
+initializeSocket(server);
