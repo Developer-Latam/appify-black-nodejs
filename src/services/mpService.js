@@ -13,7 +13,7 @@ class mpService {
     try {
       const client = new MercadoPagoConfig({
         accessToken:
-          "APP_USR-5142058413684084-060311-23980a0a13b1bf13a16af2f0c0515520-1677027160",
+          "APP_USR-5043671826474347-060509-dd68ec8da1fa36fdcba746cf4f429bb5-1677027160",
         options: { timeout: 5000 },
       });
       console.log("paymentid:", paymentId);

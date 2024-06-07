@@ -30,10 +30,10 @@ export const preferencesMp = async (req, res, next) => {
     const { payer, token, transaction_amount } = req.body;
 
     const data = {
-      preapproval_plan_id: "2c9380848fde7fa4018fdec39c5c0018",
+      preapproval_plan_id: "2c9380848fde7fa4018ff336772906f5",
       payer_email: "test_user_422112672@testuser.com",
       card_token_id: token,
-      /*     back_url: `https://milk-hitting-firm-designation.trycloudflare.com/mp/feedback/${email}`,*/
+      /*     back_url: `https://wound-owns-nil-toyota.trycloudflare.com/mp/feedback/${email}`,*/
       status: "authorized",
     };
 
@@ -67,7 +67,7 @@ export const preferencesMp = async (req, res, next) => {
 export const feedbackMp = async (req, res, next) => {
   try {
     /* const email = userEmail; */
-    const email = "lkulisz9@wecom.global";
+    const email = "lkulisz12@wecom.global";
     console.log("entre a feedback:");
     const { query } = req;
     const topic = query.topic || query.type;
@@ -83,9 +83,9 @@ export const feedbackMp = async (req, res, next) => {
     }
 
     ResponseHandler.Ok(res, "OK");
-    /* if (ResponseHandler.Ok) {
+    if (ResponseHandler.Ok) {
       initializeSocket(server);
-    } */
+    }
   } catch (error) {
     ResponseHandler.HandleError(res, error);
   }
