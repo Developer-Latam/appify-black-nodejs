@@ -66,8 +66,8 @@ export const preferencesMp = async (req, res, next) => {
 
 export const feedbackMp = async (req, res, next) => {
   try {
-    /* const email = userEmail; */
-    const email = "lkulisz12@wecom.global";
+    const email = userEmail;
+    /* const email = "lkulisz12@wecom.global"; */
     console.log("entre a feedback:");
     const { query } = req;
     const topic = query.topic || query.type;
