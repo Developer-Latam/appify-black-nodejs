@@ -7,12 +7,14 @@ class mpRepository {
         data: data,
       });
     } catch (error) {
+      console.log("error repository mp", error);
       handlePrismaError(error);
     }
   }
 
   async findLinkByUserId(id) {
     try {
+      console.log("i am looking for the email in the db");
       return prisma.pagoMercadopago.findUnique({
         where: { id: id },
       });

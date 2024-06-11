@@ -1,11 +1,9 @@
-import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
 import { ResponseHandler } from "../utils/dependencys/injection.js";
 import mpService from "../services/mpService.js";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const mercadopago = require("mercadopago");
 import "dotenv/config";
 import axios from "axios";
+import initializeSocket from "../../src/socket/indexSocket.js";
+import { server } from "../../index.js";
 
 export const testMPController = async (req, res, next) => {
   const { code } = req.query;
@@ -19,70 +17,67 @@ export const testMPController = async (req, res, next) => {
   }
 };
 
+let userEmail = "";
+
 export const preferencesMp = async (req, res, next) => {
-  console.log("Req body total", req.body);
-  const orderData = req.body.transaction_amount;
-  const email = req.body.payer.email;
-  console.log("Received order data:", orderData);
-  console.log("Received email data:", email);
-  const { payer, token, transaction_amount } = req.body;
+  try {
+    userEmail = req.body.payer.email;
+    const { payer, token, transaction_amount } = req.body;
+    const data = {
+      preapproval_plan_id: "2c9380848fde7fa4018ff336772906f5",
+      payer_email: "test_user_422112672@testuser.com",
+      card_token_id: token,
+      /*     back_url: `https://promise-habits-olympic-dans.trycloudflare.com/mp/feedback/${email}`,*/
+      status: "authorized",
+    };
 
-  const data = {
-    preapproval_plan_id: "2c9380848fde7fa4018fdec39c5c0018",
-    external_reference: "YG-001",
-    payer_email: payer.email,
-    card_token_id: token,
-    auto_recurring: {
-      frequency: 1,
-      frequency_type: "months",
-      start_date: "2024-06-01T13:07:14.260Z",
-      end_date: "2025-06-06T15:59:52.581Z",
-      transaction_amount: transaction_amount,
-      currency_id: "CLP",
-    },
-    back_url: `https://scared-jonathan-respond-respected.trycloudflare.com/mp/feedback/${email}`,
-    status: "authorized",
-  };
+    const generarSuscripcion = async () => {
+      try {
+        const response = await axios.post(
+          "https://api.mercadopago.com/preapproval",
+          data,
+          {
+            headers: {
+              Authorization: process.env.MP_ACCESS_TOKEN,
+            },
+          }
+        );
+        ResponseHandler.Ok(res, "Ok");
+        console.log("response first endpoint:", response.data);
+      } catch (error) {
+        console.error("Error:", error);
+        throw error;
+      }
+    };
 
-  const generarSuscripcion = () => {
-    axios
-      .post("https://api.mercadopago.com/preapproval", data, {
-        headers: {
-          Authorization:
-            "Bearer APP_USR-5142058413684084-060311-23980a0a13b1bf13a16af2f0c0515520-1677027160",
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        console.log("Respuesta:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error.response.data);
-      });
-  };
-  if (token) {
-    generarSuscripcion();
+    if (token) {
+      await generarSuscripcion();
+    }
+  } catch (error) {
+    ResponseHandler.HandleError(res, error);
   }
-  res.status(200).send({ success: true });
 };
 
 export const feedbackMp = async (req, res, next) => {
-  const id = req.params;
-  console.log("email in feedback endpoint", id);
-
   try {
-    console.log("entre a feedback req.query:", req.query);
+    const email = userEmail;
+    console.log("entre a feedback:");
     const { query } = req;
     const topic = query.topic || query.type;
-    console.log("topic:");
-    console.log(topic);
+    console.log("topic:", topic);
     if (topic === "payment") {
+      console.log("req.date_created:", req.body.date_created);
+      const startDate = new Date(req.body.date_created);
+      startDate.setMonth(startDate.getMonth() + 12);
+      const endDate = startDate.toISOString(); // '2025-05-30T15:19:08.000Z'
+      console.log("End Date:", endDate);
       const paymentId = query.id || query["data.id"];
-      await mpService.registerPay(paymentId, id);
+      const result = await mpService.registerPay(paymentId, email, endDate);
+      /* initializeSocket(server); */
+      ResponseHandler.Ok(res, result);
     }
-
-    ResponseHandler.Ok(res, "OK");
   } catch (error) {
+    console.error("Error al validar el email:", error);
     ResponseHandler.HandleError(res, error);
   }
 };

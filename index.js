@@ -1,4 +1,6 @@
 import express from "express";
+import http from "http";
+import initializeSocket from "./src/socket/indexSocket.js";
 import userRouter from "./src/routes/miempresa/userRouter.js";
 import proveedorRouter from "./src/routes/miempresa/proovRouter.js";
 import listrouter from "./src/routes/miempresa/priceListRouter.js";
@@ -36,7 +38,10 @@ import { swaggerOpts } from "./src/docs/swaggerOpts.js";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 const app = express();
+export const server = http.createServer(app);
+
 const PORT = process.env.PORT || 8080;
+const SOCKET_PORT = process.env.SOCKET_PORT || 8081;
 
 app.use(cors());
 app.use(cookieParser());
@@ -44,9 +49,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 
+// Configuraciones iniciales para un usuario que contrata el servicio
 
-
-// CONFIGURACIONES INICIALES PARA UN USUARIO QUE CONTRATA EL SERVICIO
 app.use("/init", initRouter);
 
 // Routers a Mi Empresa
@@ -99,14 +103,19 @@ app.use("/mp", mpRouter);
 //Router a DTE
 app.use("/dte", dteRouter);
 
-
 app.get("/", (req, res) => {
   res.json("Estoy desplegado hijo, pruebame 👉👌");
 });
 
-// Routers a Calendario??
 const specs = swaggerJSDoc(swaggerOpts);
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(specs));
+
 app.listen(PORT, () => {
   console.log(`server listen on ${PORT}`);
 });
+
+server.listen(SOCKET_PORT, () => {
+  console.log(`Socket.IO server running on port ${SOCKET_PORT}`);
+});
+
+initializeSocket(server);
