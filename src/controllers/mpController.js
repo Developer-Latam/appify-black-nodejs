@@ -43,6 +43,7 @@ export const preferencesMp = async (req, res, next) => {
           }
         );
         ResponseHandler.Ok(res, "Ok");
+        console.log("response first endpoint:", response.data);
       } catch (error) {
         console.error("Error:", error);
         throw error;
@@ -71,14 +72,12 @@ export const feedbackMp = async (req, res, next) => {
       const endDate = startDate.toISOString(); // '2025-05-30T15:19:08.000Z'
       console.log("End Date:", endDate);
       const paymentId = query.id || query["data.id"];
-      await mpService.registerPay(paymentId, email, endDate);
-    }
-
-    ResponseHandler.Ok(res, "OK");
-    if (ResponseHandler.Ok) {
-      initializeSocket(server);
+      const result = await mpService.registerPay(paymentId, email, endDate);
+      /* initializeSocket(server); */
+      ResponseHandler.Ok(res, result);
     }
   } catch (error) {
+    console.error("Error al validar el email:", error);
     ResponseHandler.HandleError(res, error);
   }
 };

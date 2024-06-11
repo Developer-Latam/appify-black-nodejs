@@ -14,6 +14,7 @@ class mpRepository {
 
   async findLinkByUserId(id) {
     try {
+      console.log("i am looking for the email in the db");
       return prisma.pagoMercadopago.findUnique({
         where: { id: id },
       });

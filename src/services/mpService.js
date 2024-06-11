@@ -2,10 +2,10 @@ import mpRepository from "../persistence/repositorys/mpRepository.js";
 import { CustomError } from "../utils/httpRes/handlerResponse.js";
 import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
 import { ResponseHandler } from "../utils/dependencys/injection.js";
-
 import "dotenv/config";
 
 class mpService {
+  // El id tiene que ser el email con el que empezo a crear el user
   async registerPay(paymentId, id, endDate) {
     console.log("registerpay inside");
     try {
