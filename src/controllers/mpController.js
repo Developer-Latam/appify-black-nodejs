@@ -2,8 +2,6 @@ import { ResponseHandler } from "../utils/dependencys/injection.js";
 import mpService from "../services/mpService.js";
 import "dotenv/config";
 import axios from "axios";
-import initializeSocket from "../../src/socket/indexSocket.js";
-import { server } from "../../index.js";
 
 export const testMPController = async (req, res, next) => {
   const { code } = req.query;
@@ -27,7 +25,6 @@ export const preferencesMp = async (req, res, next) => {
       preapproval_plan_id: "2c9380848fde7fa4018ff336772906f5",
       payer_email: "test_user_422112672@testuser.com",
       card_token_id: token,
-      /*     back_url: `https://promise-habits-olympic-dans.trycloudflare.com/mp/feedback/${email}`,*/
       status: "authorized",
     };
 
@@ -42,11 +39,44 @@ export const preferencesMp = async (req, res, next) => {
             },
           }
         );
-        ResponseHandler.Ok(res, "Ok");
-        console.log("response first endpoint:", response.data);
+        console.log("response first endpoint:", response.data.payer_id);
+        const payerId = response.data.payer_id;
+        console.log("res first endpoint statusCode:", res.statusCode);
+        if (res.statusCode === 200) {
+          try {
+            const response1 = await axios.get(
+              "https://api.mercadopago.com/v1/payments/search",
+              {
+                params: {
+                  access_token:
+                    "APP_USR-5043671826474347-060509-dd68ec8da1fa36fdcba746cf4f429bb5-1677027160",
+                  status: "approved",
+                  offset: 0,
+                  limit: 10,
+                  "payer.id": payerId,
+                },
+              }
+            );
+            ResponseHandler.Ok(res, response1.data);
+            /* console.log("response1.data", response1.data); */
+            console.log("response1.data.id", response1.data.results[0].id);
+            const paymentId1 = response1.data.results[0].id;
+            console.log(
+              "response1.data.date_created",
+              response1.data.results[0].date_created
+            );
+            const startDate1 = response1.data.results[0].date_created;
+            await feedbackMp(paymentId1, startDate1);
+          } catch (error) {
+            console.error(
+              "There has been a problem with your axios operation in second endpoint:",
+              error
+            );
+          }
+        }
       } catch (error) {
-        console.error("Error:", error);
-        throw error;
+        ResponseHandler.HandleError(res, error);
+        console.error("Error first endpoint:", error);
       }
     };
 
@@ -54,30 +84,26 @@ export const preferencesMp = async (req, res, next) => {
       await generarSuscripcion();
     }
   } catch (error) {
+    console.error("Error first endpoint 1:", error);
     ResponseHandler.HandleError(res, error);
   }
 };
 
-export const feedbackMp = async (req, res, next) => {
+async function feedbackMp(paymentId1, startDate1) {
   try {
     const email = userEmail;
     console.log("entre a feedback:");
-    const { query } = req;
-    const topic = query.topic || query.type;
-    console.log("topic:", topic);
-    if (topic === "payment") {
-      console.log("req.date_created:", req.body.date_created);
-      const startDate = new Date(req.body.date_created);
-      startDate.setMonth(startDate.getMonth() + 12);
-      const endDate = startDate.toISOString(); // '2025-05-30T15:19:08.000Z'
-      console.log("End Date:", endDate);
-      const paymentId = query.id || query["data.id"];
-      const result = await mpService.registerPay(paymentId, email, endDate);
-      /* initializeSocket(server); */
-      ResponseHandler.Ok(res, result);
-    }
+    console.log("startDate:", startDate1);
+    const startDate = new Date(startDate1);
+    startDate.setMonth(startDate.getMonth() + 12);
+    const endDate = startDate.toISOString(); // '2025-05-30T15:19:08.000Z'
+    console.log("End Date:", endDate);
+    const paymentId = paymentId1;
+    const result = await mpService.registerPay(paymentId, email, endDate);
+    /*  ResponseHandler.Ok(200, result); */
+    console.log("Result after saving in db", result);
   } catch (error) {
     console.error("Error al validar el email:", error);
-    ResponseHandler.HandleError(res, error);
+    /* ResponseHandler.HandleError(400, error); */
   }
-};
+}
