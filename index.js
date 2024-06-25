@@ -1,5 +1,5 @@
 import express from "express";
-import http from "http";
+/* import http from "http"; */
 /* import initializeSocket from "./src/socket/indexSocket.js"; */
 import userRouter from "./src/routes/miempresa/userRouter.js";
 import proveedorRouter from "./src/routes/miempresa/proovRouter.js";
@@ -38,7 +38,7 @@ import { swaggerOpts } from "./src/docs/swaggerOpts.js";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 const app = express();
-export const server = http.createServer(app);
+/* export const server = http.createServer(app); */
 
 const PORT = process.env.PORT || 8080;
 /* const SOCKET_PORT = process.env.SOCKET_PORT || 8081; */
