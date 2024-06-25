@@ -1,6 +1,6 @@
 import express from "express";
 import http from "http";
-import initializeSocket from "./src/socket/indexSocket.js";
+/* import initializeSocket from "./src/socket/indexSocket.js"; */
 import userRouter from "./src/routes/miempresa/userRouter.js";
 import proveedorRouter from "./src/routes/miempresa/proovRouter.js";
 import listrouter from "./src/routes/miempresa/priceListRouter.js";
@@ -41,7 +41,7 @@ const app = express();
 export const server = http.createServer(app);
 
 const PORT = process.env.PORT || 8080;
-const SOCKET_PORT = process.env.SOCKET_PORT || 8081;
+/* const SOCKET_PORT = process.env.SOCKET_PORT || 8081; */
 
 app.use(cors());
 app.use(cookieParser());
@@ -114,8 +114,9 @@ app.listen(PORT, () => {
   console.log(`server listen on ${PORT}`);
 });
 
-server.listen(SOCKET_PORT, () => {
+/* server.listen(SOCKET_PORT, () => {
   console.log(`Socket.IO server running on port ${SOCKET_PORT}`);
 });
 
 initializeSocket(server);
+ */
